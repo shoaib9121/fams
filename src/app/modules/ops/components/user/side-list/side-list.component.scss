@@ -1,0 +1,49 @@
+.side-list-component {
+	.empty-container {
+		height: calc(100vh - 48px);
+	}
+    
+    
+    @media screen and (max-width: 1024px) {
+        ::ng-deep {
+            .table-wrapper {
+                .row-thumb {
+                    position: relative;
+                    max-width: 100%;
+                    height: auto !important;
+            
+                    .img-responsive-width {
+                        width: 100%;
+                        object-fit: fill !important;
+                    }
+                }
+                mat-cell:last-of-type {
+                    &:lang(en){
+                        padding-right: 10px;
+                    }
+                    &:lang(ar){
+                        padding-left: 10px;
+                    }
+                }
+                mat-cell:first-of-type, 
+                mat-footer-cell:first-of-type, 
+                mat-header-cell:first-of-type {
+                    padding-left: 0 !important;
+                }
+
+                app-table-widget {
+                    .table-wrapper {
+                        mat-cell:first-of-type, 
+                        mat-footer-cell:first-of-type, 
+                        mat-header-cell:first-of-type {
+                            padding-left: 10px !important;
+                        }
+                    }
+                }
+            }
+            .search-wrapper{
+                padding: 10px 16px 0 !important;
+            }
+        }
+    }
+}

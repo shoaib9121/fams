@@ -1,0 +1,18 @@
+.module-definition-component {
+	.outline-form-vertical-alignment-fix {
+		margin-bottom: 1.34375em !important;
+	}
+	
+	.color-map {
+		height: 40px;
+		width: 40px;
+		border-radius: 3px;
+		display: flex;
+	}
+	
+	.content-container {
+		height: calc(100vh - 100px) !important;
+		padding-left: 40px !important;
+		padding-right: 40px !important;
+	}
+}

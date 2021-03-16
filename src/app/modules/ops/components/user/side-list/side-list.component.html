@@ -1,0 +1,9 @@
+<div class="side-list-component">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="side-list" [fullScreen]="false"></ngx-spinner>
+	<app-table-widget *ngIf="tableWidgetData" #tableWidget [tableData]="tableWidgetData" (rowClicked)="checkBoxClicked($event)" ></app-table-widget>
+	
+	<div *ngIf="!tableWidgetData" class="empty-container">
+		<app-empty-state [state]="'no_issues'" [width]="60"></app-empty-state>
+	</div>
+
+</div>

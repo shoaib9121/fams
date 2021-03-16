@@ -1,0 +1,153 @@
+@import "../../../../assets/css/_settings/variables";
+
+.active-route {
+	background-color: $sidenav-active-route-color;
+}
+
+mat-sidenav .mat-list-item-content {
+	padding: 16px 45px !important;
+}
+
+mat-list-item {
+	width: 100%;
+}
+
+.navigation-header {
+	color: $primary-color;
+}
+
+mat-list-item.mat-list-item.ng-star-inserted.active-route {
+	
+	color: $primary-color;
+}
+
+mat-list-item.mat-list-item.ng-star-inserted.active-route:hover {
+	
+	color: $primary-color;
+}
+
+mat-list-item.mat-list-item.ng-star-inserted:hover {
+	background-color: $list-item-hover-color !important;
+	color: $primary-color !important;
+}
+
+.mat-icon-class {
+	font-size: 17px !important;
+}
+
+.sidebar-navigation {
+	font-size: 17px !important;
+	color: #767676;
+	
+	mat-icon svg, mat-icon path {
+		fill: lightgray !important;
+	}
+}
+
+.sidenav-bottom {
+	position: relative;
+	left: 0;
+	bottom: 10px;
+	right: 0;
+    
+    .username {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    
+	@media screen and (max-width: 1024px){
+		.mat-chip {
+			font-size: 12px !important;
+		}
+		.mat-icon svg {
+			height: 20px !important;
+			width: 20px !important;
+		}
+	}
+    
+    @media screen and (max-width: 1200px){
+        .username {
+            max-width: 50px;
+        }
+	}
+}
+
+
+.sidenav-component {
+
+	.mat-expansion-panel-body {
+		padding: 0 !important;
+	}
+	
+	.mat-expansion-panel-header {
+		padding: 0 12px !important;
+	}
+
+	mat-icon:lang(ar) {
+		-webkit-transform: rotateY(0) !important;
+		transform: rotateY(0) !important;
+	}
+	
+	.mat-list-item {
+		width: 100%;
+	}
+	
+	.mat-list-item.active-route {
+		color: $primary-color;
+		
+		span {
+			color: $primary-color;
+			font-weight: 500;
+		}
+		
+		.mat-icon {
+			color: $primary-color;
+		}
+	}
+
+	
+	@media screen and (max-width: 1024px){
+		.mat-expansion-panel-header{
+			font-size: 13px;
+			padding: 0 !important;
+			.mat-expansion-panel-header-title{
+				span{
+					line-height: 1.2;
+				}
+			}
+		}
+		.mat-list-base[dense]{
+			.mat-list-item {
+				height: 34px;
+				.mat-list-item-content{
+					width: 100%;
+					padding: 6px 16px !important;
+					font-size: 13px !important;
+					span{
+						line-height: 1.2;
+					}
+				}
+			}
+		}
+		.mat-icon {
+			width: 20px;
+			height: 20px;
+		}
+		.mat-icon svg{
+			width: 18px;
+			height: 18px;
+		}
+		.overflow-auto {
+			height: auto !important;
+		}
+	}
+}
+
+.mat-form-lang.mat-form-field-appearance-legacy .mat-form-field-underline {
+	height: 0px;
+}
+
+.mat-icon-language.svg {
+	margin-bottom: 10px;
+}

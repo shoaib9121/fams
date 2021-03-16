@@ -1,0 +1,161 @@
+<ng-container>
+  <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+  <mat-card>
+    <div fxLayout="row" fxLayoutGap="10px" >
+      <mat-card fxFlex="50%" fxLayoutGap="5px">
+        <mat-card-title>Settings</mat-card-title>
+        <div fxLayout="column">
+          <mat-form-field appearance="outline">
+            <mat-label>Date Format</mat-label>
+            <mat-select>
+              <mat-option ></mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Time Format</mat-label>
+            <mat-select>
+              <mat-option ></mat-option>
+            
+            </mat-select>
+          </mat-form-field>
+          <mat-checkbox>Show date-time along with GMT differences</mat-checkbox>
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Time Format </mat-label>
+            <mat-select>
+              <mat-option></mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Unit of Distance</mat-label>
+            <mat-select>
+              <mat-option>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Unit of Speed</mat-label>
+            <mat-select>
+              <mat-option>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span>Fuel Coast / Liter :</span>
+          <div fxLayout="row" fxLayoutGap="10px">
+            <mat-form-field fxFlex="30%" appearance="outline">
+              <mat-label>Petrol</mat-label>
+              <input matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="30%" appearance="outline">
+              <mat-label>Diesel</mat-label>
+              <input matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="30%" appearance="outline">
+              <mat-select>
+                <mat-option>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Default Map View</mat-label>
+            <mat-select>
+              <mat-option></mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Default Home Page</mat-label>
+            <mat-select>
+              <mat-option >
+               
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Default Vehicle Display Name</mat-label>
+            <mat-select>
+              <mat-option >
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+      </mat-card>
+      <div fxFlex="50%" fxLayout="column" fxLayoutAlign="start stretch">
+
+        <mat-card class="mb-1">
+          <mat-card-header>
+            <mat-card-title>Alert</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div fxLayout="row" fxLayoutGap="10px">  
+
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>SMS Credit Notification Email </mat-label>
+                <input matInput>
+              </mat-form-field>
+            </div>
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Remaining credit is 0. Send email alert when it reach</mat-label>
+              <mat-select>
+                <mat-option >
+                
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="mb-1">
+          <mat-card-header>
+            <mat-card-title>Dashboard Modules</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-selection-list #modules>
+              <mat-list-option [value]="1"  #ev>SelectAll</mat-list-option>
+              <mat-list-option *ngFor="let modules of dashboardModules">
+                {{modules}}
+              </mat-list-option>
+
+            </mat-selection-list>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>logo</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- <input type="file" style="display: none" #fileInput accept="image/*" (change)="onChangeFileInput()" />
+      <button mat-raised-button color="primary" class="file-select-button" (click)="onClickFileInputButton()"> <mat-icon>attach_file</mat-icon>
+        file</button> -->
+
+            <mat-form-field fxFlex="30%">
+              <input matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="30%">
+              <input matInput>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+    <mat-card-actions>
+      <button class="w-100 fw-400" mat-raised-button color="primary">Save All Changes</button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>

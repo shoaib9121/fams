@@ -1,0 +1,11 @@
+<mat-form-field class="w-100" appearance="outline">
+	<mat-label>{{ field.label[globalVariables.LNG] }}</mat-label>
+	<mat-select [formControl]="localFormControl" [compareWith]="compareObjects">
+		<mat-option *ngFor="let option of fieldOptions; let i = index" (click)="selected(option)"
+		            [value]="option.id">
+			<span class="square-box"
+			      [style.backgroundColor]="option?.color">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<span class="text-uppercase fw-500">{{ option?.name[globalVariables.LNG] }}</span>
+		</mat-option>
+	</mat-select>
+</mat-form-field>

@@ -1,0 +1,7 @@
+<mat-form-field *ngIf="ifSearchBox">
+    <mat-icon matPrefix svgIcon="magnify" class="mx-1"></mat-icon>
+    <mat-label> {{ globalVariables.translation["Search.."][globalVariables.LNG] }} </mat-label>
+    <input type="text" matInput [(ngModel)]="searchModal" (input)="inputChanges()">
+    <mat-icon svgIcon="close" matSuffix color="secondary" (click)="toggleSearchBox()"></mat-icon>
+</mat-form-field>
+<mat-icon class="search-icon" *ngIf="!ifSearchBox" (click)="toggleSearchBox()" svgIcon="magnify" style="padding: 1em 0;"></mat-icon>

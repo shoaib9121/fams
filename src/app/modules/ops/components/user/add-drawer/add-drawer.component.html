@@ -1,0 +1,171 @@
+<div class="add-drawer-component">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="create"
+		[fullScreen]="false"></ngx-spinner>
+
+	<mat-drawer-container class="w-100">
+
+	<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+		<div class="h-100" fxLayout="row">
+			<button mat-button (click)="eventCancelledDrawer()" tabindex="-1">
+				<mat-icon svgIcon="close"></mat-icon>
+			</button>
+			<mat-divider vertical></mat-divider>
+			<span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+				<button mat-icon-button *ngIf="selectedTab > 0 && selectableTypes && selectableTypes.length > 0"
+				        (click)="selectedTab = 0">
+					<mat-icon svgIcon="arrow-left"></mat-icon>
+				</button>
+				<span>{{ drawerTitle }}</span>
+			</span>
+		</div>
+		<div class="px-4">
+			<div class="lessons-list" [hidden]="isSaveHide">
+				<ng-template [cdkPortalOutlet]="templatePortal"></ng-template>
+			</div>
+		</div>
+	</mat-toolbar>
+	
+	<div class="content mt-1">
+		<mat-tab-group [selectedIndex]="selectedTab" animationDuration="0">
+			<mat-tab label="Type">
+				<ng-template matTabContent>
+					
+					<!--
+					<div fxLayout="row wrap" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
+						<mat-card class="p-0 mb-4" fxLayout="row" fxLayoutAlign="flex-start stretch"
+						          fxFlex="45%" (click)="chooseType(selectableType)"
+						          *ngFor="let selectableType of selectableTypes">
+							<div class="type-icon" fxFlex="0 1 100px" fxLayout="row" fxLayoutAlign="center center">
+								<mat-icon color="secondary" svgIcon="file-document-box"></mat-icon>
+							</div>
+							<div class="p-3 w-100" fxLayout="column" fxLayoutAlign="center">
+								<strong>{{  selectableType.name[globalVariables.LNG]  }}</strong>
+								<mat-card-subtitle class="mt-2">{{  selectableType.name[globalVariables.LNG]  }}</mat-card-subtitle>
+							</div>
+						</mat-card>
+					</div>
+					-->
+					<div class="text-right" style="height: 55px;">
+						<app-search-filter (inputQuery)="inputSearchQuery($event)"></app-search-filter>
+					</div>
+
+					<mat-accordion multi>
+						<mat-expansion-panel class="mat-elevation-z3" expanded *ngFor="let typeGroup of typeGroups | searchFilter:'name':searchModule:true">
+							<mat-expansion-panel-header>
+								<mat-panel-title fxFlex="row" fxLayoutAlign="flex-start center" fxLayoutGap="10px">
+									<mat-icon fxFlex="auto" size="14px" inline [svgIcon]="typeGroup.icon || 'file-document-box'"></mat-icon>
+									<h3 fxFlex="100%">{{ typeGroup.name[globalVariables.LNG] }}</h3>
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							
+							<div class="px-5 py-3" fxLayout="row wrap" fxLayoutAlign="space-between start">
+								<mat-card class="p-0 mb-4 primary-bg-color" (click)="chooseType(type)" 
+									*ngFor="let type of typeGroup.values | searchFilter:'name':searchModule" fxFlex="1 1 49%" fxLayoutAlign="stretch">
+									<!-- *ngFor="let type of typeGroup.values" fxFlex="1 1 49%" fxLayoutAlign="stretch"> -->
+										<div class="type-icon" fxFlex="1 1 100px" fxLayout="row"
+											fxLayoutAlign="center center">
+											<mat-icon color="secondary" [svgIcon]="type.icon || 'file-document-box'"></mat-icon>
+										</div>
+										<div class="p-3 w-100" fxLayout="column" fxLayoutAlign="center">
+											<strong>{{ type.name[globalVariables.LNG] }}</strong>
+											<mat-card-subtitle class="mt-2">{{ type.name[globalVariables.LNG] }}</mat-card-subtitle>
+										</div>
+								</mat-card>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+					
+					<form #DynamicMasterForm="ngForm" (ngSubmit)="onBasicDetailsSubmit()" id="DynamicMasterForm">
+						<ng-template #templatePortalContent>
+							<button [disabled]="!DynamicMasterForm.valid || selectedTab != 2" mat-raised-button color="primary"
+							        (click)="eventSubmitted()">
+								{{ globalVariables.translation["Save"][globalVariables.LNG] }}
+							</button>
+						</ng-template>
+					</form>
+				</ng-template>
+			</mat-tab>
+			
+			<mat-tab label="ProcessFlowImage">
+				<ng-template matTabContent>
+					<mat-card class="mb-1">
+						<mat-card-header fxLayout="row" fxLayoutAlign="space-between center">
+							<mat-card-title>{{ globalVariables.translation["request_lifecycle"][globalVariables.LNG] }}</mat-card-title>
+							<button mat-raised-button color="primary" (click)="chooseForm()">
+								{{ globalVariables.translation["got_it_continue"][globalVariables.LNG] }}
+							</button>
+						</mat-card-header>
+						<!-- <mat-card-header fxLayoutAlign="left">
+							<span style="font-size: 14px; font-weight: bold">{{ globalVariables.translation["request_lifecycle"][globalVariables.LNG] }}</span>
+						</mat-card-header> -->
+						<mat-card-content style="margin: 23px 16px;">
+							<div class="h-100 mb-5">
+								<img src="{{ selectedTypeProcessFlowImage[globalVariables.LNG] }}"
+								     alt='{{ globalVariables.translation["no_processflow_guidelines"][globalVariables.LNG] }}'
+								     class="w-100">
+								<!-- <div class="text-center">
+									<h1 class="empty-state-light-color"> {{ globalVariables.translation["no_processflow_guidelines"][globalVariables.LNG] }}</h1>
+								</div> -->
+							</div>
+						</mat-card-content>
+					</mat-card>
+					
+					<form #DynamicMasterForm="ngForm" (ngSubmit)="onBasicDetailsSubmit()" id="DynamicMasterForm">
+						<ng-template #templatePortalContent>
+							<button [disabled]="!DynamicMasterForm.valid || selectedTab != 2" mat-raised-button color="primary"
+							        (click)="eventSubmitted()">
+								{{ globalVariables.translation["Save"][globalVariables.LNG] }}
+							</button>
+						</ng-template>
+					</form>
+				</ng-template>
+			</mat-tab>
+			
+			<mat-tab label="Form">
+				<ng-template matTabContent>
+					<mat-accordion multi *ngIf="selectedTypeProcessFlowImage && selectedTypeProcessFlowImage[globalVariables.LNG]">
+						<mat-expansion-panel [expanded]="false" hideToggle>
+							<mat-expansion-panel-header>
+								<mat-panel-title fxLayoutAlign="flex-start center">
+									<span>{{ globalVariables.translation["request_lifecycle"][globalVariables.LNG] }}</span>
+								</mat-panel-title>
+								<mat-panel-description class="mr-0" fxLayoutAlign="flex-end center">
+									<span  fxLayout="row" [matTooltip]='globalVariables.translation["request_lifecycle_explanation"][globalVariables.LNG]'>
+										<mat-icon svgIcon="help-circle-outline"></mat-icon>
+									</span>
+								</mat-panel-description>
+							</mat-expansion-panel-header>
+							<div>
+								<div class="h-100 mb-5">
+									<img src="{{ selectedTypeProcessFlowImage[globalVariables.LNG] }}"
+										alt='{{ globalVariables.translation["no_processflow_guidelines"][globalVariables.LNG] }}' class="w-100">
+								</div>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+					<form #DynamicMasterForm="ngForm" (ngSubmit)="onBasicDetailsSubmit()" id="DynamicMasterForm">
+						<app-reactive-dynamic-form [groups]="selectedFieldsTemplate" [isEdit]="false"
+						                           [multiGroups]="selectedMultiGroupsTemplate"
+						                           (checkIsFormDirty)="checkIsFormDirty($event)">
+						</app-reactive-dynamic-form>
+						<ng-template #templatePortalContent>
+							<button [disabled]="!DynamicMasterForm.valid || selectedTab != 2" mat-raised-button color="primary"
+							        (click)="eventSubmitted()">
+								{{ globalVariables.translation["Save"][globalVariables.LNG] }}
+							</button>
+						</ng-template>
+						<!--<pre>
+							{{a.value | json}}
+						</pre>-->
+					</form>
+				</ng-template>
+			</mat-tab>
+		</mat-tab-group>
+	</div>
+	<mat-drawer *ngIf="sideDrawerWidth" opened mode="side" position="end" class="attachementWidth" [ngStyle]="{'width': sideDrawerWidth}">
+		<app-side-drawer [data]="selectedFieldsTemplate" [editOverview]="editOverview" [moduleStatuses]="moduleDataService.moduleStatuses" [isEdit]="false">
+		</app-side-drawer>
+	</mat-drawer>
+</mat-drawer-container>
+
+</div>

@@ -1,0 +1,112 @@
+@import '~@angular/material/theming';
+@import "~leaflet/dist/leaflet.css";
+@import "../assets/css/_settings/variables";
+// Plus imports for other components in your app.
+
+// Setting Font for Dubai Police
+$dp-typography: mat-typography-config(
+		$font-family: "DubaiRegular, Roboto, Helvetica Neue, sans-serif",
+		$headline: mat-typography-level(24px, 48px, 700, "Bukra"),
+		$title: mat-typography-level(24px, 24px, 700, "Bukra"),
+		$body-1: mat-typography-level(16px, 20px, 500),
+		$body-2: mat-typography-level(14px, 16px, 500),
+		$caption: mat-typography-level(14px, 16px, 500),
+		$input: mat-typography-level(15px, 1.25, 500),
+		$subheading-2: mat-typography-level(16px, 28px, 400),
+		$subheading-1: mat-typography-level(15px, 24px, 400),
+		$button: mat-typography-level(14px, 14px, 600),
+);
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core($dp-typography);
+
+/************ Primary colors - will be used for all major forms of communication & design ************/
+// Always opt for the use of the primary colors and try to create balance
+// between the three colors to inspire, innovate and create a fresh look
+$dp-primary-green: $primary-color;
+$dp-primary-darkgreen: #005844;
+$dp-primary-white: #FFFFFF;
+
+$dp-primary-green-palette: (
+		50: #e8f5e9,
+		100: #c8e6c9,
+		200: #a5d6a7,
+		300: #81c784,
+		400: #66bb6a,
+		500: $primary-color, // Custom
+		600: #43a047,
+		700: $primary-color, // Custom
+		800: #2e7d32,
+		900: #1b5e20,
+		A100: #b9f6ca,
+		A200: #69f0ae,
+		A400: #00e676,
+		A700: #00c853,
+		contrast: (
+				50: $dark-primary-text,
+				100: $dark-primary-text,
+				200: $dark-primary-text,
+				300: $dark-primary-text,
+				400: $dark-primary-text,
+				500: $light-primary-text, // Custom
+				600: $light-primary-text,
+				700: $light-primary-text,
+				800: $light-primary-text,
+				900: $light-primary-text,
+				A100: $dark-primary-text,
+				A200: $dark-primary-text,
+				A400: $dark-primary-text,
+				A700: $dark-primary-text,
+		)
+);
+
+/************ Secondary colors - will be used in special cases only ************/
+// Black is used for typography only and small details.
+$db-secondary-black: #000000;
+$dp-green: #26D07C;
+$dp-red: #E4002B;
+$dp-pinkred: #A60A3D;
+$dp-grey: #8D9093;
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$dp-app-primary: mat-palette($dp-primary-green-palette);
+$dp-app-accent: mat-palette($mat-deep-orange, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$dp-app-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+.dp-light-theme {
+	$mat-light-theme-background: (
+			status-bar: map_get($mat-grey, 300),
+			app-bar: map_get($mat-grey, 100),
+			background: map_get($mat-grey, 500),
+			hover: rgba(black, 0.04), // TODO(kara): check style with Material Design UX
+			card: white,
+			dialog: white,
+			disabled-button: rgba(black, 0.12),
+			raised-button: white,
+			focused-button: $dark-focused,
+			selected-button: map_get($mat-grey, 300),
+			selected-disabled-button: map_get($mat-grey, 400),
+			disabled-button-toggle: map_get($mat-grey, 200),
+			unselected-chip: map_get($mat-grey, 300),
+			disabled-list-option: map_get($mat-grey, 200),
+	);
+	$dp-light-app-theme: mat-light-theme($dp-app-primary, $dp-app-accent, $dp-app-warn);
+	@include angular-material-theme($dp-light-app-theme);
+}
+
+.dp-dark-theme {
+	$dp-dark-app-theme: mat-dark-theme($dp-app-primary, $dp-app-accent, $dp-app-warn);
+	@include angular-material-theme($dp-dark-app-theme);
+}

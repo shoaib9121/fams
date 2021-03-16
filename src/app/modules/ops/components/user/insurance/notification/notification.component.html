@@ -1,0 +1,31 @@
+<button class="badge-btn" mat-icon-button [mdePopoverTriggerFor]="notificationPopover" mdePopoverTriggerOn="click">
+    <mat-icon *ngIf="unreadNotiLength > 0" [matBadge]="unreadNotiLength" matBadgeColor="green" svgIcon="bell-outline"></mat-icon>
+    <mat-icon *ngIf="unreadNotiLength < 1" svgIcon="bell-outline"></mat-icon>
+</button>
+<mde-popover #notificationPopover="mdePopover" [mdePopoverOverlapTrigger]="false" [mdePopoverCloseOnClick]="false"
+    [mdePopoverOffsetX]="-16" [mdePopoverOffsetY]="-10" [mdePopoverArrowOffsetX]="58" mdePopoverArrowColor="#FFFFFF">
+    <div fxLayout="column" fxLayoutAlign="start stretch" class="box-shadow" style="min-width: 400px;" [ngStyle.md]="{'min-width.px': 350}">
+        <mat-card class="border-radius-0 z-index-2">
+            <mat-card-title>{{ globalVars.translation["Notifications"][globalVars.LNG] }}</mat-card-title>
+        </mat-card>
+        <div fxLayout.gt-md="column" class="ntf-container">
+            <ng-container *ngIf="notifications.length == 0">
+                <div fxLayout="column" fxLayoutAlign="center center" class="w-100 h-100">
+                    <div><mat-icon color="secondary" svgIcon="bell-off"></mat-icon></div>
+                    <h3 class="fw-400 empty-state-color">{{ globalVars.translation["No Notifications"][globalVars.LNG] }}</h3>
+                </div>
+            </ng-container>
+            
+            <ng-container *ngFor="let notification of notifications">
+                <mat-card fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="flex-start center" (click)="onNotificationClick(notification)" class="noti-item" [ngClass]="notification.is_read ? 'noti-read' : ''">
+                    <mat-icon svgIcon="update" color="secondary" fxFlex="0 0 auto"></mat-icon>
+                    <div fxLayout="column">
+                        <span class="ntf-time">{{ notification.createdAt | timeAgo }}</span>
+                        <span class="fw-600">{{ notification.title }}</span>
+                        <span>{{ globalVars.isNameObject(notification.message) ? notification.message[globalVars.LNG] : notification.message }}</span>
+                    </div>
+                </mat-card>
+            </ng-container>
+        </div>
+    </div>
+</mde-popover>

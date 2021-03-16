@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>
+	{{ globalVars.translation["Are you sure?"][globalVars.LNG] }}
+</h2>
+<mat-dialog-content class="pt-2 pb-3">
+	{{ messageObject[lng] }}
+	<!-- <span class="mx-1 status-label" [style.backgroundColor]="data.status.color">{{ data.status.name[globalVars.LNG] }}</span> -->
+</mat-dialog-content>
+
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onNoClick()" tabindex="-1"> {{ globalVars.translation["No"][globalVars.LNG] }} </button>
+	<button mat-raised-button color="primary" (click)="onYesClick()" tabindex="1"> {{ globalVars.translation["Yes"][globalVars.LNG] }} </button>
+</mat-dialog-actions>

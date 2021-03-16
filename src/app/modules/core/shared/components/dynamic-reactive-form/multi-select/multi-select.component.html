@@ -1,0 +1,20 @@
+<mat-form-field class="w-100" appearance="outline">
+	<mat-chip-list #chipList aria-label="Selection">
+		<mat-chip *ngFor="let chip of selectedValue" [selectable]="true" [removable]="true" fxLayout="row" fxLayoutAlign="space-between center">
+			<span>{{chip.value}}</span>
+			<mat-icon size="14px" matChipRemove *ngIf="removable" (click)="removeElement(chip)" svgIcon="close-circle"></mat-icon>
+		</mat-chip>
+		<input matInput #inp="matAutocompleteTrigger" (focus)="focused(inp)"
+			placeholder="{{ field.label[globalVariables.LNG] }} " #ArrayInput [formControl]="optionsCtrl"
+			[matAutocomplete]="automulti" [matChipInputFor]="chipList"
+			[matChipInputSeparatorKeyCodes]="separatorKeysCodes" registerChildComponentToForm [disabled]="true">
+	</mat-chip-list>
+	<mat-autocomplete #automulti="matAutocomplete">
+		<mat-option *ngFor="let  option of getInputOption; let i =index" (click)="selected(option)"
+			[value]="sharedService.getSelectValue(option,field)">
+
+			<mat-checkbox [checked]="option.isCheck" (change)="selected=i">
+				{{sharedService.getSelectValue(option,field)}}</mat-checkbox>
+		</mat-option>
+	</mat-autocomplete>
+</mat-form-field>

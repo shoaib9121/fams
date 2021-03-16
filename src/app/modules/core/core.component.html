@@ -1,0 +1,18 @@
+<!--<ngx-spinner [fullScreen]="false" type="ball-clip-rotate-multiple" size="medium" color = "#008755">
+	<p class="loading">Loading ...</p>
+</ngx-spinner>-->
+
+<div class="fully-expand" [ngClass]="{'headings-font' : globalVariables.LNG == 'en'}">
+	<app-top-bar [apps]="appStructure"></app-top-bar>
+	<mat-sidenav-container class="h-sidenav" autosize>
+  
+		<mat-sidenav mode="side" [opened]="getAppNavigation() && getAppNavigation().workspaces?.length > 0" class="pt-0 z-index-0 sidebarMenu" disableClose [style.width]="'300px'">
+			<app-sidenav [appNavigation]="getAppNavigation()"></app-sidenav>
+		</mat-sidenav>
+		
+		<mat-sidenav-content class="global-sidenav-content" style="background-color: whitesmoke;">
+			<router-outlet></router-outlet>
+		</mat-sidenav-content>
+		
+	</mat-sidenav-container>
+</div>

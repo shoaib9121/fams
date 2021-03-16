@@ -1,0 +1,166 @@
+<div class="user-component">
+	<mat-sidenav-container [hasBackdrop]="drawerType != 'time_tracking'" (backdropClick)="backdropClick()">
+		<mat-sidenav-content>
+			<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+				name="user" [fullScreen]="false">
+			</ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row fxLayout.gt-md="row">
+					<mat-toolbar-row>
+						{{ viewTitle[globalVars.LNG] }}
+					</mat-toolbar-row>
+				</mat-toolbar-row>
+			</mat-toolbar>
+
+			<!-- <ng-container *ngIf="viewTitle?.en == 'Asset Report'">
+				<app-assets-report></app-assets-report>
+			</ng-container> -->
+
+			<!-- <mat-tab-group class="view-tabs" *ngIf="viewTitle?.en != 'Asset Report'"> -->
+			<mat-tab-group #tabGroup class="view-tabs" [(selectedIndex)]="activeMode.tabIndex" (animationDone)="tabAnimationDone(tabGroup)">
+                
+                <!-- Table Widget Tab -->
+                <mat-tab (click)="setActiveMode('list')">
+					<ng-template mat-tab-label>
+						<mat-icon svgIcon="format-list-bulleted-square" class="mx-1"></mat-icon>
+						{{ globalVars.translation["List"][globalVars.LNG] }}
+					</ng-template>
+					<ng-template matTabContent>
+						<div *ngIf="!hasNoData" class="content-padding pb-0" fxLayout="row" fxLayoutAlign="space-between stretch"
+							fxLayoutGap="20px">
+							<ng-container *ngFor="let overview of this.moduleDataService?.viewPermissions?.overview">
+								<mat-card fxFlex="auto" fxLayout="row" fxLayoutAlign="space-between center"
+									*ngFor="let kpi of overview.parameters"
+									[style.borderBottom]="'4px solid ' + kpi.color">
+									<div fxFlex="1 1 auto">
+										<span class="fw-600" mat-card-title>
+											{{ kpi.name[globalVars.LNG] }}
+										</span>
+									</div>
+									<div>
+										<span mat-card-title>
+											{{ kpi.fe_result || 0 }}
+										</span>
+									</div>
+								</mat-card>
+							</ng-container>
+						</div>
+						<app-table-widget *ngIf="tableWidgetData" #tableWidget [tableData]="tableWidgetData"
+							(rowClicked)="rowClicked($event)" (statusUpdated)="statusUpdated($event)" (pagedDataRequest)="fetchPaginatedData($event)"
+							(eventRecordSearchQuery)="recordSearchQuery($event)" (eventClearSearchQuery)="clearSearchQuery($event)"
+                            (actionButtonPressed)="fireActionButton($event)"
+						>
+						</app-table-widget>
+
+						<div class="h-100" *ngIf="isEmptyState && hasNoData && searchWidgetData" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+							<div class="text-center">
+								<h1 class="empty-state-color">{{ globalVars.translation["No"][globalVars.LNG] }}
+									{{ viewTitle[globalVars.LNG] }}</h1>
+								<button *ngIf="showAddButton" class="mx-auto" mat-raised-button color="primary" fxLayout="row"
+									fxLayoutAlign="space-between center" (click)="setDrawerType('add')">
+									<mat-icon svgIcon="plus"></mat-icon>
+									<span>
+										{{ globalVars.translation["Create"][globalVars.LNG] }}
+										{{ viewTitle[globalVars.LNG] }}
+									</span>
+								</button>
+							</div>
+						</div>
+						<ng-container *ngIf="!tableWidgetData && !searchWidgetData">
+							<app-empty-state class="h-100" [state]='emptyState'></app-empty-state>
+						</ng-container>
+					</ng-template>
+				</mat-tab>
+
+                <!-- Board Widget Tab -->
+				<mat-tab *ngIf="hasBoard" (click)="setActiveMode('board')">
+					<ng-template mat-tab-label>
+						<mat-icon svgIcon="view-dashboard" class="mx-1"></mat-icon>
+						{{ globalVars.translation["Board"][globalVars.LNG] }}
+					</ng-template>
+					<ng-template matTabContent>
+						<app-board-widget *ngIf="tableWidgetData" [boardData]="tableWidgetData" #boardWidget
+							(cardClicked)="rowClicked($event)" (statusUpdated)="updateStatusAfterChanged($event)" (pagedDataRequest)="fetchPaginatedData($event)">
+						</app-board-widget>
+
+						<div class="h-100" *ngIf="!tableWidgetData" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+							<div class="text-center">
+								<h1 class="empty-state-color">{{ globalVars.translation["No"][globalVars.LNG] }}
+									{{ viewTitle[globalVars.LNG] }}</h1>
+								<button *ngIf="showAddButton" class="mx-auto" mat-raised-button color="primary" fxLayout="row"
+									fxLayoutAlign="space-between center" (click)="setDrawerType('add')">
+									<mat-icon svgIcon="plus"></mat-icon>
+									<span>
+										{{ globalVars.translation["Create"][globalVars.LNG] }}
+										{{ viewTitle[globalVars.LNG] }}
+									</span>
+								</button>
+							</div>
+						</div>
+					</ng-template>
+				</mat-tab>
+
+				<!-- Top bar Filters -->
+				<mat-tab class="filters" disabled
+					*ngIf="globalVars.getCurrentApplicationName() === 'insurance' && (viewTitle.en == 'Claims' || viewTitle.en == 'Asset Inquiry')">
+					<ng-template mat-tab-label>
+						<div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+							<div class="pt-2" [formGroup]="searchForm" (keyup.enter)="getClaims();" *ngIf="viewTitle.en == 'Claims'">
+								<mat-form-field class="search mx-4" *ngIf="ifSearchBox">
+									<mat-icon matPrefix svgIcon="magnify" class="align mr"></mat-icon>
+									<mat-icon matSuffix svgIcon="close" class="align" (click)="toggleSearchBox()">
+									</mat-icon>
+									<mat-label> {{globalVars.translation["Claim No"][globalVars.LNG]}} </mat-label>
+									<input type="text" matInput formControlName="claimNo">
+								</mat-form-field>
+								<mat-icon class="search-icon MR" *ngIf="!ifSearchBox" (click)="toggleSearchBox()" svgIcon="magnify"></mat-icon>
+								<mat-form-field>
+									<mat-label>{{ globalVars.translation["Insurance year"][globalVars.LNG]}}</mat-label>
+									<mat-select [(value)]="currentYear" formControlName="currentYear"
+									            (selectionChange)="getClaims()">
+										<mat-option *ngFor="let year of years" [value]="year.id">
+											{{ year.value }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="pt-2" [formGroup]="searchForm" (keyup.enter)="getRecordBySearchWord();" *ngIf="viewTitle.en == 'Asset Inquiry'">
+								<mat-form-field class="search" *ngIf="ifSearchBox">
+									<mat-icon matPrefix svgIcon="magnify" class="align mr"></mat-icon>
+									<mat-icon matSuffix svgIcon="close" class="align" (click)="toggleSearchBox()">
+									</mat-icon>
+									<mat-label>Code</mat-label>
+									<input type="text" matInput formControlName="searchWord">
+								</mat-form-field>
+								<mat-icon class="MR" *ngIf="!ifSearchBox" (click)="toggleSearchBox()" svgIcon="magnify"></mat-icon>
+							</div>
+						</div>
+					</ng-template>
+				</mat-tab>
+			</mat-tab-group>
+
+			<div *ngIf="showAddButton">
+				<ng-container *ngIf="(viewTitle?.en != 'Asset Report'); else assetDrawerTemplate">
+					<button class="sticky-fab-button z-index-2" color="primary" mat-fab (click)="setDrawerType('add')"
+						*ngIf="tableWidgetData && !isStatic">
+						<mat-icon svgIcon="plus"></mat-icon>
+					</button>
+				</ng-container>
+				<ng-template #assetDrawerTemplate>
+					<button class="sticky-fab-button z-index-2" color="primary" mat-fab (click)="setDrawerType('assets')"
+						*ngIf="tableWidgetData && !isStatic">
+						<mat-icon svgIcon="plus"></mat-icon>
+					</button>
+				</ng-template>
+			</div>
+		</mat-sidenav-content>
+
+		<mat-sidenav class="mat-side-nav" #drawer mode="over" position="end" [autoFocus]="false" [style.width]="drawerWidth? drawerWidth : drawerVw + 'vw'"
+			fixedInViewport fixedTopGap="0" fixedBottomGap="0" (opened)="openDrawerComponent(drawerType)">
+			<ng-template #container></ng-template>
+		</mat-sidenav>
+
+	</mat-sidenav-container>
+</div>

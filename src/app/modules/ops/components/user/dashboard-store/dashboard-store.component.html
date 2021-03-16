@@ -1,0 +1,149 @@
+<div class="dashboard-component" [ngClass]="'mx-4'" [ngClass.lg]="'mx-auto'" [ngClass.xl]="'mx-auto'" [ngStyle.xl]="{'width' : '75%'}" [ngStyle.lg]="{'width' : '75%'}">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="dashboard" [fullScreen]="false"></ngx-spinner>
+	<div *ngIf="dashBoarDataCounts" class="content-outer" fxLayout="row wrap" fxLayoutAlign="space-around">
+		<div class="main-flex-container h-100" fxLayout="row wrap" fxLayout.sm="column" fxFlex="100" fxLayoutAlign="space-between">
+            <div class="container dashboard-card" fxLayoutGap.md="15px" fxLayout="row" fxFlex="100" fxFlex.lg="49.5" fxFlex.xl="49.5">
+				<div class="tiles-outer h-100" fxLayout="row wrap" fxLayout.md="row" fxLayoutAlign="space-between" fxLayoutGap.md="15px" fxFlex="100">
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="48" fxFlex.xl="49" [style.backgroundColor]="'#06B1B1'">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline color-white">{{ globalVars.translation["ordered_parts"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 class="color-white" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.ordered_parts | number }}</h3>
+							</span>
+							<span class="card-icon">
+								<mat-icon class="color-white" svgIcon="currency-usd"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="48" fxFlex.xl="49" [style.backgroundColor]="'#00AD67'">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline color-white">{{ globalVars.translation["parts"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 class="color-white" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.store_summary.parts}}</h3>
+							</span>
+							<span>
+								<mat-icon class="color-white" svgIcon="poll"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>		
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="48" fxFlex.xl="49">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["vendors"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color:#06B1B1;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.store_summary.vendors }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="account"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="48" fxFlex.xl="49">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["purchase_orders"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #06B1B1;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.store_summary.purchase_orders }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="plus-circle"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="48" fxFlex.xl="49">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["delivered_parts"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #06B1B1;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.delivered_parts }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="cogs"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="48" fxFlex.xl="49">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["under_procurement"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #06B1B1;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.under_procurement }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="cogs"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+				</div>
+            </div>
+            <mat-card class="min-height" fxFlex="49.5" fxLayoutGap.lg="15px">
+				<h4> {{ globalVars.translation["stock_summary"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.sm]="true" baseChart [data]="stockSummaryChartData"
+							[labels]="stockSummaryChartLabels" [options]="stockSummaryChartOptions"
+							[chartType]="stockSummaryChartType" [colors]="stockSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.md]="true" baseChart [data]="stockSummaryChartData"
+							[labels]="stockSummaryChartLabels" [options]="stockSummaryChartOptionsForMedium"
+							[chartType]="stockSummaryChartType" [colors]="stockSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.lg]="true" baseChart [data]="stockSummaryChartData"
+							[labels]="stockSummaryChartLabels" [options]="stockSummaryChartOptions"
+							[chartType]="stockSummaryChartType" [colors]="stockSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" baseChart [data]="stockSummaryChartData"
+							[labels]="stockSummaryChartLabels" [options]="stockSummaryChartOptions"
+							[chartType]="stockSummaryChartType" [colors]="stockSummaryColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+			<mat-card class="min-height" fxFlex="49.5" fxLayoutGap.lg="15px">
+				<h4> {{ globalVars.translation["order_summary"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.sm]="true" baseChart [data]="orderSummaryChartData"
+							[labels]="orderSummaryChartLabels" [options]="orderSummaryChartOptions"
+							[chartType]="orderSummaryChartType" [colors]="orderSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.md]="true" baseChart [data]="orderSummaryChartData"
+							[labels]="orderSummaryChartLabels" [options]="orderSummaryChartOptionsForMedium"
+							[chartType]="orderSummaryChartType" [colors]="orderSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.lg]="true" baseChart [data]="orderSummaryChartData"
+							[labels]="orderSummaryChartLabels" [options]="orderSummaryChartOptions"
+							[chartType]="orderSummaryChartType" [colors]="orderSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" baseChart [data]="orderSummaryChartData"
+							[labels]="orderSummaryChartLabels" [options]="orderSummaryChartOptions"
+							[chartType]="orderSummaryChartType" [colors]="orderSummaryColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+            </mat-card>
+            <mat-card class="min-height" [ngStyle.xl]="{'max-height.%': 50}" fxFlex="100" fxFlex.lg="49.5" fxFlex.xl="49.5" fxLayoutGap.lg="15px">
+				<h4>{{ globalVars.translation["reserved_parts"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 30px);" fxLayout="row" fxLayoutAlign="space-between" >
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas baseChart [datasets]="reservedPartsChartData"
+						        [labels]="reservedPartsChartLabels" [options]="reservedPartsChartOptions"
+						        [chartType]="reservedPartsChartType" [colors]="reservedPartsChartColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</div>

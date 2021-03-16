@@ -1,0 +1,41 @@
+.table-container{
+    padding: 10px;
+}
+.btn-area{
+    margin-bottom: 10px;
+    text-align: right;
+    &:lang(ar){
+        text-align: left;
+    }
+}
+.lp-1{
+    margin-right: 10px;
+}
+.pl{
+    padding-left: 10px;
+}
+.mat-cell{
+    padding: 10px 10px 0px 10px;
+}
+.cursor{
+    cursor: pointer;
+}
+.cdk-column-actions{
+    flex: 0 0 75px;
+    justify-content: center;
+    padding: 0 0 10px 0px;
+}
+.footer-cell{
+    padding-left:15px;
+}
+
+// FS represents font-setting
+.fs{
+    color: rgba(0, 0, 0, 0.54);
+    font-weight: 600 !important;
+    text-transform: uppercase;
+}
+
+.mat-cell mat-form-field {
+    font-size: 12px !important;
+}

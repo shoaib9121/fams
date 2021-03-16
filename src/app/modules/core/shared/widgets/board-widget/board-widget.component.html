@@ -1,0 +1,158 @@
+<mat-drawer-container class="board-wrapper" [hasBackdrop]="false">
+	<!-- Statuses Filter Dropdown -->
+	<div *ngIf="cards.length>1" class="statuses-filter mb-2"
+         [class.text-right]="globals.LNG === 'en'"
+         [class.text-left]="globals.LNG === 'ar'"
+    >
+		<button mat-icon-button
+			[matMenuTriggerFor]="filterDropdown"
+			data-action="dropdown"
+			[matMenuTriggerData]="{availableCards: boardData?.data}"
+		>
+			<mat-icon svgIcon="filter-variant"></mat-icon>
+		</button>
+		<mat-menu #filterDropdown="matMenu" class="statuses-matmenu" xPosition="before" (click)="$event.stopPropagation();">
+			<ng-template matMenuContent let-availableCards="availableCards">
+				<div fxLayout="row" flexLayoutAlign="center" mat-menu-item *ngFor="let card of availableCards" (click)="$event.stopPropagation(); filterRecordsByStatus(card)">
+					<mat-checkbox class="mat-menu-item pl-0" [checked]="card.show" [class.pl-0]="globals.LNG == 'en'" [class.pr-0]="globals.LNG == 'ar'"></mat-checkbox>
+					<span class="statuses-label text-uppercase fw-500">{{ card.group.name[globals.LNG] }}</span>
+				</div>
+			</ng-template>
+		</mat-menu>
+	</div>
+
+	<div cdkDropListGroup class="board-back" id="container" fxLayout="row" fxLayoutAlign="flex-start stretch" fxLayoutGap="30px">
+		<ng-container *ngFor="let card of cards">
+			<div fxFlex="0 0 30%" fxFlex.md="0 0 49%" *ngIf="card.show" >
+
+				<mat-card class="board-card p-0"
+					[ngStyle]="{'border-top': '4px solid' + card.group.color}" cdkDropList
+					id="{{card.group.name[globals.LNG]}}" [cdkDropListData]="card.data"
+					[cdkDropListConnectedTo]="connectedTo"  (cdkDropListDropped)="onDrop($event,card.group)">
+					<!-- Status Header -->
+					<mat-card-header fxLayoutAlign="center">
+						<mat-card-title fxLayout="row">
+							<span fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="3px" class="text-uppercase"
+								style="font-size: 14px; font-weight: bold">{{card.group.name[globals.LNG]}}</span>
+							<mat-chip-list class="chip-margin">
+								<mat-chip [ngStyle]="{'background-color':card.data[0]?.status?.color}">{{card.pageInfo?.totalRecords}}</mat-chip>
+							</mat-chip-list>
+						</mat-card-title>
+					</mat-card-header>
+					<!-- Board Content -->
+					<ng-container *ngFor="let content of card.data; let i = index">
+						<mat-card-content (cdkDragMoved)="dragMoved($event)"  cdkDrag [cdkDragData]="content" >
+							<mat-card class="board-inner-card" (click)="cardItemClick(content)" matRipple>
+								<!-- <ng-container *ngFor="let field_id of getChildrenKeys(content)"> -->
+									<mat-card-content class="inner-card-content">
+										<!-- Array Contents -->
+										<!-- <ng-container *ngIf="isArray(content[field_id]); else elseBlock"> -->
+											<ng-container *ngFor="let data of boardData.columnStructure; let x = index;">
+                                                <ng-container *ngIf="boardData.typeStructure && boardData.typeStructure[content.type_id] && boardData.typeStructure[content.type_id][x]">
+                                                    <div *ngIf="boardData.typeStructure[content.type_id][x].type !== 'status' && (data.front_end_type?.length >= 0);" fxLayout="row wrap"
+                                                        fxLayoutAlign="flex-start center" fxLayoutGap="10px" class="mb-1">
+                                                        <!-- <ng-container *ngFor="let value of data.front_end_type; let j = index"> -->
+                                                        <div class="mb-1" *ngFor="let value of boardData.typeStructure[content.type_id][x].front_end_type; let j = index"
+                                                            fxLayout="row wrap" [fxFlex]="value.newline ? '1 1 100%' : '0 0 auto'" fxLayoutAlign="flex-start center" fxLayoutGap="5px">
+                                                            <!-- <ng-container *ngIf="data.field_id === field_id"> -->
+                                                                <mat-chip-list *ngIf="value?.type === 'chip'">
+                                                                    <mat-chip fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px" disableRipple
+                                                                        [matTooltip]="value.tooltip ? value.tooltip[globals.LNG] : ''" matTooltipPosition="above">
+                                                                        <mat-icon
+                                                                            size="14px" inline [svgIcon]="value.icon?.name"
+                                                                            *ngIf="value.icon?.position === 'before'" color="secondary">
+                                                                        </mat-icon>
+                                                                        <ng-container *ngIf="boardData.typeStructure[content.type_id][x].field_id === 'claim_no'">
+                                                                            <span *ngIf="content[data.field_id]">
+                                                                                {{ getClaimInfo(content[data.field_id])?.number || "&mdash;" }}
+                                                                            </span>
+                                                                        </ng-container>
+                                                                        <ng-container *ngIf="boardData.typeStructure[content.type_id][x].field_id !== 'claim_no'">
+                                                                            <span *ngIf="content[data.field_id]">
+                                                                                {{ getFieldValue(content[data.field_id][j]) || "&mdash;" }}
+                                                                            </span>
+                                                                        </ng-container>
+                                                                        <br *ngIf="value?.newline == true && value.icon?.position === 'before'">
+                                                                        <mat-icon size="14px" inline color="secondary" [svgIcon]="value.icon?.name" *ngIf="value.icon?.position === 'after'"></mat-icon>
+                                                                        <br *ngIf="value?.newline == true && value.icon?.position === 'after'">
+                                                                    </mat-chip>
+                                                                    <br *ngIf="value?.newline == true">
+                                                                </mat-chip-list>
+                                                                <ng-container *ngIf="value?.type === 'icon'">
+                                                                    <span class="text" [fxFlex]="value.newline ? '1 1 auto' : '0 0 auto'" fxLayout="row"
+                                                                        fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+                                                                        [matTooltip]="value.tooltip ? value.tooltip[globals.LNG] : ''" matTooltipPosition="above"
+                                                                         > <!--*ngIf="content[data.field_id] && content[data.field_id][j] && !isNull(content[data.field_id][j])" -->
+                                                                        <mat-icon [matTooltip]="value.tooltip ? value.tooltip[globals.LNG] : ''" size="14px" inline [svgIcon]="value.icon?.name"
+                                                                            *ngIf="value.icon?.position === 'before'" color="secondary">
+                                                                        </mat-icon>
+                                                                        <!-- <ng-container [ngSwitch]="boardData.typeStructure[content.type_id][x].type"> -->
+                                                                        <ng-container [ngSwitch]="value?.field_type" >
+                                                                            <span *ngSwitchCase="'date'">
+                                                                                {{ content[data.field_id] ? (getFieldValue(content[data.field_id][j]) | date) : "&mdash;" }}
+                                                                            </span>
+                                                                            <span *ngSwitchCase="'group'">
+                                                                                {{ content[data.field_id] ? getFieldValue(content[data.field_id][j]) : "&mdash;" }}
+                                                                            </span>
+                                                                            <span *ngSwitchCase="'group-reference'">
+                                                                                {{ content[data.field_id] ? getFieldValue(content[data.field_id][j]) : "&mdash;" }}
+                                                                            </span>
+                                                                            <span *ngSwitchDefault>
+                                                                                {{ content[data.field_id] ? getFieldValue(content[data.field_id][j]) : "&mdash;" }}
+                                                                            </span>
+                                                                        </ng-container>
+                                                                        <!-- <span> {{ getFieldValue(content[data.field_id][j]) }} </span> -->
+                                                                        <br *ngIf="value?.newline == true && value.icon?.position === 'before'">
+                                                                        <mat-icon size="14px" inline
+                                                                            [svgIcon]="value.icon?.name"
+                                                                            *ngIf="value.icon?.position === 'after'" color="secondary"></mat-icon>
+                                                                        <br *ngIf="value?.newline == true && value.icon?.position === 'after'">
+                                                                    </span>
+                                                                </ng-container>
+                                                                <span [fxFlex]="value.newline ? '1 1 auto' : '0 0 auto'" fxLayout="row"
+                                                                    fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+                                                                    [matTooltip]="value.tooltip ? value.tooltip[globals.LNG] : ''" matTooltipPosition="above"
+                                                                    *ngIf="value.type === 'text'" >
+                                                                    <span>{{ content[data.field_id] ? getFieldValue(content[data.field_id][j]) : "&mdash;" }}</span>
+                                                                </span>
+                                                            <!-- </ng-container> -->
+                                                        </div>
+                                                        <!-- </ng-container> -->
+                                                    </div>
+                                                    <div *ngIf="boardData.typeStructure[content.type_id][x].type == 'date' && boardData.typeStructure[content.type_id][x].type != 'single' && boardData.typeStructure[content.type_id][x].type != 'status' && (!data.front_end_type || data.front_end_type?.length === 0 )">
+                                                        {{ getFieldValue(content[data.field_id]) ? (getFieldValue(content[data.field_id]) | date) : "&mdash;"  }}
+                                                    </div>
+                                                    <div *ngIf="boardData.typeStructure[content.type_id][x].type == 'single' && boardData.typeStructure[content.type_id][x].type != 'status' && (!data.front_end_type || data.front_end_type?.length == 0)">
+                                                        {{ getFieldValue(content[data.field_id]) || "&mdash;" }}
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+										<!-- </ng-container> -->
+									</mat-card-content>
+								<!-- </ng-container> -->
+							</mat-card>
+						</mat-card-content>
+					</ng-container>
+				</mat-card>
+				<div *ngIf="card.show && card?.pageInfo" class="paginator-wrapper">
+					<mat-paginator class="bg-transparent"
+						[length]="card.pageInfo.totalRecords"
+						[pageSize]="card.pageInfo.recordPerPage"
+                        [pageSizeOptions]="pageSizeOptions"
+						(page)="getPagedData(card, $event, paginator)"
+                        #paginator
+                    >
+					</mat-paginator>
+                    <mat-select class="current-index" #selectedPageIndex [value]="paginator.pageIndex+1" (selectionChange)="getPagedDataForPageIndex(card, $event.value, paginator)"
+                                matTooltipPosition="above" [matTooltip]="paginator.pageIndex+1" [disabled]="(totalPages | totalPagesPipe:paginator.length:paginator.pageSize).length < 2"
+                    >
+                        <mat-option *ngFor="let item of totalPages | totalPagesPipe:paginator.length:paginator.pageSize" [value]="item">
+                            {{ item }}
+                        </mat-option>
+                    </mat-select>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+</mat-drawer-container>
+

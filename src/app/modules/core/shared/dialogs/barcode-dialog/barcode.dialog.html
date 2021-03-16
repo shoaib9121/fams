@@ -1,0 +1,20 @@
+<div class="barcode-wrapper">
+    <mat-dialog-content>
+        <h2 fxLayout="row" fxLayoutAlign="space-between center" class="mb-4" style="margin: 0;">
+            {{ globalVars.translation["barcode"][globalVars.LNG] }}
+            <span (click)="onNoClick()"> <mat-icon svgIcon="close" style="cursor: pointer;"></mat-icon> </span>
+        </h2>
+        <div id="print-barcode" class="text-center mt-5">
+            <img *ngIf="!barcodePlaceholder" (load)="loading = false;" class="img-responsive-width" [attr.src]="barcodeUrl | secure | async" [alt]="fileName" (error)="barcodePlaceholder = true; loading = false;">
+            <div *ngIf="loading" class="thumb-loading"> &nbsp; </div>
+            <div *ngIf="barcodePlaceholder" class="barcode-placeholder">
+                <mat-icon color="secondary" svgIcon="barcode-off"></mat-icon>
+                <p class="not-found"> {{ globalVars.translation["barcode_not_found"][globalVars.LNG] }} </p>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="mt-2 mb-1" fxLayout="row" fxLayoutAlign="flex-end center">
+        <button mat-icon-button [disabled]="barcodePlaceholder" (click)="printFile()"> <mat-icon svgIcon="printer"></mat-icon> </button>
+        <button mat-icon-button [disabled]="barcodePlaceholder" (click)="downloadFile()" > <mat-icon svgIcon="download"></mat-icon> </button>
+    </mat-dialog-actions>
+</div>

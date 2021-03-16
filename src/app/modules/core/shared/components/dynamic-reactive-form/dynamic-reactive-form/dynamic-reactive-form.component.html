@@ -1,0 +1,98 @@
+<mat-accordion multi *ngIf="!isEdit || isShow">
+	<!-- <mat-expansion-panel *ngIf="showProcessFlowDiagram && showProcessFlowDiagram[lng]" [expanded]="false" hideToggle>
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				<span>{{ globalVariables.translation["request_lifecycle"][lng] }}</span>
+			</mat-panel-title>
+			<mat-panel-description class="mr-0" fxLayout="row" fxLayoutAlign="flex-end center">
+				<span [matTooltip]='globalVariables.translation["request_lifecycle_explanation"][lng]'>
+					<mat-icon>help_outline</mat-icon>
+				</span>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<div>
+			<div class="h-100 mb-5">
+				<img src="{{ showProcessFlowDiagram[globalVariables.LNG] }}"
+				     alt='{{ globalVariables.translation["no_processflow_guidelines"][lng] }}' class="w-100">
+			</div>
+		</div>
+	</mat-expansion-panel> -->
+	<mat-expansion-panel *ngFor="let formGroup of formGroups.controls; let i = index;"
+	                     [expanded]="groups[i].optional && !groups[i].frontend_is_checked ? groups[i].isEnable === undefined? false : false :  true" [attr.data-index]="i+1"
+						 >
+						 <!-- [disabled]="groups[i].optional && groups[i].isEnable" -->
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				<mat-checkbox *ngIf="groups[i].isChild; else hasNoGroup"
+				              (change)="updateSubGroup(groups[i], formGroup, $event, i)">
+					{{ groups[i].groupName[lng] }}
+				</mat-checkbox>
+				<ng-template #hasNoGroup>
+					<mat-checkbox *ngIf="groups[i].optional"
+					              (change)="updateGroup(groups[i], formGroup, $event, i)"
+					              [checked]="groups[i].isEnable">
+						{{groups[i].groupName[lng]}}
+					</mat-checkbox>
+					<span *ngIf="!groups[i].optional"> 	{{groups[i].groupName[lng]}} </span>
+				</ng-template>
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+		<div *ngIf="groups[i].fields!=undefined" class="dynamic-form" [formGroup]="formGroups"
+		>
+			
+			<div *ngIf="groups[i].fields!=undefined" fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+				<ng-container dynamicField *ngFor="let field of groups[i].fields" [field]="field" [group]="formGroup"
+				              [allGroups]="groups" [isEdit]="isEdit"></ng-container>
+			</div>
+		</div>
+		
+		<!-- subform -->
+		<div *ngIf="groups[i].subGroups!=undefined">
+			<mat-accordion multi>
+				<mat-expansion-panel *ngFor="let subGroup of groups[i].subGroups; let j = index;"
+				                     [expanded]="subGroup.optional && !subGroup.frontend_is_checked? subGroup.isEnable === undefined ? false : false : true" [attr.data-index]="j"
+									 >
+									 <!-- [disabled]="!subGroup.optional" -->
+					<mat-expansion-panel-header>
+						<mat-panel-title>
+							<mat-checkbox *ngIf="subGroup.optional"
+							              (change)="updateSubGroup(subGroup, formGroup, $event, j)"
+										  [checked]="subGroup.isEnable"
+										  [disabled]="groups[i].optional ? !groups[i].isEnable :  false">
+								{{ subGroup.groupName[lng] }}
+							</mat-checkbox>
+							<span *ngIf="!subGroup.optional"> 	{{ subGroup.groupName[lng] }}</span>
+						</mat-panel-title>
+					</mat-expansion-panel-header>
+					<div class="dynamic-form" [formGroup]="formGroups">
+						
+						<div fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+							<ng-container *ngFor="let field of subGroup.fields" dynamicField [field]="field"  [isEdit]="isEdit"
+							              [group]="formGroup.controls[(subGroup.groupName  | removeSpace)]" [allGroups]="groups"
+							></ng-container>
+							
+						</div>
+					</div>
+				</mat-expansion-panel>
+			</mat-accordion>
+			<!-- <app-reactive-dynamic-form [groups]="groups[i].subGroups" >
+			</app-reactive-dynamic-form> -->
+		</div>
+		<!-- subform end-->
+	
+	</mat-expansion-panel>
+
+	<div *ngIf="multiGroups">
+		<app-multi-group-dynamic-form [groups]="multiGroups" [isEdit]="isEdit" > <!--(checkIsFormDirty)="checkIsFormDirty($event)"-->
+		</app-multi-group-dynamic-form>
+	</div>
+
+</mat-accordion>
+
+<br>
+
+<!-- 
+ <pre>
+{{formGroups == undefined? "": formGroups.value | json}}
+</pre> 
+ -->

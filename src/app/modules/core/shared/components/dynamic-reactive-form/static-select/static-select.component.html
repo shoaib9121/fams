@@ -1,0 +1,26 @@
+<mat-form-field class="w-100"  appearance="outline">
+	<mat-label>{{ field.label[globalVariables.LNG] }}</mat-label>
+	<input type="text" aria-label="Number" matInput
+		   [formControl]="singleOptionsCtrl" registerChildComponentToForm [matAutocomplete]="auto"
+		   (change)="handleEmptyInput($event)"> 
+	<mat-icon  *ngIf="field.update" svgIcon="menu-down" matSuffix color="secondary"></mat-icon>
+	
+	<mat-autocomplete #auto="matAutocomplete">
+		<mat-option *ngIf="isLoading" class="is-loading">
+			<mat-progress-bar *ngIf="isLoading" [mode]="'indeterminate'">
+			</mat-progress-bar>
+		</mat-option>
+		<ng-container >
+			<mat-option (click)="setSelectEmpty()" *ngIf="field.value">
+				{{ globalVariables.translation["None"][globalVariables.LNG] }} </mat-option>
+			<mat-option  *ngIf="singleOptionsCtrl.value &&  singleOptionsCtrl.value !=''
+							&& singleFilteredOptions && singleFilteredOptions.length == 0" disabled>
+				{{ globalVariables.translation["NoRecordFound"][globalVariables.LNG] }}
+			</mat-option>
+			<mat-option *ngFor="let  option of singleFilteredOptions;let i=index" (onSelectionChange)="selected(option, $event)"
+				 [value]="option[field.key_show][this.globalVariables.LNG] ? option[field.key_show][this.globalVariables.LNG]  : option[field.key_show]">
+				{{option[field.key_show][this.globalVariables.LNG] ? option[field.key_show][this.globalVariables.LNG]  : option[field.key_show]}}
+			</mat-option>
+		</ng-container>
+	</mat-autocomplete>
+</mat-form-field>

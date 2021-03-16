@@ -1,0 +1,72 @@
+<mat-accordion   multi *ngIf="(groups && groups.length > 0)  && (!isEdit || isShow)" class="mb-4">
+	<mat-expansion-panel *ngFor="let formGroup of formGroups.controls; let i = index;"
+		[expanded]="groups[i].optional? groups[i].isEnable :  true" [attr.data-index]="i+1"
+		[disabled]="groups[i].optional && !groups[i].isEnable">
+		<mat-expansion-panel-header fxLayout="row" fxLayoutAlign="space-between center">
+			<mat-panel-title>
+				<mat-checkbox *ngIf="groups[i].isChild; else hasNoGroup"
+					(change)="updateSubGroup(groups[i], formGroup, $event, i)">
+					{{ groups[i].groupName[lng] }}
+				</mat-checkbox>
+				<ng-template #hasNoGroup>
+					<mat-checkbox *ngIf="groups[i].optional"
+				              (change)="updateGroup(groups[i], formGroup, $event, i)" [checked]="groups[i].isEnable">
+					{{groups[i].groupName[lng]}}
+				</mat-checkbox>
+				<span *ngIf="!groups[i].optional">	{{groups[i].groupName[lng]}} </span>
+				</ng-template>
+			</mat-panel-title>
+			<mat-icon (click)="removeGroup(i, formGroup)" svgIcon="close-circle" color="secondary" class="mx-2" *ngIf="formGroup.value.frontend_is_new"></mat-icon>
+		</mat-expansion-panel-header>
+		<div *ngIf="groups[i].fields!=undefined" class="dynamic-form" [formGroup]="formGroups"
+			>
+
+			<div *ngIf="groups[i].fields!=undefined" fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+				<ng-container *ngFor="let field of groups[i].fields" dynamicField [field]="field" [group]="formGroup"
+					[allGroups]="groups"  ></ng-container>
+			</div>
+		
+		</div>
+	
+		<!-- subform -->
+		<div *ngIf="groups[i].subGroups!=undefined">
+			<mat-accordion multi>
+				<mat-expansion-panel *ngFor="let subGroup of groups[i].subGroups; let j = index;"
+				                     [expanded]="subGroup.optional? subGroup.isEnable: true" [attr.data-index]="j"
+				                     [disabled]="subGroup.optional && !subGroup.isEnable">
+					<mat-expansion-panel-header>
+						<mat-panel-title>
+							<mat-checkbox *ngIf="subGroup.optional" (change)="updateSubGroup(subGroup, formGroup, $event, j)" [checked]="subGroup.isEnable">
+								{{ subGroup.groupName[lng] }}
+							</mat-checkbox>
+							<span *ngIf="!subGroup.optional"> 	{{ subGroup.groupName[lng] }}</span>
+						</mat-panel-title>
+					</mat-expansion-panel-header>
+					<div class="dynamic-form" [formGroup]="formGroups">
+
+						<div fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+							<ng-container *ngFor="let field of subGroup.fields" dynamicField [field]="field"
+								[group]="formGroup" [allGroups]="groups" 
+								></ng-container>
+						</div>
+					</div>
+				</mat-expansion-panel>
+			</mat-accordion>
+			<!-- <app-reactive-dynamic-form [groups]="groups[i].subGroups" >
+			</app-reactive-dynamic-form> -->
+		</div>
+		<!-- subform end-->
+
+	</mat-expansion-panel>
+	
+</mat-accordion>
+<button mat-button class="w-100 mb-4" (click)=addFormGroup()>{{ globalVariables.translation["Add"][globalVariables.LNG] }}</button>
+
+<br>
+
+
+
+<!-- <pre>
+{{formGroups == undefined? "": formGroups.value | json}}
+</pre> -->
+

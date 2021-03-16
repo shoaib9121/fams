@@ -1,0 +1,18 @@
+<div class="attachment-wrapper">
+	<mat-card class="attachment-block p-0">
+		<div class="thumb-container">
+			<img *ngIf="isImage" [id]="'img-thumb-'+_id" class="img-thumb">
+			<mat-icon *ngIf="!isImage" svgIcon="file" class="nonimg-thumb"></mat-icon>
+		</div>
+		<div class="tooltip-stuff">
+			<!-- <mat-progress-bar class="example-margin" [value]="progressPercentage"></mat-progress-bar> -->
+			<!-- <a [ngClass]="{'disabled' : isUploading}"><mat-icon svgIcon="file-upload" class="action" (click)="upload()"></mat-icon></a> -->
+			<div class="tooltip-flex">
+				<mat-icon svgIcon="close-circle" class="action" (click)="remove()"></mat-icon>
+				<span class="file-name" [matTooltip]="file.name" matTooltipPosition="above">{{file.name}}</span>
+				<span class="file-size">({{file.size | bytes}})</span>
+			</div>
+		</div>
+		<!-- <span class="file-info"> {{progressPercentage}}%</span> -->
+	</mat-card>
+</div>

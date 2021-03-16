@@ -1,0 +1,121 @@
+.dropzone {
+  background-color: brown;
+  width: 100px;
+  height: 100px;
+}
+
+#drop_zone {
+  border: 5px solid blue;
+  width: 200px;
+  height: 100px;
+}
+
+a.disabled {
+  pointer-events: none;
+}
+.upload-drop-zone {
+  height: 200px;
+  border-width: 2px;
+  margin-bottom: 20px;
+}
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 200px;
+  text-align: center;
+}
+.upload-drop-zone.drop {
+  color: #222;
+  border-color: #222;
+}
+
+.attachment-wrapper {
+  display: flex;
+  margin-bottom: 15px;
+  width: 100px;
+  height: 100px;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+
+  .attachment-block {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    &:hover{
+      .tooltip-stuff {
+        display: flex;
+      }
+    }
+
+    .thumb-container {
+      margin: auto;
+      text-align: center;
+      background: #ebebeb;
+      height: 100%;
+      .img-thumb {
+        max-width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .nonimg-thumb {
+        height: 100%;
+        color: #ababab;
+        font-size: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    .tooltip-stuff {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: none;
+
+      .tooltip-flex {
+        display: flex;
+        align-content: center;
+        align-items: center;
+        width: 100%;
+        color: #fff;
+        .file-size {
+          position: absolute;
+          bottom: 5px;
+          right: 5px;
+          font-size: 0.7rem;
+        }
+        .mat-icon.action {
+          cursor: pointer;
+          outline: none;
+          right: 8px;
+          bottom: 10px;
+          margin: auto;
+          font-size: 1.9rem;
+        }
+        .file-name {
+          position: absolute;
+          bottom: 5px;
+          left: 5px;
+          font-size: 0.7rem;
+          word-break: break-word;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          max-width: 35px;
+        }
+      }
+    }
+  }
+}
+:host ::ng-deep .nonimg-thumb.mat-icon svg {
+  width: 35px;
+  height: 35px;
+}

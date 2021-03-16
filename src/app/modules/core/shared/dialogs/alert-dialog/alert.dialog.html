@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>
+	{{ data.title }}
+</h2>
+<mat-dialog-content class="pt-2 pb-3">
+	{{ data.body }}
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button *ngFor="let action of data?.actions" (click)="handleActionButton(action.result)" tabindex="-1">
+		{{ action.label }}
+	</button>
+</mat-dialog-actions>

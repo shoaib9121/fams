@@ -1,0 +1,15 @@
+
+
+
+<mat-dialog-content class="pt-2 pb-3">
+  {{data.caption}}
+  </mat-dialog-content>
+
+  <mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onNoClick('no')" tabindex="-1">{{globalVars.translation['No'][globalVars.LNG]}}</button>
+	<button mat-raised-button color="primary" (click)="onYesClick('yes')" tabindex="1">{{globalVars.translation['Yes'][globalVars.LNG]}}</button>
+</mat-dialog-actions>
+
+ 
+  
+  

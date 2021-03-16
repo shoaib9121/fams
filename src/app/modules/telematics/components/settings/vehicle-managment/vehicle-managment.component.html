@@ -1,0 +1,176 @@
+
+<div class="vehicle-component">
+    <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+    <mat-drawer-container hasBackdrop>
+        <mat-drawer-content>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" style="float:right;margin:20px;">
+                <mat-icon>settings</mat-icon>
+                <mat-icon>cached</mat-icon>         
+               </div>
+                 <app-table-widget *ngIf="tableWidgetData"
+                #tableWidget
+                (actionButtonPressed)="tableActionEvent($event)"
+                [tableData]="tableWidgetData"
+                (rowClicked)="rowClicked($event)"
+                >
+                </app-table-widget>
+        </mat-drawer-content>
+        <mat-drawer #drawer mode="over" style="width: 50vw;" position="end">    
+            <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="h-100" fxLayout="row">
+                    <button mat-button (click)="drawer.toggle()" tabindex="-1">
+                        <mat-icon svgIcon="close"></mat-icon>
+                    </button>
+                    <mat-divider vertical></mat-divider>
+                    <span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                        Edit Vehicle
+                    </span>
+                </div>
+            </mat-toolbar>   
+            <mat-card class="p-2 m-4">
+
+                <mat-vertical-stepper [linear]="false" #stepper>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>General</ng-template>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput placeholder="" required>
+                          </mat-form-field>
+                          
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Manage Documents</ng-template>
+                        <mat-form-field>
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="Last name, First name" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Manage Work Shifts</ng-template>
+                        <mat-form-field>
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="Last name, First name" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Assign Groups</ng-template>
+                        <mat-form-field>
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="Last name, First name" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Manage Drivers</ng-template>
+                        <mat-form-field>
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="Last name, First name" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Manage Digital Inputs</ng-template>
+                        <mat-form-field>
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="Last name, First name" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Calibrate Odometer</ng-template>
+                        <mat-form-field>
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="Last name, First name" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+                    <mat-step>
+                    
+                        <ng-template matStepLabel>Vehicle Icon</ng-template>
+                        <mat-form-field appearance="outline">
+                          <mat-label>Name</mat-label>
+                          <input matInput placeholder="" required>
+                        </mat-form-field>
+                        <div>
+                          <button mat-button matStepperNext>Next</button>
+                        </div>
+                      
+                    </mat-step>
+
+                    </mat-vertical-stepper>
+              
+                  
+                <!-- <mat-card-content>
+                    <mat-form-field>
+                        <mat-label>Title</mat-label>
+                        <input matInput>
+                      </mat-form-field>
+
+                </mat-card-content> -->
+            </mat-card>
+            
+        </mat-drawer>
+    </mat-drawer-container>
+    
+</div>

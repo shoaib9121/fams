@@ -1,0 +1,264 @@
+<div class="dashboard-component mx-4">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="dashboard" [fullScreen]="false"></ngx-spinner>
+	<div *ngIf="dashBoarDataCounts" class="content-outer" fxLayout="column wrap" fxLayoutAlign="space-around">
+		<div class="main-flex-container h-100" fxLayout="row wrap" fxLayout.sm="column" fxLayoutAlign="space-between">
+			<div class="container dashboard-card" fxLayoutGap.md="15px" fxLayout="row" fxFlex="100" fxFlex.xl="32.8">
+				<div class="tiles-outer h-100" fxLayout="row wrap" fxLayout.md="row" fxLayout.lg="row" fxLayoutAlign="space-between" fxLayoutGap.md="15px" fxLayoutGap.lg="15px" fxFlex="100">
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" fxFlex.lg="32" [style.backgroundColor]="'#06B1B1'">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline color-white">{{ globalVars.translation["total_vehicles"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 class="color-white" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.total_vehicles }} </h3>
+							</span>
+							<span class="card-icon"><mat-icon class="color-white" svgIcon="car"></mat-icon></span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" fxFlex.lg="32" [style.backgroundColor]="'#00AD67'">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline color-white">{{ globalVars.translation["total_components"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 class="color-white" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.total_components }}</h3>
+							</span>
+							<span><mat-icon class="color-white" svgIcon="file"></mat-icon></span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" fxFlex.lg="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["active_assets"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color:#000000;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.active_assets }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="file"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" fxFlex.lg="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["reuse_assets"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #000000;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{dashBoarDataCounts.reuse_assets}}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="file"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" fxFlex.lg="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["desposed_assets"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #000000;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{dashBoarDataCounts.desposed_assets}}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="file"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" fxFlex.lg="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span
+								class="md-headline">{{ globalVars.translation["waiting_in_storage_for_transfer"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #000000;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">
+									{{dashBoarDataCounts.waiting_in_storage_for_transfer}}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="file"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+				</div>
+			</div>
+			<mat-card class="min-height" fxFlex="49.5" fxFlex.xl="32.8" fxLayoutGap.lg="15px">
+				<h4>{{ globalVars.translation["requests_by_status"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="p-3" style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.md]="true" baseChart [data]="requestByStatusChartData"
+							[labels]="requestByStatusChartLabels" [options]="requestByStatusChartOptionsForMedium"
+							[chartType]="requestByStatusChartType" [colors]="donutColors">
+						</canvas>
+						<canvas fxHide [fxShow.lg]="true" width="50" baseChart [data]="requestByStatusChartData"
+							[labels]="requestByStatusChartLabels" [options]="requestByStatusChartOptionsForLarge"
+							[chartType]="requestByStatusChartType" [colors]="donutColors">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" baseChart [data]="requestByStatusChartData"
+							[labels]="requestByStatusChartLabels" [options]="requestByStatusChartOptions"
+							[chartType]="requestByStatusChartType" [colors]="donutColors">
+						</canvas>
+						<canvas fxHide [fxShow.sm]="true" baseChart width="170" height="50" [data]="requestByStatusChartData"
+							[labels]="requestByStatusChartLabels" [options]="requestByStatusChartOptions"
+							[chartType]="requestByStatusChartType" [colors]="donutColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+			
+			<mat-card class="min-height" fxFlex="49.5" fxFlex.xl="32.8" fxLayoutGap.lg="15px">
+				<h4>{{ globalVars.translation["requests"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 40px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.md]="true" baseChart [datasets]="requestsChartData"
+							[labels]="requestsChartLabels" [options]="requestsChartOptions" [chartType]="requestsChartType"
+							[colors]="requestsChartColors">
+						</canvas>
+						<canvas fxHide [fxShow.lg]="true" width="150" height="50" baseChart [datasets]="requestsChartData"
+							[labels]="requestsChartLabels" [options]="requestsChartOptions" [chartType]="requestsChartType"
+							[colors]="requestsChartColors">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" baseChart [datasets]="requestsChartData"
+							[labels]="requestsChartLabels" [options]="requestsChartOptions" [chartType]="requestsChartType"
+							[colors]="requestsChartColors">
+						</canvas>
+						<canvas fxHide [fxShow.sm]="true" baseChart [datasets]="requestsChartData"
+							[labels]="requestsChartLabels" [options]="requestsChartOptions" [chartType]="requestsChartType"
+							[colors]="requestsChartColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+			
+			<mat-card fxFlex="32.5" fxFlex.xl="32.8">
+				<h4>{{ globalVars.translation["assets_by_category"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="p-3" style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.sm]="true" baseChart [data]="assetByCategoryChartData"
+							[labels]="assetByCategoryChartLabels" [options]="assetByCategoryChartOptions"
+							[chartType]="assetByCategoryChartType" [colors]="donutColors">
+						</canvas>
+						<canvas fxHide [fxShow.md]="true" baseChart [data]="assetByCategoryChartData"
+							[labels]="assetByCategoryChartLabels" [options]="assetByCategoryChartOptionsForMedium"
+							[chartType]="assetByCategoryChartType" [colors]="donutColors">
+						</canvas>
+						<canvas fxHide [fxShow.lg]="true" baseChart [data]="assetByCategoryChartData"
+							[labels]="assetByCategoryChartLabels" [options]="assetByCategoryChartOptions"
+							[chartType]="assetByCategoryChartType" [colors]="donutColors">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" baseChart [data]="assetByCategoryChartData"
+							[labels]="assetByCategoryChartLabels" [options]="assetByCategoryChartOptions"
+							[chartType]="assetByCategoryChartType" [colors]="donutColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+			
+			<mat-card class="table-card min-height" fxFlex="100" fxFlex.md="66.5" fxFlex.lg="66.5" fxFlex.xl="66.45">
+				<h4>{{ globalVars.translation["recently_added_vehicles"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="overflow-auto" [ngClass]="{'table-card-content': true}">
+					<table class="w-100" mat-table [dataSource]="recentlyAddedVehiclesDetailsDataSource">
+						<ng-container matColumnDef="equipment_number">
+							<th mat-header-cell *matHeaderCellDef>
+								{{ globalVars.translation["equipment_number"][globalVars.LNG] }}</th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.equipment_number">
+									{{element.equipment_number}}
+								</ng-container>
+								<ng-container *ngIf="!element.equipment_number">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="proc_status">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["proc_status"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.proc_status">
+									{{element.proc_status[globalVars.LNG]}}
+								</ng-container>
+								<ng-container *ngIf="!element.proc_status">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="fleet_number">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["fleet_number"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.fleet_number">
+									{{ element?.fleet_number }}
+								</ng-container>
+								<ng-container *ngIf="!element.fleet_number">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="green_disk_number">
+							<th mat-header-cell *matHeaderCellDef>
+								{{ globalVars.translation["green_disk_number"][globalVars.LNG] }}</th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.green_disk_number">
+									{{ element.green_disk_number }}
+								</ng-container>
+								<ng-container *ngIf="!element.green_disk_number">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="equipment_type">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["equipment_type"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.equipment_type">
+									{{ element.equipment_type }}
+								</ng-container>
+								<ng-container *ngIf="!element.equipment_type">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="model_year">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["model_year"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.model_year">
+									{{ element.model_year }}
+								</ng-container>
+								<ng-container *ngIf="!element.model_year">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="manufacturer_id">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["manufacturer_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.manufacturer_id">
+									{{ element.manufacturer_id[globalVars.LNG] }}
+								</ng-container>
+								<ng-container *ngIf="!element.manufacturer_id">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="model_id">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["model_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.model_id">
+									{{ element.model_id[globalVars.LNG] }}
+								</ng-container>
+								<ng-container *ngIf="!element.model_id">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="color">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["color"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.color">
+									{{ element.color }}
+								</ng-container>
+								<ng-container *ngIf="!element.color">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="description">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["description"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.description">
+									{{ element.description }}
+								</ng-container>
+								<ng-container *ngIf="!element.description">-</ng-container>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="recentlyAddedVehiclesDetailsColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: recentlyAddedVehiclesDetailsColumns" (click)="openRecordInDrawer(row)" class="clickable-row"></tr>
+					</table>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</div>

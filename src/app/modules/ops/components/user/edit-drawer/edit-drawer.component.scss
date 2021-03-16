@@ -1,0 +1,379 @@
+.edit-drawer-component {
+	height: calc(100%);
+}
+
+mat-drawer-container {
+	// height: calc(100vh - 50px);
+	height: 100vh !important;
+	margin-top: 0;
+}
+
+.log-card {
+	border-radius: 25px;
+	background: #73AD21;
+	padding: 20px;
+	width: 200px;
+	height: 150px;
+}
+
+// color of box
+
+
+
+::ng-deep {
+	.edit-drawer-component {
+		.mat-tab-body-wrapper {
+			height: calc(100vh - 50px) !important;
+		}
+
+		.h-50 {
+			height: 50%;
+			overflow: hidden;
+		}
+
+		.overflow-auto {
+			overflow: auto;
+		}
+
+		.position-sticky {
+			top: 0;
+		}
+
+		.chat-form {
+			.mat-form-field-wrapper {
+				padding-bottom: 0 !important;
+			}
+		}
+
+		.content-container {
+			height: calc(100vh - 64px - 24px) !important;
+			padding-left: 40px !important;
+			padding-right: 40px !important;
+		}
+
+		.chat-headline {
+			padding-bottom: 1px !important;
+		}
+
+		.chat-box {
+			margin: 10px 15px;
+			padding: 10px;
+			border-radius: 4px;
+		}
+
+		.single-log {
+			padding-top: 15px;
+			position: relative;
+			padding-bottom: 15px;
+
+
+			&:lang(en) {
+				border-left: 2px solid darkgrey;
+				margin-left: 30px;
+				padding-left: 30px !important;
+			}
+
+			&:lang(ar) {
+				border-right: 2px solid darkgrey;
+				margin-right: 30px;
+				padding-right: 30px !important
+			}
+
+			&:before {
+				content: '';
+				position: absolute;
+				width: 10px;
+				height: 10px;
+				border-radius: 100%;
+				background-color: darkgrey;
+			}
+
+			&:lang(en):before {
+				left: -6px;
+			}
+
+			&:lang(ar):before {
+				right: -6px;
+			}
+		}
+
+		@media screen and (max-width: 1024px){
+			.content-container {
+				padding: 25px 25px 0 !important;
+			}
+			.mat-horizontal-stepper-header.mat-step-header{
+				.mat-step-icon {
+					height: 22px;
+					width: 22px;
+
+					.mat-icon {
+						height: 16px;
+						width: 16px;
+					}
+				}
+				.mat-step-label {
+					font-size: 13px;
+					min-width: auto;
+				}
+			}
+			.mat-stepper-horizontal-line {
+				min-width: 20px;
+				margin: 0 -7px;
+			}
+			.mat-drawer{
+				.dateCreated {
+					line-height: 1.4;
+				}
+			}
+		}
+	}
+
+	.subdrawer-bottom {
+		position: absolute !important;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+
+	.mat-horizontal-content-container {
+		padding: 0 !important;
+	}
+
+	.dp-light-theme {
+		.chat-box {
+			background: #eeeeee !important;
+		}
+	}
+
+	.dp-dark-theme {
+		.chat-box {
+			background: #303030 !important;
+		}
+	}
+}
+
+.log-box1 {
+	border-color: #c5c5c5;
+	border-style: solid;
+	padding-left: 4px;
+	border-radius: 0px 8px 8px 8px;
+}
+
+.log-box {
+	border-color: #c5c5c5;
+	border-style: solid;
+	padding-left: 4px;
+	border-radius: 8px 8px 0px 8px;
+}
+
+/* // Stylling for log Values */
+fieldset {
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.overflow-auto {
+	padding: 0px 14px 0px 15px;
+}
+
+.fieldPadding {
+	padding: 0px 5px 0px 8px;
+}
+
+.panWidth {
+	width: 93%;
+}
+
+.log-subhead {
+	font-size: 10px;
+	font-weight: 400;
+	color: #7b7b7b
+}
+
+.panWidth ::ng-deep .mat-expansion-panel-header {
+	padding: 0px 8px !important;
+}
+
+.panWidth ::ng-deep .mat-expansion-panel-body {
+	padding: 0 0px 16px !important;
+}
+
+// small {
+//   margin-right: 18px !important;
+// }
+.dateStyle {
+	font-weight: 100;
+	color: #9c9b9b;
+}
+.legendStyle {
+	font-size:12px;
+	font-weight: 500;
+	position: relative;
+	right: 7px;
+	text-indent: 1em;
+	&:lang(ar){
+		right: -7px;
+	}
+}
+.newStyle {
+	font-size: 12px;
+	font-weight:500;
+	color: black;
+}
+.updatedClaim {
+	font-weight: 100;
+	color: #9c9b9b;
+	font-size: 14px;
+}
+.dateCreated {
+	font-weight: bold;
+	margin-bottom: 6px;
+	margin-top: 6px;
+	display: flex;
+    flex-direction: row;
+    align-items: center;
+	* {
+		flex: 0.03 1 auto;
+	}
+}
+
+/* // Stylling for log Values */
+
+// .listStyle ::ng-deep .mat-checkbox-inner-container {
+// 	margin-right: 25px;
+// 	margin-left: 2px;
+// }
+// .listStyle ::ng-deep .mat-checkbox {
+// 	width: 100%;
+// }
+// .listStyle ::ng-deep .mat-checkbox-layout{
+// 	width: 100%;
+// }
+
+// .downButton {
+// 	margin-left: 93%;
+// }
+
+::ng-deep {
+
+	/*.dp-light-theme .mat-step-header .mat-step-icon {
+		background-color: rgba(0, 0, 0, 0.4) !important;
+	}
+	.dp-light-theme .mat-step-header .mat-step-icon-selected, .dp-light-theme .mat-step-header .mat-step-icon-state-done, .dp-light-theme .mat-step-header .mat-step-icon-state-edit {
+		background-color: rgba(0, 0, 0, 0.84) !important;
+	}*/
+	.uploadFile-form {
+		.mat-form-field-wrapper {
+			padding-bottom: 0 !important;
+		}
+	}
+
+	.listStyle :hover {
+		background: transparent;
+	}
+
+	.no-hover-effect.mat-button.mat-button-base {
+		.mat-button-focus-overlay {
+			background: transparent;
+
+		}
+	}
+
+}
+
+
+
+::ng-deep .mat-list-base .mat-list-item .mat-list-text {
+	margin-top: 13px;
+}
+
+.iconPadding {
+	padding-left: 19px;
+	padding-top: 11px;
+}
+
+.file-upload-input {
+	width: 100%;
+	background-color: #f5f5f5;
+	border-radius: 5px;
+	display: inline-block;
+	box-sizing: border-box;
+	border: 1px solid #d7d7d7;
+	height: 50px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.file-upload-div {
+	width: 100%;
+	position: relative;
+	display: inline-block;
+
+	&:hover {
+		.file-upload-input{
+			border-color: #008755;
+			box-shadow: 0 0 0 1pt #008755;
+		}
+	}
+}
+
+.selected-file {
+	opacity: 0;
+	position: absolute;
+	left: 0;
+	top: 10px;
+	height: 50px;
+	width: calc(90% - 25px);
+	padding-left: 10px;
+	cursor: pointer;
+
+	&:hover {
+		~ .file-upload-input{
+			border-color: #008755;
+			box-shadow: 0 0 0 1pt #008755;
+		}
+	}
+
+	&:lang(ar){
+		width: 100%;
+	}
+}
+
+.choose-txt {
+	color: #8a8a8a;
+	width: fit-content;
+	margin: 0 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: calc(75% - 25px);
+    cursor: pointer;
+}
+
+.choosen-file {
+	background: #008755;
+	color: white;
+	padding: 2px 10px;
+}
+
+.remove-icon {
+	margin-right: 5px;
+	cursor: pointer;
+	&:lang(ar){
+		margin-left: 10px;
+	}
+}
+
+.sendingIcon {
+	width: 15px;
+	font-size: 16px;
+}
+
+.h-cal {
+	height: calc(100vh - 285px) !important;
+	overflow: auto;
+}
+
+

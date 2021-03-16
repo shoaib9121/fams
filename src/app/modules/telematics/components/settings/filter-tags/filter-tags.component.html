@@ -1,0 +1,71 @@
+<div class="filter-component">
+    <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+    <mat-drawer-container hasBackdrop>
+        <mat-drawer-content>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" style="float:right;margin:20px;">
+                <mat-icon (click)="drawer.toggle()">add</mat-icon>
+                <mat-icon>settings</mat-icon>
+                <mat-icon>cached</mat-icon>
+            </div>
+            <app-table-widget *ngIf="tableWidgetData" #tableWidget (actionButtonPressed)="tableActionEvent($event)"
+                [tableData]="tableWidgetData" (rowClicked)="rowClicked($event)" >
+            </app-table-widget>
+        </mat-drawer-content>
+        <mat-drawer #drawer mode="over" style="width: 40vw;" position="end">
+            <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="h-100" fxLayout="row">
+                    <button mat-button (click)="drawer.toggle()" tabindex="-1">
+                        <mat-icon svgIcon="close"></mat-icon>
+                    </button>
+                    <mat-divider vertical></mat-divider>
+                    <span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                        Add Vehicle Tag
+                    </span>
+                </div>
+            </mat-toolbar>
+            <mat-card class="p-2 m-4">
+
+                <mat-button-toggle-group  class="w-100">
+                    <mat-button-toggle fxFlex="50"value="Vehicle">Vehicle</mat-button-toggle>
+                    <mat-button-toggle fxFlex="50" value="Group">Group</mat-button-toggle>
+                  </mat-button-toggle-group>
+                <mat-card-content class="pt-2">
+                    <mat-form-field class="w-100">
+                      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                    </mat-form-field>
+                    <table class="w-100" mat-table [dataSource]="dataSource" style="width: 100%;">
+  
+                      <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef>
+                          <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                          </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                          <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                          </mat-checkbox>
+                        </td>
+                      </ng-container>
+  
+                      <ng-container matColumnDef="Vehicles">
+                        <th mat-header-cell *matHeaderCellDef> Vehicles </th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                      </ng-container>
+  
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                  </mat-card-content>
+               
+                <mat-card-actions fxLayout="row" fxLayoutAlign="flex-end center">
+                    <button mat-raised-button>Reset</button>
+                    <button  mat-raised-button color="primary" >Save</button>
+                  </mat-card-actions>
+            </mat-card>
+        </mat-drawer>
+    </mat-drawer-container>
+</div>

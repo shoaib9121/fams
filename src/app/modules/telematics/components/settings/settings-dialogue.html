@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>
+	{{ globals.translation["Are you sure?"][globals.LNG] }}
+</h2>
+<mat-dialog-content class="pt-2 pb-3">
+ 
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close  tabindex="-1">NO</button>
+	<button mat-raised-button color="primary" (click)="onYesClick('yes')" tabindex="1">YES</button>
+</mat-dialog-actions>
+
+  

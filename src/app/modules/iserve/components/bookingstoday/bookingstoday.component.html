@@ -1,0 +1,113 @@
+<div class="vehicles-component">
+	<mat-drawer-container hasBackdrop>
+		<mat-drawer-content>
+			<ngx-spinner
+					bdColor="rgba(255, 255, 255, 0.7)"
+					size="medium"
+					color="#008755"
+					type="ball-scale-multiple"
+					[fullScreen]="false"
+			>
+			</ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row class="z-index-2 ">
+					{{globalVars.translation['Bookinges(Today)'][globalVars.LNG]}}
+				</mat-toolbar-row>
+			</mat-toolbar>
+			
+			<div class="iserve-content-container">
+				<div class="mini-dashboard-cards" fxLayout="row" fxLayoutAlign="space-between stretch"
+				     fxLayoutGap="20px">
+					<mat-card class="pending-booking" fxFlex="auto" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span fxFlex="1 1 auto">
+                        <h2 class="fw-400" mat-card-title> {{globalVars.translation['Reserved'][globalVars.LNG]}}</h2>
+                       
+                    </span>
+						<span>
+                        <h1 class="fw-400">
+                            {{statusModel.pending}}
+                        </h1>
+                        <span mat-card-subtitle>{{globalVars.translation['Bookings'][globalVars.LNG]}}</span>
+                    </span>
+					</mat-card>
+					
+					<mat-card class="active-booking" fxFlex="auto" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span fxFlex="1 1 auto">
+                        <h2 class="fw-400" mat-card-title>{{globalVars.translation['Active'][globalVars.LNG]}}</h2>
+                    </span>
+						<span>
+                        <h1 class="fw-400">
+                            {{statusModel.active}}
+                        </h1>
+                        <span mat-card-subtitle>{{globalVars.translation['Bookings'][globalVars.LNG]}}</span>
+                    </span>
+					</mat-card>
+					
+					<mat-card class="closed-booking" fxFlex="auto" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span fxFlex="1 1 auto">
+                        <h2 class="fw-400" mat-card-title>{{globalVars.translation['Closed'][globalVars.LNG]}}</h2>
+                    </span>
+						<span>
+                        <h1 class="fw-400">
+                            {{statusModel.closed}}
+                        </h1>
+                        <span mat-card-subtitle>{{globalVars.translation['Bookings'][globalVars.LNG]}}</span>
+                    </span>
+					</mat-card>
+					
+					<mat-card class="cancelled-booking" fxFlex="auto" fxLayout="row"
+					          fxLayoutAlign="space-between center">
+                    <span fxFlex="1 1 auto">
+                        <h2 class="fw-400" mat-card-title>{{globalVars.translation['Cancelled'][globalVars.LNG]}}</h2>
+                    </span>
+						<span>
+                        <h1 class="fw-400">
+                            {{statusModel.cancelled}}
+                        </h1>
+                        <span mat-card-subtitle>{{globalVars.translation['Bookings'][globalVars.LNG]}}</span>
+                    </span>
+					</mat-card>
+				</div>
+				
+				<app-table-widget
+                    #tableWidget
+					[tableData]="tableWidgetData"
+					(rowClicked)="rowClicked($event)"
+					(statusUpdated)="statusUpdated($event)"
+					(actionButtonPressed)="tableActionEvent($event)"
+					(actionButtonPressedAll)="actionButtonPressedAll($event)"
+				>
+				</app-table-widget>
+			</div>
+			
+			<!-- <button mat-fab color="primary" class="sticky-fab-button" (click)="openDrawer('add')"><mat-icon>add</mat-icon></button> -->
+		</mat-drawer-content>
+		<mat-drawer #drawer mode="over" position="end" style="width: 40vw;background-color:#e7e7e7;" disableClose>
+            <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="h-100" fxLayout="row">
+                    <button mat-button (click)="drawer.toggle()" tabindex="-1">
+                        <mat-icon svgIcon="close"></mat-icon>
+                    </button>
+                    <mat-divider vertical></mat-divider>
+                    <span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                    </span>
+                </div>
+
+            </mat-toolbar>
+            <div class="p-3">
+                <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="imageDrawer"
+	             [fullScreen]="false">
+                 </ngx-spinner>
+                 
+                <mat-card *ngFor="let data of drawerImages" class="mb-2">
+                    <img mat-card-image [src]="transform(data.image)">
+                    <mat-card-content >
+                        <small>{{data.comments}}</small>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+
+        </mat-drawer>
+	
+	</mat-drawer-container>
+</div>

@@ -1,0 +1,168 @@
+<div class="dashboard-component mx-4">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="dashboard" [fullScreen]="false"></ngx-spinner>
+	<div *ngIf="dashBoarDataCounts" class="content-outer" fxLayout="column wrap" fxLayoutAlign="space-around">
+		<div class="main-flex-container h-100" fxLayout="row wrap" fxLayout.sm="column" fxLayoutAlign="space-between">
+			<div class="container dashboard-card" [ngStyle.xl]="{'max-height.%': 50}" fxLayoutGap.md="15px" fxLayout="row" fxFlex="100" fxFlex.xl="32.8">
+				<div class="tiles-outer h-100" fxLayout="row wrap" fxLayout.md="row" fxLayout.lg="row" fxLayoutAlign="space-between" fxLayoutGap.md="15px" fxLayoutGap.lg="15px" fxFlex="100">
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" [style.backgroundColor]="'#06B1B1'">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline color-white">{{ globalVars.translation["Assured Amount"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 class="color-white" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.sum_insured | number }}</h3>
+							</span>
+							<span class="card-icon">
+								<mat-icon class="color-white" svgIcon="currency-usd"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32" [style.backgroundColor]="'#00AD67'">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline color-white">{{ globalVars.translation["Annaul Premium"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 class="color-white" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}" [matTooltip]="dashBoarDataCounts.annualPremium">{{ dashBoarDataCounts.annualPremium | thousandSuff : 2 }}</h3>
+							</span>
+							<span>
+								<mat-icon class="color-white" svgIcon="poll"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>		
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["Open Claims"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color:#06B1B1;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.open_claims }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="file"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["New Added Assets"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #06B1B1;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.new_added_assets }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#06B1B1'" svgIcon="plus-circle"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{globalVars.translation["Closed Claims"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #00AD67;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.closed_claims }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#00AD67'" svgIcon="file-check"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="tile" fxLayout="column" fxLayoutAlign="space-between" fxFlex="49" fxFlex.md="32">
+						<mat-card-title [ngStyle]="{'font-size.px': 14}" [ngStyle.xl]="{'font-size.px': 24}">
+							<span class="md-headline">{{ globalVars.translation["Cancelled Assets"][globalVars.LNG] }}</span>
+						</mat-card-title>
+						<mat-card-content>
+							<span fxFlex="1 1 auto">
+								<h3 style="color: #ff0000;" [ngStyle.md]="{'font-size.rem': 1.2}" [ngStyle]="{'font-size.rem': 2}">{{ dashBoarDataCounts.cancelled_assets }}</h3>
+							</span>
+							<span>
+								<mat-icon [style.color]="'#ff0000'" svgIcon="close-circle"></mat-icon>
+							</span>
+						</mat-card-content>
+					</mat-card>
+				</div>
+			</div>
+			<mat-card class="min-height" fxFlex="49.5" fxFlex.xl="32.8" fxLayoutGap.lg="15px">
+				<h4>{{ globalVars.translation["Assured Amount by Amount Type"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxShow [fxShow.xl]="false" id="donut-canvas" baseChart [data]="assuredAmountChartData"
+						        [labels]="assuredAmountChartLabels" [options]="assuredAmountChartOptions"
+						        [chartType]="assuredAmountChartType">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" id="donut-canvas" baseChart [data]="assuredAmountChartData"
+						        [labels]="assuredAmountChartLabels" [options]="assuredAmountChartOptionsForXLarge"
+						        [chartType]="assuredAmountChartType">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+			<mat-card class="table-card min-height" fxFlex="49.5" fxFlex.xl="32.8" fxLayoutGap.lg="15px" [ngStyle.lg]="{'min-height.px': 300}" [ngStyle.xl]="{'min-height.px': 300}">
+				<h4>{{ globalVars.translation["Claim Details"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="overflow-auto" [ngStyle.sm]="{'position' : 'relative'}" [ngClass]="{'table-card-content': true}">
+					<table class="w-100" mat-table [dataSource]="claimDetailsDataSource">
+						<ng-container matColumnDef="claim_no">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["Claim No"][globalVars.LNG] }}
+							</th>
+							<td mat-cell *matCellDef="let element">{{ element.claim_no.number }}</td>
+						</ng-container>
+						<ng-container matColumnDef="claim_type">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["Claim Type"][globalVars.LNG] }}
+							</th>
+							<td mat-cell *matCellDef="let element">{{ element.claim_type[globalVars.LNG] }}</td>
+						</ng-container>
+						<ng-container matColumnDef="created_at">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["Claim Date"][globalVars.LNG] }}
+							</th>
+							<td mat-cell *matCellDef="let element">{{ element.created_at | date : 'dd MMM'}}</td>
+						</ng-container>
+						<ng-container matColumnDef="claim_status">
+							<th mat-header-cell *matHeaderCellDef>{{ globalVars.translation["Claim Status"][globalVars.LNG] }}
+							</th>
+							<td mat-cell *matCellDef="let element">
+							<span class="status-label"
+							      [ngStyle]="{'background-color':element.color?element.color:'#e0e0e0'}">{{ element.claim_status[globalVars.LNG] }}</span>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="claimDetailsColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: claimDetailsColumns" (click)="openRecordInDrawer(row)" class="clickable-row"></tr>
+					</table>
+				</mat-card-content>
+			</mat-card>
+			<mat-card class="min-height" [ngStyle.xl]="{'max-height.%': 50}" fxFlex="32.5" fxFlex.lg="49.5" fxFlex.xl="39.5">
+				<h4>{{ globalVars.translation["Reimbursement Requests"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 30px);" fxLayout="row" fxLayoutAlign="space-between" >
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas baseChart [datasets]="reimbursementChartData"
+						        [labels]="reimbursementChartLabels" [options]="reimbursementChartOptions"
+						        [chartType]="reimbursementChartType" [colors]="reimbursementChartColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+			<mat-card class="min-height" [ngStyle.xl]="{'max-height.%': 50}" fxFlex="100" fxFlex.md="66.5" fxFlex.lg="49.5" fxFlex.xl="59.5">
+				<h4>{{ globalVars.translation["Avarage Cost & Days to Settle a Claim"][globalVars.LNG] }}</h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 30px);" fxLayout="row" fxLayoutAlign="space-between" >
+					<div class="chart-container w-100" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.xl]="true" height="80" baseChart [datasets]="settleClaimChartData"
+						        [labels]="settleClaimChartLabels"
+						        [options]="settleClaimChartOptions" [chartType]="settleClaimChartType"
+						        [colors]="settleClaimChartColors">
+						</canvas>
+						<canvas fxShow [fxShow.xl]="false" baseChart [datasets]="settleClaimChartData"
+						        [labels]="settleClaimChartLabels"
+						        [options]="settleClaimChartOptions" [chartType]="settleClaimChartType"
+						        [colors]="settleClaimChartColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,37 @@
+
+<div class="user-component">
+    <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+    <mat-drawer-container hasBackdrop>
+        <mat-drawer-content>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" style="float:right;margin:20px;">
+                <mat-icon (click)="drawer.toggle()" >add</mat-icon>
+                <mat-icon>settings</mat-icon>
+                <mat-icon>cached</mat-icon>         
+               </div>
+                 <app-table-widget *ngIf="tableWidgetData"
+                #tableWidget
+                (actionButtonPressed)="tableActionEvent($event)"
+                [tableData]="tableWidgetData"
+                >
+                </app-table-widget>
+        </mat-drawer-content>
+        <mat-drawer #drawer mode="over" style="width: 40vw;" position="end"><mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="h-100" fxLayout="row">
+                <button mat-button (click)="drawer.toggle()" tabindex="-1">
+                    <mat-icon svgIcon="close"></mat-icon>
+                </button>
+                <mat-divider vertical></mat-divider>
+                <span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                    Add New User
+                </span>
+            </div>
+            <ng-container>
+
+
+            </ng-container>
+        </mat-toolbar>
+    </mat-drawer>
+    </mat-drawer-container>
+    </div>

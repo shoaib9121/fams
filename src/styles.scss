@@ -1,0 +1,771 @@
+html, body {
+	height: 100%;
+}
+
+@import '~material-design-icons/iconfont/material-icons.css';
+
+/** FontImport **/
+@font-face {
+	font-family: DubaiRegular;
+	src: url(assets/font/Dubai/Dubai-Regular.ttf) format("opentype");
+}
+
+@font-face {
+	font-family: DubaiMedium;
+	src: url(assets/font/Dubai/Dubai-Medium.ttf) format("opentype");
+}
+
+@font-face {
+	font-family: DubaiLight;
+	src: url(assets/font/Dubai/Dubai-Light.ttf) format("opentype");
+}
+
+@font-face {
+	font-family: Bukra;
+	src: url(assets/font/29Bukra/29ltbukraregular.ttf) format("opentype");
+}
+
+@font-face {
+	font-family: Roboto;
+	src: url("assets/font/Roboto/Roboto-Regular.ttf");
+	src: url("assets/font/Roboto/Roboto-Regular.ttf") format("truetype");
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: Roboto;
+	src: url("assets/font/Roboto/Roboto-Medium.ttf");
+	src: url("assets/font/Roboto/Roboto-Medium.ttf") format("truetype");
+	font-weight: 500;
+}
+
+// region Settings based on Dubai Police Guidelines
+
+body {
+	margin: 0;
+	font-family: "DubaiRegular", Roboto, "Helvetica Neue", sans-serif;
+	font-size: 14px;
+	padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, .mat-card-title {
+	font-family: "Bukra", Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+mat-chip, .mat-chip, .mat-icon.mat-icon-inline {
+	line-height: 20px !important;
+}
+
+mat-dialog-container {
+	font-size: 16px;
+}
+
+// endregion
+
+/* Takes full width and height in percentage */
+.fully-expand {
+	width: 100%;
+	height: 100%;
+}
+
+/** Snackbar Themes **/
+.info-snackbar {
+	/*background-color: #eeeeee !important;
+	color: #333 !important;*/
+}
+
+/** Icon Sizes **/
+mat-icon[size="14px"] {
+	width: 14px !important;
+	height: 14px !important;
+}
+
+button.mat-menu-item {
+	line-height: 24px !important;
+}
+
+a.mat-menu-item > mat-icon {
+	margin-bottom: 14px;
+}
+
+.mat-icon svg {
+	height: 24px;
+	width: 24px;
+}
+
+.mat-icon[size="14px"] svg {
+	width: 14px !important;
+	height: 14px !important;
+}
+
+.mat-step-icon-content .mat-icon svg {
+	height: 100%;
+	width: 100%;
+}
+
+/*********** General CSS Classes *************/
+
+/** Font related **/
+.fw-400 {
+	font-weight: 400;
+}
+
+.fw-500 {
+	font-weight: 500;
+}
+
+.fw-600 {
+	font-weight: 600;
+}
+
+.lh-28px {
+	line-height: 28px;
+}
+
+.border-radius-0 {
+	border-radius: 0 !important;
+}
+
+strong, h3 {
+	font-weight: 500 !important;
+}
+
+.inherit-font-size {
+	font-size: inherit;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-left {
+	text-align: left;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-uppercase {
+	text-transform: uppercase;
+}
+
+.text-lowercase {
+	text-transform: lowercase;
+}
+
+.text-capitalize {
+	text-transform: capitalize;
+}
+
+.lp-1 {
+	letter-spacing: 1px;
+}
+
+.w-100 {
+	width: 100%;
+}
+
+.h-100 {
+	height: 100% !important;
+}
+
+.h-50 {
+	height: 50% !important;
+}
+
+.h-0 {
+	height: 0px !important;
+}
+
+.mh-0 {
+	min-height: 0 !important;
+}
+
+/** Paddings **/
+.p-0 {
+	padding: 0 !important;
+}
+
+.p-1 {
+	padding: 6px !important;
+}
+
+.p-2 {
+	padding: 12px !important;
+}
+
+.p-3 {
+	padding: 16px !important;
+}
+
+.px-0 {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.px-1 {
+	padding-left: 6px !important;
+	padding-right: 6px !important;
+}
+
+.px-3 {
+	padding-left: 16px !important;
+	padding-right: 16px !important;
+}
+
+.px-2 {
+	padding-left: 12px !important;
+	padding-right: 12px !important;
+}
+
+.px-4 {
+	padding-left: 16px !important;
+	padding-right: 16px !important;
+}
+
+.px-5 {
+	padding-left: 24px !important;
+	padding-right: 24px !important;
+}
+
+.py-3 {
+	padding-top: 20px !important;
+	padding-bottom: 20px !important;
+}
+
+.pb-0 {
+	padding-bottom: 0 !important;
+}
+
+.pb-1 {
+	padding-bottom: 5px !important;
+}
+
+.pb-2 {
+	padding-bottom: 10px !important;
+}
+
+.pb-3 {
+	padding-bottom: 20px !important;
+}
+
+.pt-0 {
+	padding-top: 0 !important;
+}
+
+.pt-1 {
+	padding-top: 5px !important;
+}
+
+.pt-2 {
+	padding-top: 10px !important;
+}
+
+.pt-5 {
+	padding-top: 50px !important;
+}
+
+.pl-0 {
+	padding-left: 0 !important;
+}
+
+.pl-1 {
+	padding-left: 5px !important;
+}
+
+.pl-2 {
+	padding-left: 10px !important;
+}
+
+.pl-3 {
+	padding-left: 20px !important;
+}
+
+.pl-4 {
+	padding-left: 30px !important;
+}
+
+.pr-0 {
+	padding-right: 0 !important;
+}
+
+.pr-1 {
+	padding-right: 5px !important;
+}
+
+.pr-2 {
+	padding-right: 10px !important;
+}
+
+.pr-3 {
+	padding-right: 20px !important;
+}
+
+.pr-4 {
+	padding-right: 30px !important;
+}
+
+.p-0 {
+	padding: 0;
+}
+
+/** Margins **/
+
+.mt-1 {
+	margin-top: 5px !important;
+}
+
+.mt-2 {
+	margin-top: 10px !important;
+}
+
+.mt-5 {
+	margin-top: 40px;
+}
+
+.mb-1 {
+	margin-bottom: 5px !important;
+}
+
+.mb-2 {
+	margin-bottom: 9px !important;
+}
+
+.mb-5 {
+	margin-bottom: 40px;
+}
+
+.mb-4 {
+	margin-bottom: 16px !important;
+}
+
+.ml-auto {
+	margin-left: auto;
+}
+
+.mx-1 {
+	margin-right: 6px !important;
+	margin-left: 6px !important;
+}
+
+.mx-2 {
+	margin-right: 8px !important;
+	margin-left: 8px !important;
+}
+
+.mx-3 {
+	margin-right: 10px !important;
+	margin-left: 10px !important;
+}
+
+.mx-4 {
+	margin-left: 16px;
+	margin-right: 16px;
+}
+
+.m-4 {
+	margin: 16px !important;
+}
+
+.mx-auto {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+.m-0 {
+	margin: 0;
+}
+
+.z-index-0 {
+	z-index: 0 !important;
+}
+
+.z-index-2 {
+	z-index: 2;
+}
+
+/** Positioning */
+.t-0 {
+	top: 0;
+}
+
+/** Display **/
+.d-none {
+	display: none !important;
+}
+
+/** Positioning **/
+.position-absolute {
+	position: absolute;
+}
+
+.position-relative {
+	position: relative;
+}
+
+.position-sticky {
+	position: sticky !important;
+}
+
+.r-0 {
+	right: 0 !important;
+}
+
+.overflow-auto {
+	overflow: auto;
+}
+
+.overflow-x-auto {
+	overflow-x: auto;
+}
+
+.overflow-hidden {
+	overflow: hidden !important;
+}
+
+/** Font Colors */
+.color-white {
+	color: #FFF !important;
+}
+
+.color-dark {
+	color: #333333;
+}
+
+/** Background Colors */
+.dp-light-theme .primary-bg-color {
+	background: whitesmoke !important;
+}
+
+.bg-transparent{
+	background: transparent !important;
+}
+
+$light-secondary-color: #767676;
+$light-gray-color: #cbcbcb;
+
+mat-icon[color=secondary] {
+	fill: $light-secondary-color !important;
+	color: $light-secondary-color !important;
+}
+
+mat-icon[color=light-gray] {
+	fill: $light-gray-color;
+	color: $light-gray-color;
+}
+
+mat-icon[color=icon-white] {
+	fill: #FFF !important;
+	color: #FFF !important;
+}
+
+button[color=secondary] {
+	background-color: $light-secondary-color;
+}
+
+
+button {
+	text-transform: uppercase !important;
+	letter-spacing: 1px !important;
+}
+
+/** Responsive Images */
+.img-responsive-width {
+	height: 100%;
+	width: auto;
+}
+
+
+/** Specific styles that are going to be used throughout the platform */
+.dp-light-theme {
+	.mat-drawer-container {
+		background-color: whitesmoke !important;
+	}
+	
+	*[color=white] {
+		background: #FFFFFF !important;
+	}
+	
+	.empty-state-color {
+		color: #848484;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+	
+	.empty-state-light-color {
+		color: #a9a9a8;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+	
+	.status-label {
+		color: #333333;
+	}
+
+	.multi-status{
+		display: inline-block;
+		margin-right: 10px;
+	}
+}
+
+.content-padding {
+	padding: 20px 60px;
+}
+
+/** Making child sidenav global */
+.global-sidenav-content {
+	
+	.mat-drawer-backdrop {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+	}
+	
+	
+	.content-container {
+		// height: calc(100vh - 50px - 24px - 20px) !important;
+		height: 100vh;
+	}
+	
+	mat-drawer-container {
+		// height: calc(100vh - 50px - 24px - 20px) !important;
+		// height: 100vh !important;
+		&:first-child {
+			height: calc(100vh - 50px) !important;
+		}
+		
+		// height: calc(100vh - 160px) !important;
+		
+		mat-drawer-content {
+			overflow: hidden !important;
+		}
+	}
+	
+	
+	mat-sidenav:first-child {
+		height: 100vh;
+	}
+}
+
+.status-label {
+	padding: 2px 7px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-weight: 500;
+	border-radius: 3px;
+    white-space: nowrap;
+	.mat-icon {
+		position: relative;
+		top: 7px;
+	}
+}
+
+.square-box {
+	width: 20px;
+	height: 20px;
+	border-radius: 3px;
+	
+	&:lang(en) {
+		margin-right: 15px;
+	}
+	
+	&:lang(ar) {
+		margin-left: 15px;
+	}
+}
+
+.iserve-content-container {
+	height: calc(100vh - 50px - 64px) !important;
+	overflow: auto !important;
+}
+
+
+/**************
+CSS STARTS: HANDLING FLOATING FORM FIELDS LABELS WHILE DOCUMENT BODY HAS RTL ATTRIBUTE APPLIED
+*/
+[dir=rtl] .mat-form-field-outline {
+	direction: ltr;
+}
+
+[dir=rtl] .mat-form-field-appearance-outline .mat-form-field-outline-start {
+	border-radius: 5px 0 0 5px !important;
+	border-right-style: none !important;
+	border-left-style: double !important;
+}
+
+[dir=rtl] .mat-form-field-appearance-outline .mat-form-field-outline-gap {
+	border-left-style: none !important;
+	border-right-style: none !important;
+}
+
+[dir=rtl] .mat-form-field-appearance-outline .mat-form-field-outline-end {
+	border-radius: 0 5px 5px 0 !important;
+	border-left-style: none !important;
+	border-right-style: double !important;
+}
+
+[dir=rtl] .mat-form-field-label mat-label {
+	background-color: #ffffff;
+	padding-right: 4px;
+}
+
+[dir=rtl] .remove-icon {
+	float: left !important;
+}
+
+[dir=rtl] .mat-form-field-infix {
+	text-align: right;
+}
+
+[dir=rtl] .mat-form-field-outline-gap {
+	display: none;
+}
+
+/******************
+CSS ENDS: HANDLING FLOATING FORM FIELDS LABELS WHILE DOCUMENT BODY HAS RTL ATTRIBUTE APPLIED
+*/
+
+[dir=rtl] {
+	.cdk-overlay-pane {
+		left: 25px !important;
+		transform: translateX(16px) translateY(-10px) !important;
+		
+		.mde-popover-before {
+			.mde-popover-direction-arrow {
+				right: auto !important;
+				left: 5px !important;
+			}
+		}
+		
+		::ng-deep .mat-menu-item {
+			font-size: 12px !important;
+		}
+		
+		@media screen and (max-width: 1024px) {
+			transform: translateX(0px) translateY(-10px) !important;
+		}
+	}
+}
+
+mat-form-field:hover {
+	cursor: pointer;
+}
+
+// region Scrollbar
+::-webkit-scrollbar {
+	width: 6px;
+	border-radius: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: rgb(219, 217, 217);
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: rgb(219, 217, 217);
+}
+
+.color-light-green {
+	color: #55b285 !important;
+}
+
+.color-blue {
+	color: #217dd2 !important;
+}
+
+.font-size-17 {
+	font-size: 17px;
+}
+
+.font-size-1rem {
+	font-size: 1rem !important;
+}
+
+.font-weight-500 {
+	font-weight: 500;
+}
+
+.dp-light-theme .primary-bg-color-green {
+	background: #008755;
+	color: white;
+}
+
+// endregion
+
+.sticky-fab-button {
+	z-index: 1;
+}
+
+mat-icon:lang(ar) {
+	transform: rotateY(180deg);
+}
+
+
+$timeColor: #008755;
+.timepicker {
+	
+	.timepicker__header {
+		background-color: $timeColor !important;
+	}
+	
+	.clock-face__clock-hand {
+		background-color: $timeColor !important;
+		
+		&::after {
+			background-color: $timeColor !important;
+		}
+		
+		&::before {
+			border-color: $timeColor !important;
+		}
+	}
+	
+	.clock-face__number {
+		> span.active {
+			background-color: $timeColor !important;
+		}
+	}
+	
+	button:not(.timepicker-dial__item) {
+		color: $timeColor !important;
+	}
+	
+	.timepicker-dial__control {
+		&:focus {
+			outline: none;
+		}
+	}
+}
+
+[dir=rtl] .timepicker * {
+	direction: ltr;
+}
+
+.only-icon-label {
+	.mat-icon{
+		height: 14px;
+		width: 14px;
+		margin-right: 3px;
+		position: relative;
+		top: 3px;
+
+		svg{
+			height: 14px;
+			width: 14px;
+		}
+	}
+}

@@ -1,0 +1,13 @@
+
+	<mat-form-field class="w-100"  [formGroup]="group" appearance="outline">
+	
+		<mat-label>{{field.label[lng] + ' ' + required}}</mat-label>
+		<textarea   [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="field.col" [placeholder]="field.label[lng]+' '+required" [type]="field.inputType"
+			   registerChildComponentToForm #inpval MatTextareaAutosize MatTextareaAutosizeMinRows="2" MatTextareaAutosizeMaxRows="4"         
+			   (change)="getValue(inpval.value);"></textarea>
+		<ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+			<mat-error *ngIf="group.get(field.col).hasError(validation.name)">{{validation.message}}</mat-error>
+		</ng-container>
+	
+	</mat-form-field>
+	

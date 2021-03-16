@@ -1,0 +1,348 @@
+<div >
+	<mat-sidenav-container [hasBackdrop]="true" >
+		<mat-sidenav-content>
+			<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="user-account-list" [fullScreen]="false" > </ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row>
+					<mat-toolbar-row fxLayoutAlign="space-between center" fxLayout.gt-md="row">
+                        <span> {{ viewTitle[globalVars.LNG] }} </span>
+					</mat-toolbar-row>
+
+				</mat-toolbar-row>
+			</mat-toolbar>
+			<div>
+				<div class="w-100">
+					<app-table-widget *ngIf="tableWidgetData"
+										#tableWidget
+										[tableData]="tableWidgetData"
+										(rowClicked)="rowClicked($event)">
+					</app-table-widget>
+				</div>
+
+				<div class="h-100" *ngIf="hasNoData" fxLayout="column" fxLayoutAlign="center center">
+					<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+					<div class="text-center">
+						<h1 class="empty-state-color">{{ globalVars.translation["No"][globalVars.LNG] }} {{ viewTitle[globalVars.LNG] }}</h1>
+						<button class="mx-auto" mat-raised-button color="primary" fxLayout="row" fxLayoutAlign="space-between center" (click)="openDrawerComponent()">
+							<mat-icon svgIcon="plus"></mat-icon>
+							<span>
+								{{ globalVars.translation["Create"][globalVars.LNG] }} {{ viewTitle[globalVars.LNG] }}
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<button mat-fab color="primary" class="sticky-fab-button" (click)="openDrawerComponent()"><mat-icon svgIcon="plus"></mat-icon></button>
+		</mat-sidenav-content>
+		
+        <mat-sidenav #drawer mode="over" position="end" [autoFocus]="false" style="width: 80vw;" disableClose (opened)="openedDrawerComponent()">
+            <div class="user-account-drawer-component primary-bg-color">
+                <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="user-account-drawer" [fullScreen]="false" > </ngx-spinner>
+                <mat-drawer-container>
+                    <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="h-100" fxLayout="row" >
+                            <button mat-button (click)="eventCancelledDrawer()" tabindex="-1">
+                                <mat-icon svgIcon="close"></mat-icon>
+                            </button>
+                            <mat-divider vertical></mat-divider>
+                            <span class="mx-4" fxLayout="row" fxLayoutAlign="space-between center">
+                                {{ drawerTitle[globalVars.LNG] }}
+                                <div class=" mx-4" *ngIf="drawerType == 'EDIT'">
+                                    <div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                        <mat-chip-list [fxFlex]="'0 0 auto'" style="line-height: initial;">
+                                            <mat-chip disableRipple matTooltipPosition="above" [matTooltip]="globalVars.translation['username'][globalVars.LNG]" fxLayoutGap="5px">
+                                                <mat-icon class="h-100" size="14px" inline [svgIcon]="'account'" color="secondary"></mat-icon>
+                                                <span>{{drawerItemRecord.username}}</span>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="px-4" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+                            <button mat-raised-button (click)="saveFormDialog()" color="primary" [disabled]="!basicForm.valid || !permissionForm.valid || !typeForm.valid">
+                                <span *ngIf="drawerType == 'EDIT'"> {{ globalVars.translation["Update"][globalVars.LNG] }}</span>
+                                <span *ngIf="drawerType != 'EDIT'"> {{ globalVars.translation["Save"][globalVars.LNG] }}</span>
+                            </button>
+                        </div>
+                    </mat-toolbar>
+                    <div class="p-2 pt-5 mx-auto content-container mt-1 overflow-auto">
+                        <mat-card class="p-0">
+                            <mat-horizontal-stepper [linear]="isLinear" #stepper>
+                                <mat-step *ngFor="let step of availableStages;let i=index;" ><!--[stepControl]="step.formName" [state]="(step.name.en)" [completed]="step.completed"  disabled [stepControl]="step.formName"-->
+									<ng-template matStepLabel>
+										{{step.name.en}}
+										<div class="error_description">
+											<div class="entry" *ngIf="i === 0 && !typeForm.valid"> * Field Missing</div>
+											<div class="entry" *ngIf="i === 1 && !basicForm.valid"> * Field Missing</div>
+											<div class="entry" *ngIf="i === 2 && !permissionForm.valid"> * Field Missing</div>
+										</div>
+                                    </ng-template>
+
+                                    <!-- Type Info -->
+									<mat-expansion-panel [expanded]="true" *ngIf="i === 0" >
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                <span> 	User Type Details </span>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div [formGroup]="typeForm">
+                                            <div fxLayout="column wrap" fxLayoutAlign="stretch">
+                                                <div fxLayout="row wrap" fxLayoutGap="10px">
+                                                    <mat-form-field appearance="outline" fxFlex="auto">
+                                                        <mat-label>User Type</mat-label>
+                                                        <mat-select matInput formControlName="type" (selectionChange)="modifyUserType($event)">
+                                                            <mat-option *ngFor="let type of availableModuleTypes" [value]="+type.id" >
+                                                                {{type.name[globalVars.LNG]}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="mt-2">
+													<span fxFlex="auto"></span>
+													<button style="float: none;" mat-raised-button color="primary" [disabled]="!typeForm.valid" matStepperNext>Next</button>
+												</div>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+
+                                    <!-- Basic Info -->
+                                    <div  *ngIf="i === 1">
+                                        <div [formGroup]="basicForm" class="mb-2 p-3">
+                                            <div *ngIf="typeForm.value.type === ''" class="error_description">
+                                                <div class="entry"> ## Please select USER TYPE first ##</div>
+                                            </div>
+                                            <div *ngFor="let type of availableModuleTypes" >
+                                                <div *ngIf="type.id === typeForm.value.type">
+                                                    <mat-expansion-panel [expanded]="true" *ngFor="let fg of type.forms.groupsUpdated; let m = index;" class="mb-4">
+                                                        <mat-expansion-panel-header>
+                                                            <mat-panel-title>
+                                                                <span> 	{{ fg.groupName[globalVars.LNG] }} </span>
+                                                            </mat-panel-title>
+                                                        </mat-expansion-panel-header>
+                                                        <div *ngIf="fg.fields!=undefined">
+                                                            <div fxLayout="column wrap" fxLayoutAlign="stretch">
+                                                                <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between flex-start">
+                                                                    <ng-container *ngFor="let field of fg.fields" [ngSwitch]="field?.data_type">
+                                                                        <!-- <span *ngSwitchCase="'text' || 'email' || 'phone' || 'password'"> -->
+                                                                        <span *ngSwitchDefault  fxFlex="48.5">
+                                                                            <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                                <mat-label>{{field.name[globalVars.LNG]}}</mat-label>
+                                                                                <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="field.field_id">
+                                                                            </mat-form-field>
+                                                                        </span>
+                                                                        <span *ngSwitchCase="'name-object'" fxFlex="100">
+                                                                            <div [formGroupName]="field.field_id" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="35px">
+                                                                                <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                                    <mat-label>{{field.name[globalVars.LNG]}} (EN)</mat-label>
+                                                                                    <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="'en'">
+                                                                                </mat-form-field>
+                                                                                <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                                    <mat-label>{{field.name[globalVars.LNG]}} (AR)</mat-label>
+                                                                                    <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="'ar'">
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </span>
+                                                                        <span *ngSwitchCase="'date'" fxFlex="48.5">
+                                                                            <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                                <mat-label>{{field.name[globalVars.LNG]}}</mat-label>
+                                                                                <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="field.field_id" [matDatepicker]="picker">
+                                                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+	                                                                            <mat-datepicker #picker></mat-datepicker>
+                                                                            </mat-form-field>
+                                                                        </span>
+                                                                        <span *ngSwitchCase="'module-reference'" fxFlex="48.5">
+                                                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                                                <mat-label>{{field.name[globalVars.LNG]}}</mat-label>
+                                                                                <mat-select matInput [formControlName]="field.field_id">
+                                                                                    <mat-option *ngFor="let rc of availableFieldsConnectedWithModulesUniqueIndexed[field.reference_module_id]" [value]="+rc.id" >
+                                                                                        {{ getFieldValue(rc[field.key_show]) || "&mdash;" }}
+                                                                                    </mat-option>
+                                                                                </mat-select>
+                                                                            </mat-form-field>
+                                                                        </span>
+                                                                        <!-- <span *ngSwitchCase="'date'">
+                                                                            <mat-form-field fxFlex="auto" appearance="outline">
+                                                                                <mat-label>{{field.name[globalVars.LNG]}}</mat-label>
+                                                                                <input matInput [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" [matDatepicker]="picker" (dateInput)="setValue()">
+                                                                                <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="!field.update"></mat-datepicker-toggle>
+                                                                                <mat-datepicker #picker ></mat-datepicker>
+                                                                            </mat-form-field>
+                                                                        </span> -->
+                                                                    </ng-container>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </mat-expansion-panel>
+                                                    <!-- Login credentials generated only while creating user -->
+                                                    <mat-expansion-panel [expanded]="true" class="mb-4" *ngIf="drawerType != 'EDIT'">
+                                                        <mat-expansion-panel-header>
+                                                            <mat-panel-title>
+                                                                <span> 	{{ globalVars.translation["login_info"][globalVars.LNG] }} </span>
+                                                            </mat-panel-title>
+                                                        </mat-expansion-panel-header>
+                                                        <div fxLayout="column wrap" fxLayoutAlign="stretch">
+                                                            <div fxLayout="row wrap" fxLayoutGap="35px">
+                                                                <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                    <mat-label>{{ globalVars.translation["username"][globalVars.LNG] }}</mat-label>
+                                                                    <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="'username'">
+                                                                </mat-form-field>
+                                                                <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                    <mat-label>{{ globalVars.translation["Password"][globalVars.LNG] }}</mat-label>
+                                                                    <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [formControlName]="'password'" type="password">
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </mat-expansion-panel>
+                                                    <!-- <mat-expansion-panel [expanded]="true" class="mb-4" *ngIf="drawerType == 'EDIT'">
+                                                        <mat-expansion-panel-header>
+                                                            <mat-panel-title>
+                                                                <span> 	{{ globalVars.translation["login_info"][globalVars.LNG] }} </span>
+                                                            </mat-panel-title>
+                                                        </mat-expansion-panel-header>
+                                                        <div fxLayout="column wrap" fxLayoutAlign="stretch">
+                                                            <div fxLayout="row wrap" fxLayoutGap="35px">
+                                                                <mat-form-field  appearance="outline" fxFlex="auto">
+                                                                    <mat-label>{{ globalVars.translation["username"][globalVars.LNG] }}</mat-label>
+                                                                    <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput [value]="drawerItemRecord.username" readonly disabled >
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </mat-expansion-panel> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Permission Info -->
+                                    <div *ngIf="i === 2">
+                                        <mat-accordion>
+                                            <mat-expansion-panel [expanded]="true">
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        <span> 	Permission Details </span>
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+                                                <div [formGroup]="permissionForm" class="p-3">
+                                                    <mat-accordion>
+                                                        <mat-expansion-panel *ngFor="let app of permissionForm.controls['apps']['controls'];  let k = index;" [expanded]="k == 0 ? true : false">
+                                                            <mat-expansion-panel-header>
+                                                                <mat-panel-title >
+                                                                    <h4 fxFlex="100%" class="font-weight-500">#{{k+1}}. App: <span class="color-light-green font-size-17">{{ app.value.app_name[globalVars.LNG]}}</span></h4>
+                                                                </mat-panel-title>
+                                                                <div align="end" fxLayoutAlign="end center" >
+                                                                    <button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeApp(k)" style="height: auto;line-height: normal;">
+                                                                        <mat-icon svgIcon="close-circle-outline"></mat-icon>
+                                                                    </button>
+                                                                </div>
+                                                            </mat-expansion-panel-header>
+                
+                                                            <ng-container [formGroup]="app">
+                                                                <mat-form-field class="w-100" floatLabel="never" appearance="outline">
+                                                                    <mat-label>Application</mat-label>
+                                                                    <mat-select matInput formControlName="app_id" (selectionChange)="modifyAppName($event, k)">
+                                                                        <mat-option *ngFor="let availApp of availableApplications" [value]="availApp.id" (onSelectionChange)="modifyAppNameAdvanced($event, k)">
+                                                                            {{availApp.name[globalVars.LNG]}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                </mat-form-field>
+                                                                <ng-container *ngFor="let menu of app.controls['menus']['controls'];  let m = index;">
+                                                                    <mat-card class=" mb-4 w-100 p-0 special" >
+                                                                        <mat-accordion>
+                                                                            <mat-expansion-panel [expanded]="true">
+                                                                                <mat-expansion-panel-header>
+                                                                                    <mat-panel-title>
+                                                                                        <span>  #{{m+1}}. Menu: <span class="color-blue">{{menu.value.menu_name[globalVars.LNG] != '' ? menu.value.menu_name[globalVars.LNG] : '_________'}} </span></span>
+                                                                                    </mat-panel-title>
+                                                                                    <!-- <mat-action-row> -->
+                                                                                        <div align="end" fxLayoutAlign="end start" >
+                                                                                            <button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeMenu(k, m)" style="height: auto;line-height: normal;">
+                                                                                                <mat-icon svgIcon="close-circle-outline"></mat-icon>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    <!-- </mat-action-row> -->
+                                                                                </mat-expansion-panel-header>
+                                                                                <ng-container [formGroup]="menu"> 
+                                                                                    <div  fxLayout="row wrap" fxLayoutGap="15px" fxLayoutAlign="start top" class="w-100 p-3 pt-0">
+                                                                                        <div fxFlex="auto">
+                                                                                            <mat-form-field class="w-100" floatLabel="never" appearance="outline">
+                                                                                                <mat-label>Menu</mat-label>
+                                                                                                <mat-select matInput formControlName="menu_route" (selectionChange)="modifyMenuName($event, k, m)">
+                                                                                                    <mat-option *ngFor="let availMenu of app.value.available_menus" [value]="availMenu.route" (onSelectionChange)="modifyMenuNameAdvanced($event, k, m)">
+                                                                                                        {{availMenu.Name[globalVars.LNG]}}
+                                                                                                    </mat-option>
+                                                                                                </mat-select>
+                                                                                            </mat-form-field>
+                                                                                            <mat-accordion>
+                                                                                                <mat-expansion-panel [expanded]="true">
+                                                                                                    <mat-expansion-panel-header>
+                                                                                                        <mat-panel-title>
+                                                                                                            <span> 	Workspace Details </span>
+                                                                                                        </mat-panel-title>
+                                                                                                    </mat-expansion-panel-header>
+                                                                                                    <div fxLayout="column wrap" fxLayoutAlign="stretch">
+                                                                                                        <ng-container *ngFor="let workspace of menu.controls['workspaces']['controls'];  let n = index;">
+                                                                                                            <ng-container [formGroup]="workspace"> 
+                                                                                                                <div  fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center" class="w-100 p-3 pt-0">
+                                                                                                                    <span>  #{{n+1}}</span>
+                                                                                                                    <mat-form-field class="w-100" floatLabel="never" appearance="outline">
+                                                                                                                        <mat-label>Workspace</mat-label>
+                                                                                                                        <mat-select matInput formControlName="workspace">
+                                                                                                                            <mat-option *ngFor="let availWorkspace of menu.value.available_workspaces" [value]="+availWorkspace.id" >
+                                                                                                                                {{availWorkspace.id}} - {{availWorkspace.name[globalVars.LNG]}}
+                                                                                                                            </mat-option>
+                                                                                                                        </mat-select>
+                                                                                                                    </mat-form-field>
+                                                                                                                    <mat-form-field class="w-100" floatLabel="never" appearance="outline">
+                                                                                                                        <mat-label>Role</mat-label>
+                                                                                                                        <mat-select matInput formControlName="role">
+                                                                                                                            <mat-option *ngFor="let uRole of availableUserRoles" [value]="+uRole.id" >
+                                                                                                                                {{uRole.id}} - {{uRole.name[globalVars.LNG]}}
+                                                                                                                            </mat-option>
+                                                                                                                        </mat-select>
+                                                                                                                    </mat-form-field>
+                                                                                                                    <div  >
+                                                                                                                        <button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeWorkspace(k, m, n)" style="height: auto;line-height: normal;">
+                                                                                                                            <mat-icon svgIcon="close-circle-outline"></mat-icon>
+                                                                                                                        </button>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </ng-container>
+                                                                                                        </ng-container>
+                                                                                                        <div class="w-100">
+                                                                                                            <button style="float: none;" mat-raised-button (click)="addWorkspaces(k, m)" color="primary" type="button">Add NEW WORKSPACE</button>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </mat-expansion-panel>
+                                                                                            </mat-accordion>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ng-container>
+                                                                            </mat-expansion-panel>
+                                                                        </mat-accordion>
+                                                                    </mat-card>
+                                                                </ng-container>
+                                                            </ng-container>
+                                                            
+                                                            <div class="w-100">
+                                                                <button style="float: none;" mat-raised-button (click)="addMenus(k)" color="primary" type="button">Add NEW MENU</button>
+                                                            </div>
+                                                        </mat-expansion-panel>
+                                                    </mat-accordion>
+                                                </div>
+                                                <div class="w-100">
+                                                    <button style="float: none;" mat-raised-button (click)="addApps()" color="primary" type="button">Add NEW APPLICATION</button>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+									</div>
+                                </mat-step>
+                            </mat-horizontal-stepper>
+                        </mat-card>
+                    </div>
+                </mat-drawer-container>
+            </div>
+		</mat-sidenav>
+	</mat-sidenav-container>
+</div>

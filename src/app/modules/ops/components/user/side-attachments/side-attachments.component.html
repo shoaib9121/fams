@@ -1,0 +1,59 @@
+<div class="tab-full-height w-100" style="height: calc(100% - 185px);" fxLayout="column"
+     fxLayoutAlign="space-between stretch">
+	<ng-container *ngIf="attachments?.length <= 0">
+		<app-empty-state class="h-100" [state]="'no_attachment'"></app-empty-state>
+	</ng-container>
+	<mat-nav-list class="w-100 h-cal" *ngIf="attachments?.length > 0">
+		<a mat-list-item disableRipple style="color: grey;" class="styleList listStyle">
+			<mat-checkbox mat-list-icon aria-label="Select All" [checked]="isChecked()"
+			              [indeterminate]="isIndeterminate()" (change)="selectAllToDownloadList(checkboxAll.checked)"
+						  #checkboxAll></mat-checkbox>
+			<h4 mat-line>{{globalVars.translation["select_all"][globalVars.LNG]}}</h4>
+			<button mat-icon-button (click)="downloadAttachmentAsZip()" [disabled]="fileListForDownload.length < 1">
+				<mat-icon class="ml-auto iconPadding" svgIcon="download"></mat-icon>
+			</button>
+		</a>
+		<a mat-list-item *ngFor="let attachment of attachments" target="_blank" style="color: grey;" class="styleList">
+			<mat-checkbox mat-list-icon [checked]="exists(attachment)" (click)="$event.stopPropagation()"
+			              (change)="addToDownloadList(checkbox.checked,attachment)" #checkbox></mat-checkbox>
+			<h4 mat-line>{{ attachment.values.title }}</h4>
+			<p mat-line>
+				{{ attachment.name }}
+			</p>
+			<button mat-icon-button (click)="downloadAttachment(attachment)"
+			        [disabled]="isIndeterminate && fileListForDownload.length > 0">
+				<mat-icon class="ml-auto iconPadding" svgIcon="download"></mat-icon>
+			</button>
+		</a>
+	</mat-nav-list>
+	
+	<mat-card class="p-3 m-4 subdrawer-bottom primary-bg-color">
+		<div [formGroup]="attachmentForm">
+			<div class="w-100 uploadFile-form" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+				<mat-icon fxFlex="0 0 auto" svgIcon="format-title"></mat-icon>
+				<mat-form-field fxFlex="1 1 auto" appearance="outline" class="fileTitle">
+					<mat-label>{{ globalVars.translation["File Title"][globalVars.LNG] }}</mat-label>
+					<input matInput type="text" placeholder="File Title" formControlName="fileTitle">
+				</mat-form-field>
+			</div>
+			<div class="w-100 uploadFile-form" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+				<mat-icon fxFlex="0 0 auto" svgIcon="paperclip"></mat-icon>
+				<div class="file-upload-div">
+					<input type="file" class="selected-file" (change)="onSelectedFilesChanged($event.target.files)"/>
+					<span class="file-upload-input" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span id="chooseFile" class="choose-txt"
+                              [ngClass]="{'choosen-file': ifFile}">{{ globalVars.translation["Choose File"][globalVars.LNG] }}</span>
+                        <mat-icon class="remove-icon" *ngIf="ifFile" (click)="removeFile()" color="secondary" svgIcon="close-circle"></mat-icon>
+                    </span>
+				</div>
+			</div>
+			<button type="submit" mat-raised-button class="w-100" color="primary" [disabled]="!attachmentForm.valid"
+			        (click)="uploadAttachment()">
+				{{ globalVars.translation["Upload attachment"][globalVars.LNG] }}
+			</button>
+		</div>
+	</mat-card>
+</div>
+
+
+<a id="downloadPdfA" [downloadFile]="downloadFileUrl" [filename]="downloadFilename"></a>

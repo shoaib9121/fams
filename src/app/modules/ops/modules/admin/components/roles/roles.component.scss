@@ -1,0 +1,27 @@
+.dp-light-theme .roles-component {
+    background: whitesmoke;
+}
+mat-drawer{
+    position: fixed;
+}
+.main-container {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+::ng-deep .system-component .mat-drawer-inner-container {
+    background: whitesmoke;
+}
+
+::ng-deep {
+    .system-component {
+        .overflow-auto {
+            overflow: auto;
+        }
+
+        .content-container {
+            height: calc(100vh - 120px - 24px) !important;
+            padding-left: 40px !important;
+            padding-right: 40px !important;
+        }
+    }
+}

@@ -1,0 +1,45 @@
+::ng-deep .vehicles-component .table-wrapper, ::ng-deep .users-component .table-wrapper {
+    height: calc(100% - 200px) !important;
+    overflow: auto !important;
+    margin-top: 20px !important;
+    padding-top: 0px !important;
+}
+
+mat-drawer-content {
+    height: calc(100vh - 60px);
+    background-color: whitesmoke; }
+
+.mini-dashboard-cards {
+    margin-top: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+.mini-dashboard-cards > mat-card {
+    min-height: 50px;
+}
+
+.active-booking {
+    border-bottom: 5px solid #4fc3f7;
+    /*background-image: linear-gradient(-31deg, rgba(79, 195, 247, .1), rgba(79, 195, 247, .4));*/
+}
+
+.pending-booking {
+    border-bottom: 5px solid #ffd54f;
+    /*background-image: linear-gradient(-31deg, rgba(255, 213, 79, 0.1), rgba(255, 213, 79, .4));*/
+}
+
+.cancelled-booking {
+    border-bottom: 5px solid #ef5350;
+    /*background-image: linear-gradient(-31deg, rgba(239, 83, 80, .1), rgba(239, 83, 80, .4));*/
+}
+
+.closed-booking {
+    border-bottom: 5px solid #66bb6a;
+    /*background-image: linear-gradient(-31deg, rgba(102, 187, 106, .1), rgba(102, 187, 106, .2));*/
+}
+
+img {
+    /* width: 200px; */
+    max-height: 300px;
+  }

@@ -1,0 +1,28 @@
+.login-component {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	background: url("/assets/login-background.png") #eeeeee repeat-x center bottom;
+	
+	mat-card-content {
+		margin-bottom: 0 !important;
+	}
+	
+}
+
+.login {
+	width: 400px;
+	max-width: 400px;
+	margin-top: 100px;
+}
+
+.logo {
+	padding-top: 30px;
+	padding-bottom: 10px;
+	width: 200px !important;
+	max-width: 200px !important;
+}
+
+.pb-password-field .mat-form-field-wrapper {
+	padding-bottom: 0 !important;
+}

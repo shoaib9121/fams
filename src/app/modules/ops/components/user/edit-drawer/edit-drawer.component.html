@@ -1,0 +1,351 @@
+<div class="edit-drawer-component primary-bg-color">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="edit"
+	             [fullScreen]="false">
+	</ngx-spinner>
+	
+	<mat-drawer-container>
+		<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+			<div class="h-100" fxLayout="row">
+				<button mat-button (click)="eventCancelledDrawer()" tabindex="-1">
+					<mat-icon svgIcon="close"></mat-icon>
+				</button>
+				<mat-divider vertical></mat-divider>
+				<span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+					{{ drawerTitle }}
+				</span>
+			</div>
+			<div class="px-4" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+				<ng-container *ngFor="let actionButton of actionButtons; let i = index">
+					<div *ngIf="actionButton.state" [matTooltip]="!actionButton.state?.canPress ? actionButton.state?.message[globalVars.LNG] : ''" matTooltipPosition="above" [matTooltipDisabled]="actionButton.state?.canPress">
+						<button (click)="handleActionButton(actionButton)" mat-stroked-button color="primary" 
+							[disabled]="!actionButton.state.canPress"
+						>
+							{{ actionButton.name[globalVars.LNG] }}
+						</button>
+					</div>
+					<div *ngIf="!actionButton.state">
+						<button (click)="handleActionButton(actionButton)" mat-stroked-button color="primary">
+							{{ actionButton.name[globalVars.LNG] }}
+						</button>
+					</div>
+				</ng-container>
+				<ng-template [cdkPortalOutlet]="templatePortal"></ng-template>
+			</div>
+		</mat-toolbar>
+		
+		<!-- Edit Overview (Indicators) -->
+		<div class="p-2 pt-5 mx-auto content-container mt-1 overflow-auto">
+			<ng-container *ngIf="statusArray.length>0">
+				<div fxLayout="row" fxLayoutAlign="space-between stretch"
+				     fxLayoutGap="20px"
+				>
+					<ng-container *ngFor="let kpi of statusArray">
+						<mat-card fxFlex="auto" fxLayout="row"
+						          [style.borderBottom]="'4px solid ' + kpi?.status?.color"
+						>
+							<div fxFlex="1 1 auto">
+								<span class="fw-600" mat-card-title>
+									{{ kpi?.status.name[globalVars.LNG] }}
+								</span>
+							</div>
+							<div>
+								<span mat-card-title>
+									{{ DacCalculater((kpi?.totalTimeSpent || 0),kpi?.offDays)  }}
+								</span>
+							</div>
+							<!--<span *ngIf="kpi?.startDate" fxFlex="auto" fxLayout="col">
+
+								<span fxFlex="1 1 auto">
+									<label for="">Start Date:</label>
+									{{kpi?.startDate }}</span>
+								<span fxFlex="1 1 auto">
+									<label for="">End Date:</label>
+
+									{{kpi?.endDate}}</span>
+
+							</span>-->
+						</mat-card>
+					</ng-container>
+				</div>
+			</ng-container>
+			
+			<ng-container *ngIf="data.statusStages">
+				<mat-card class="p-0 mt-5">
+					<mat-horizontal-stepper [linear]="true" labelPosition="bottom" #stepper [selectedIndex]="getSelectedStepperState()">
+						<mat-step *ngFor="let step of data.statusStages" [label]="step.name.en" [state]="(step.name.en)"
+						          [completed]="step.completed" [editable]="false" disabled>
+							<ng-template matStepLabel>
+								{{ step.current ? step.name[globalVars.LNG] : step.name[globalVars.LNG] }}
+							</ng-template>
+						</mat-step>
+						
+						<ng-template *ngFor="let step of data.statusStages" [matStepperIcon]="step.name.en">
+							<mat-icon *ngIf="step.completed" svgIcon="check" style="font-size: 11px;"></mat-icon>
+							<mat-icon *ngIf="!step.completed || step.current" [svgIcon]="step.icon" style="font-size: 11px;"></mat-icon>
+						</ng-template>
+					
+					</mat-horizontal-stepper>
+				</mat-card>
+			</ng-container>
+			
+			
+			<!-- SMSDN -->
+			<div class="p-0" *ngIf="viewData && viewData[0] && viewData[0].data && viewData[0]?.data.length > 0"
+			     [ngClass]="{'mt-5': data?.statusStages?.length > 0 || statusArray?.length>0}">
+				<mat-accordion>
+					<mat-expansion-panel [expanded]="false">
+						<mat-expansion-panel-header>
+							<mat-panel-title>
+								<span> {{ subTableTitle }} </span>
+							</mat-panel-title>
+							<mat-panel-description>
+							</mat-panel-description>
+						</mat-expansion-panel-header>
+						<ng-container>
+							<app-table-widget *ngIf="tableWidgetData"
+                                              #tableWidget
+							                  [tableData]="tableWidgetData">
+							</app-table-widget>
+						</ng-container>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+			<!-- SMSDN Endz -->
+			
+			<div class="mb-5"
+			     [ngClass]="{'mt-5': viewData?.length > 0 || data?.statusStages?.length > 0 || statusArray?.length>0}">
+				<form #DynamicMasterForm="ngForm" (ngSubmit)="onBasicDetailsSubmit()" id="DynamicMasterForm">
+					<app-reactive-dynamic-form [groups]="fields" [multiGroups]="multiGroups" [isEdit]="true" [typeId]="data.type_id"
+					                           (checkIsFormDirty)="checkIsFormDirty($event)">
+					</app-reactive-dynamic-form>
+					<ng-template #templatePortalContent>
+						<!-- <button mat-raised-button color="primary" class="editButton">Email</button> -->
+						<button mat-raised-button color="primary" (click)="eventSubmitted()">{{ globalVars.translation["Save"][globalVars.LNG]}}</button>
+					</ng-template>
+				</form>
+			</div>
+		</div>
+		<mat-drawer opened mode="side" position="end" class="attachementWidth" [ngStyle]="{'width': sideDrawerWidth}">
+			<app-side-drawer [data]="data" [editOverview]="editOverview" [moduleStatuses]="moduleStatuses" [isEdit]="true"></app-side-drawer>
+		</mat-drawer>
+		
+	</mat-drawer-container>
+</div>
+<a id="downloadPdf" [downloadFile]="downloadFileUrl" [filename]="downloadFilename"></a>
+
+
+<!--- TOBE remove after testing -->
+
+<!-- 	<mat-tab-group mat-stretch-tabs>
+				<mat-tab label="ATTACHMENTS">
+					<ng-template mat-tab-label>
+						<mat-icon class="mx-2" svgIcon="clock-outline"></mat-icon>
+						{{ globalVars.translation["Attachments"][globalVars.LNG] }}
+					</ng-template>
+					<ng-template matTabContent>
+						<div class="tab-full-height w-100" style="height: calc(100% - 185px);" fxLayout="column"
+						     fxLayoutAlign="space-between stretch">
+							<ng-container *ngIf="attachments?.length <= 0">
+								<app-empty-state class="h-100" [state]="'no_attachment'"></app-empty-state>	
+							</ng-container>
+							<mat-nav-list class="w-100 h-cal" *ngIf="attachments?.length > 0">
+								<a mat-list-item disableRipple style="color: grey;" class="styleList listStyle">
+									<mat-checkbox mat-list-icon aria-label="Select All"
+												[checked]="isChecked()"
+												[indeterminate]="isIndeterminate()"
+												(change)="selectAllToDownloadList(checkboxAll.checked)"
+												#checkboxAll></mat-checkbox>
+									<h4 mat-line>{{globalVars.translation["select_all"][globalVars.LNG]}}</h4>
+									<button mat-icon-button (click)="downloadAttachmentAsZip()"
+											[disabled]="fileListForDownload.length < 1">
+											<mat-icon class="ml-auto iconPadding" svgIcon="download"></mat-icon>
+									</button>
+								</a>
+								<a mat-list-item *ngFor="let attachment of attachments" target="_blank"
+								   style="color: grey;" class="styleList">
+									<mat-checkbox mat-list-icon [checked]="exists(attachment)"
+									              (click)="$event.stopPropagation()"
+									              (change)="addToDownloadList(checkbox.checked,attachment)"
+                                                  #checkbox></mat-checkbox>
+									<h4 mat-line>{{ attachment.values.title }}</h4>
+									<p mat-line>
+										{{ attachment.name }}
+									</p>
+									<button mat-icon-button (click)="downloadAttachment(attachment)"
+									        [disabled]="isIndeterminate && fileListForDownload.length > 0">
+										<mat-icon class="ml-auto iconPadding" svgIcon="download"></mat-icon>
+									</button>
+								</a>
+							</mat-nav-list>
+							
+							<mat-card class="p-3 m-4 subdrawer-bottom primary-bg-color">
+								<div [formGroup]="attachmentForm">
+									<div class="w-100 uploadFile-form" fxLayout="row" fxLayoutAlign="space-between center"
+									     fxLayoutGap="5px">
+										<mat-icon fxFlex="0 0 auto" svgIcon="format-title"></mat-icon>
+										<mat-form-field fxFlex="1 1 auto" appearance="outline" class="fileTitle">
+											<mat-label>{{ globalVars.translation["File Title"][globalVars.LNG] }}</mat-label>
+											<input matInput type="text" [placeholder]="globalVars.translation['File Title'][globalVars.LNG]"
+											       formControlName="fileTitle">
+										</mat-form-field>
+									</div>
+									<div class="w-100 uploadFile-form" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+										<mat-icon fxFlex="0 0 auto" svgIcon="paperclip"></mat-icon>
+										<div class="file-upload-div">
+											<input type="file" class="selected-file"
+											       (change)="onSelectedFilesChanged($event.target.files)" onclick="this.value=null;">
+											<span class="file-upload-input" fxLayout="row" fxLayoutAlign="space-between center">
+												<span id="chooseFile" class="choose-txt"
+													  [ngClass]="{'choosen-file': ifFile}">{{ globalVars.translation["Choose File"][globalVars.LNG] }}</span>
+												<mat-icon class="remove-icon" *ngIf="ifFile" svgIcon="close" (click)="removeFile()"></mat-icon>
+											</span>
+										</div>
+									</div>
+									<button type="submit" mat-raised-button class="w-100" color="primary"
+									        [disabled]="!attachmentForm.valid" (click)="uploadAttachment()">
+										{{ globalVars.translation["Upload attachment"][globalVars.LNG] }}
+									</button>
+								</div>
+							</mat-card>
+						</div>
+					</ng-template>
+				</mat-tab>
+				<mat-tab class="mat-tab" label="NOTES">
+					<ng-template mat-tab-label>
+						<mat-icon class="mx-2" svgIcon="information"></mat-icon>
+						{{ globalVars.translation["Notes"][globalVars.LNG] }}
+					</ng-template>
+					<ng-template matTabContent>
+						<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" style="height: 100%;">
+							<div class="w-100 h-50">
+								<div class="position-sticky">
+									<h3 class="text-center">{{ globalVars.translation["Log"][globalVars.LNG] }}</h3>
+								</div>
+								<div class="h-100 overflow-auto" #scrollMe>
+									<div style="margin-bottom:12px; padding-bottom: 40px; margin-left: 10px;"
+									     fxLayout="column"
+									     fxLayoutAlign="space-around stretch">
+										<ng-container *ngFor="let logs of itemLog">
+											<ng-container *ngIf="getKeys(logs.updatedValue)?.length > 0">
+												<ng-container
+														*ngIf="getKeys(logs.updatedValue)?.length > 0 && checkKeyStatus(logs.updatedValue)">
+													<div class="dateCreated">
+														<small class="dateStyle">{{ logs?.createdAt | date }} </small>
+														<span>
+															{{ getUpdatedBy(logs.updatedBy) }}
+														</span>
+														<small class="updatedClaim">
+															{{ globalVars.translation["update_log_" + currentApplicationName][globalVars.LNG] }}
+														</small>
+													</div>
+													<div *ngFor="let field_id of getKeys(logs.updatedValue)">
+														<div *ngIf="field_id === 'status';">
+															<div class="single-log" fxLayout="row"
+															     fxLayoutAlign="flex-start center" fxLayoutGap="10px">
+																<div fxLayout="column" fxLayoutAlign="flex-start ">
+																<span class="status-label"
+																      [style.backgroundColor]="moduleStatuses[+logs.updatedValue[field_id]]?.color">
+																{{ moduleStatuses[+logs.updatedValue[field_id]]?.name[globalVars.LNG] }}
+																</span>
+																</div>
+															</div>
+														</div>
+													</div>
+												</ng-container>
+												<ng-container
+														*ngIf="getValidFields(logs.updatedValue, logs.originalValue)">
+													<div class="dateCreated">
+														<small class="dateStyle">{{ logs.createdAt | date }} </small>
+														<span>
+															{{ getUpdatedBy(logs.updatedBy) }}
+														</span>
+														<small class="updatedClaim">
+															{{ globalVars.translation["update_log_" + currentApplicationName][globalVars.LNG] }}
+														</small>
+													</div>
+													<div class="single-log" fxLayoutAlign="flex-start center"
+													     fxLayoutGap="10px" fxLayout="row">
+														<mat-accordion class="panWidth" displayMode="flat">
+															<mat-expansion-panel class="mat-elevation-z0">
+																<mat-expansion-panel-header>
+																	<mat-panel-title>
+																		<small>{{ getValidFields(logs.updatedValue, logs.originalValue) }}
+																			{{ globalVars.translation['Fields Updated'][globalVars.LNG] }} </small>
+																	</mat-panel-title>
+																</mat-expansion-panel-header>
+																<div *ngFor="let key of getKeys(logs.updatedValue)"
+																     style="margin-bottom: 16px;">
+																	<div *ngIf="logs.originalValue[key] != '' && logs.updatedValue[key] != '' && key != 'status';">
+																		<fieldset
+																				[ngClass]="getUpdatedBy(logs.updatedBy) ? 'log-box' : 'log-box1'">
+																			<legend class="legendStyle">{{ moduleDataService.getKeyName(key) ? moduleDataService.getKeyName(key)[globalVars.LNG] : '' || key }}</legend>
+																			<div fxLayout="column "
+																			     fxLayoutAlign="start stretch"
+																			     style="padding-left: 7px;">
+																				<span class="log-subhead">{{ globalVars.translation['OLD'][globalVars.LNG] }}</span>
+																				<div class="newStyle">
+																					<span>{{ logs.originalValue[key] }}</span>
+																				</div>
+																				<span class="log-subhead">{{ globalVars.translation['NEW'][globalVars.LNG] }}</span>
+																				<div class="newStyle">
+																					<span>{{ logs.updatedValue[key] }}</span>
+																				</div>
+																			</div>
+																		</fieldset>
+																	</div>
+																</div>
+															</mat-expansion-panel>
+														</mat-accordion>
+													</div>
+												</ng-container>
+											</ng-container>
+										</ng-container>
+									</div>
+								</div>
+							</div>
+							<mat-divider style="width: 90%;"></mat-divider>
+							<div class="w-100 h-50" fxLayout="column" fxLayoutAlign="space-between stretch">
+								<div class="w-100 overflow-auto px-0">
+									<div class="position-sticky chat-headline" color="white">
+										<h3 class="text-center"> {{ globalVars.translation['Chat'][globalVars.LNG] }} </h3>
+									</div>
+									<ng-container *ngIf="comments?.length <= 0">
+										<app-empty-state class="h-100 h-90" [state]="'no_comments'"></app-empty-state>
+									</ng-container>	
+									<div class="overflow-auto" #scrollMe *ngIf="comments?.length > 0">
+										<div *ngFor="let message of comments" class="text-wrapper animated fadeIn">
+											<div class="chat-box" *ngIf="message.comment">
+												<div fxLayout="row" fxLayoutAlign="space-between center">
+													<strong *ngIf="!message.createdBy || message.createdBy == userName">{{ globalVars.translation["You"][globalVars.LNG] }}</strong>
+													<strong *ngIf="message.createdBy != userName">{{ message.createdBy }}</strong>
+													<small *ngIf="message.status == 'sending'; else sentBlock">
+														<mat-icon class="sendingIcon">access_time</mat-icon>
+													</small>
+													<ng-template #sentBlock>
+														<small>{{message.createdAt | timeAgo}}</small>
+													</ng-template>
+												</div>
+												{{ message.comment }}
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="chat-form p-3 paddingForm">
+									<div [formGroup]="chatForm" fxLayout="row" fxLayoutAlign="space-between center"
+									      fxLayoutGap="10px">
+										<mat-form-field class="w-100 fieldPadding" appearance="outline">
+											<mat-label>{{ globalVars.translation["Add a comment"][globalVars.LNG] }}
+											</mat-label>
+											<input type="text" matInput class="chat-input" formControlName="comment" (keyup.enter)="postComment()">
+										</mat-form-field>
+										<button mat-icon-button [disabled]="!chatForm.valid" (click)="postComment()">
+											<mat-icon svgIcon="send"></mat-icon>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-template>
+				</mat-tab>
+			</mat-tab-group>
+		-->

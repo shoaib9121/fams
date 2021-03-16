@@ -1,0 +1,50 @@
+<mat-toolbar color="primary">
+	<mat-toolbar-row class="z-index-0" dir="ltr" fxLayout="row"
+	                 [fxLayoutAlign]="globalVars.LNG === 'en' ? 'space-between center' : 'flex-end center'"
+	                 [fxLayoutGap]="globalVars.LNG === 'ar' ? '20px' : ''">
+		<mat-nav-list class="p-0 h-100" dense fxFlex="0 0 auto" fxLayout="row">
+			<mat-list-item class="p-0 h-100" routerLinkActive="active-route"
+			               [routerLink]="createRouterLink(dash)"
+			               *ngFor="let dash of getCurrentMenu()">
+				<button mat-button class="top-bar-buttons fully-expand">
+					<mat-icon color="icon-white" [svgIcon]="dash.icon"></mat-icon>
+					<span class="text-uppercase color-white fw-500">
+						{{ dash.Name[globalVars.LNG] }}
+					</span>
+				</button>
+			</mat-list-item>
+		
+		</mat-nav-list>
+		<div class="p-1" fxFlex="0 0 auto" [ngClass]="{'icon-align': globalVars.LNG=='en', 'icon-align1':globalVars.LNG=='ar' }">
+			<ng-container>
+				<app-notification #notification></app-notification>
+			</ng-container>
+			<mde-popover #appsPopover="mdePopover" [mdePopoverOverlapTrigger]="false" [mdePopoverCloseOnClick]="false"
+			             [mdePopoverOffsetX]="-16" [mdePopoverOffsetY]="-10" [mdePopoverArrowOffsetX]="58"
+			             mdePopoverArrowColor="rgba(0, 0, 0, 0)">
+				<div fxLayout="row" fxLayoutAlign="start stretch">
+					<div fxLayout.gt-md="row" fxLayoutGap="10px" class="ntf-container box-shadow">
+						<div fxLayout="row" fxLayoutAlign="center" *ngFor="let app of apps"
+						     routerLinkActive="active-app" [routerLink]="app.route"
+						     class="app-item-outer text-center box-border">
+							<button mat-button class="pop-over-app-buttons fully-expand" fxLayout="row"
+							        fxLayoutAlign="center" fxLayoutGap="5px">
+								<mat-icon class="img-size" [svgIcon]="app.icon"></mat-icon>
+								<span class="text text-style text-capitalize font-size-1rem">
+									{{ app.name[globalVars.LNG] }}
+								</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</mde-popover>
+			<button mat-icon-button [mdePopoverTriggerFor]="appsPopover" [mdePopoverTargetAt]=""
+			        mdePopoverTriggerOn="click">
+				<mat-icon svgIcon="apps"></mat-icon>
+			</button>
+		</div>
+		<div class="h-100 p-1" fxFlex="0 0 auto">
+			<img class="h-100" [src]="globalVars.environment.corporateIdentity.logo.lightPath" [alt]="globalVars.environment.corporateIdentity.logo.alt">
+		</div>
+	</mat-toolbar-row>
+</mat-toolbar>

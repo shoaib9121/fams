@@ -1,0 +1,277 @@
+<div class="live-component">
+  <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+  <mat-sidenav-container class="fully-expand" [hasBackdrop]="false">
+    <mat-sidenav-content>
+      <mat-tab-group fxFill class="view-tabs" (selectedTabChange)="tabChange($event)">
+        <!-- hybrid tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon svgIcon="format-list-bulleted-square" class="mx-1"></mat-icon>
+            Hybrid
+          </ng-template>
+          <ng-template matTabContent>
+            <div style="position: fixed;width: 34.5vw;background-color: white;">
+              <div class="p-2" fxLayout="column" fxLayoutGap="10px">
+                <div fxLayout="row wrap" fxLayoutAlign="end center">
+                  <mat-icon>add</mat-icon>
+                  <mat-icon>settings</mat-icon>
+                  <mat-icon>refresh</mat-icon>
+                </div>
+                <div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
+                  <mat-form-field fxFlex="40" appearance="outline">
+                    <input (keyup)="applyFilter($event)" matInput placeholder="Search Vehicle">
+                  </mat-form-field>
+                  <mat-form-field fxFlex="60" appearance="outline">
+                    <mat-label>Choose Group or User</mat-label>
+                    <mat-select>
+                      <mat-option>
+
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between stretch">
+                  <mat-chip-list aria-label="Filter Tags">
+                    <span>Filter</span>
+                    <mat-chip>Emergency Vehicles</mat-chip>
+                    <mat-chip color="primary">Inactive Vehicles</mat-chip>
+                  </mat-chip-list>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 130px;">
+              <mat-table #table [dataSource]="dataSource">
+                <ng-container *ngFor="let col of displayedColumns" [cdkColumnDef]="col">
+                  <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                  <mat-cell *cdkCellDef="let row"> {{row[col]}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row matRipple *matRowDef="let row; columns: displayedColumns;" (click)="tableRowClicked(row)">
+                </mat-row>
+
+              </mat-table>
+            </div>
+
+
+            <div *ngIf="false" class="h-100 p-2" fxLayout="column" fxLayoutAlign="center center">
+              <img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+              <div class="text-center">
+                <h1 class="empty-state-color">no live datas</h1>
+              </div>
+            </div>
+          </ng-template>
+        </mat-tab>
+        <!-- list tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon svgIcon="format-list-bulleted-square" class="mx-1"></mat-icon>
+            List
+          </ng-template>
+          <ng-template matTabContent>
+            <div class="m-4" style="float:right">
+              <mat-icon>settings</mat-icon>
+            </div>
+            <app-table-widget *ngIf="tableWidgetData" #tableWidget [tableData]="tableWidgetData"
+              (rowClicked)="rowClicked($event)">
+            </app-table-widget>
+
+            <div *ngIf="false" class="h-100" fxLayout="column" fxLayoutAlign="center center">
+              <img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+              <div class="text-center">
+                <h1 class="empty-state-color">no live data</h1>
+                <button class="mx-auto" mat-raised-button color="primary" fxLayout="row"
+                  fxLayoutAlign="space-between center">
+                  <mat-icon svgIcon="plus"></mat-icon>
+                  <span>
+                    Create
+                  </span>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </mat-tab>
+        <!-- map tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon svgIcon="map" class="mx-1"></mat-icon>
+            Map
+          </ng-template>
+          <ng-template matTabContent>
+            <mat-drawer-container>
+              <mat-drawer-content>
+                <div class="map-fullview-container">
+                  <div class="map-frame">
+                    <div id="map"></div>
+                  </div>
+                </div>
+              </mat-drawer-content>
+            </mat-drawer-container>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-sidenav-content>
+    <mat-sidenav #drawer opened mode="side" [style.width.vw]="65" position="end">
+      <mat-drawer-container>
+        <mat-drawer  #mapdrawer mode="over" position="end">
+          <div class="drawer-component">
+            <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+              name="drawer" [fullScreen]="false"></ngx-spinner>
+            <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+              <div class="h-100" fxLayout="row">
+                <button mat-button (click)="mapdrawer.toggle()" tabindex="-1">
+                  <mat-icon svgIcon="close"></mat-icon>
+                </button>
+                <mat-divider vertical></mat-divider>
+                <span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                  {{selectedVehicle?.title}}
+                </span>
+              </div>
+            </mat-toolbar>
+            <div class="mt-2">
+              <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+                name="drawer" [fullScreen]="false">
+              </ngx-spinner>
+              <mat-tab-group>
+                <mat-tab label="Quick Info">
+                  <mat-card *ngIf="telmaticVehicle?.vehicle" class="p-2 m-4">
+                    <div *ngFor="let quickInfo of transform(telmaticVehicle?.quickInfo)" fxLayout="row"
+                      fxLayoutAlign="Start center" fxLayoutGap="10px">
+                      <ng-container *ngIf="telmaticVehicle?.quickInfo[quickInfo]">
+                        <mat-icon [svgIcon]="icons[quickInfo]"></mat-icon>
+                        <h4>{{quickInfo}}</h4>
+                        <span>{{telmaticVehicle?.quickInfo[quickInfo]}}</span>
+                      </ng-container>
+                    </div>
+                  </mat-card>
+                </mat-tab>
+                <mat-tab label="Vehicle">
+                  <mat-card *ngIf="telmaticVehicle?.vehicle" class="p-2 m-4">
+                    <div *ngFor="let vehicle of transform(telmaticVehicle?.vehicle)" fxLayout="row"
+                      fxLayoutAlign="Start center" fxLayoutGap="10px">
+                      <ng-container *ngIf="telmaticVehicle?.vehicle[vehicle]">
+                        <mat-icon [svgIcon]="icons[vehicle]"></mat-icon>
+                        <h4>{{vehicle}}</h4>
+                        <span>{{telmaticVehicle?.vehicle[vehicle]}}</span>
+                      </ng-container>
+                    </div>
+                  </mat-card>
+                </mat-tab>
+                <mat-tab label="Driver">
+                  <mat-card *ngIf="telmaticVehicle?.driver" class="p-2 m-4">
+                    <div *ngFor="let driver of transform(telmaticVehicle?.driver)" fxLayout="row"
+                      fxLayoutAlign="Start center" fxLayoutGap="10px">
+                      <ng-container *ngIf="telmaticVehicle?.driver[driver]">
+                        <mat-icon [svgIcon]="icons[driver]"></mat-icon>
+                        <h4>{{driver}}</h4>
+                        <span>{{telmaticVehicle?.driver[driver]}}</span>
+                      </ng-container>
+                    </div>
+                  </mat-card>
+                </mat-tab>
+                <mat-tab label="Trip">
+                  <mat-card class="m-4">
+                    <table class="w-100" mat-table [dataSource]="tripdataSource">
+
+                      <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef>
+                          <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue()"
+                            [indeterminate]="selection.hasValue()">
+                            <!-- Removed isAllSelected() method for produdction build - it does not return a boolean -->
+                          </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                          <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                          </mat-checkbox>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="From">
+                        <th mat-header-cell *matHeaderCellDef> From </th>
+                        <td mat-cell *matCellDef="let element"> {{element.fromAddress}} </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="To">
+                        <th mat-header-cell *matHeaderCellDef> To </th>
+                        <td mat-cell *matCellDef="let element"> {{element.toAddress}} </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="Start Time">
+                        <th mat-header-cell *matHeaderCellDef> Start Time </th>
+                        <td mat-cell *matCellDef="let element"> {{element.vehicleStartTime}} </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="End Time">
+                        <th mat-header-cell *matHeaderCellDef> End Time </th>
+                        <td mat-cell *matCellDef="let element"> {{element.vehicleEndTime}} </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="Distance">
+                        <th mat-header-cell *matHeaderCellDef> Distance </th>
+                        <td mat-cell *matCellDef="let element"> {{element.distance}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="Duration">
+                        <th mat-header-cell *matHeaderCellDef> Duration </th>
+                        <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="tripdisplayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: tripdisplayedColumns;"></tr>
+                    </table>
+
+                  </mat-card>
+                </mat-tab>
+                <mat-tab label="Sensors">
+                  <mat-card class="p-2 m-4 drawer-card" *ngIf="telmaticVehicle?.sensors">
+                    <div *ngFor="let sensor of transform(telmaticVehicle?.sensors)" fxLayout="row"
+                      fxLayoutAlign="Start center" fxLayoutGap="10px">
+                      <ng-container *ngIf="telmaticVehicle?.sensors[sensor]">
+                        <mat-icon [svgIcon]="icons[sensor]"></mat-icon>
+                        <h4>{{sensor}}</h4>
+                        <span>{{telmaticVehicle?.sensors[sensor]}}</span>
+                      </ng-container>
+                    </div>
+                  </mat-card>
+                </mat-tab>
+                <mat-tab label="Device">
+                  <mat-card class="p-2 m-4" *ngIf="telmaticVehicle?.device">
+                    <div *ngFor="let device of transform(telmaticVehicle?.device)" fxLayout="row"
+                      fxLayoutAlign="Start center" fxLayoutGap="10px">
+                      <ng-container *ngIf="telmaticVehicle?.device[device]">
+                        <mat-icon [svgIcon]="icons[device]"></mat-icon>
+                        <h4>{{device}}</h4>
+                        <span>{{telmaticVehicle?.device[device]}}</span>
+                      </ng-container>
+                    </div>
+                  </mat-card>
+
+                </mat-tab>
+                <mat-tab label="Camera">
+                  <mat-card class="p-2 m-4">
+                    <div class="p-3" fxLayout="row" fxLayoutAlign="space-between center">
+                      <mat-icon>local_shipping</mat-icon>
+                      <h4>Live Stream</h4>
+                      <a href="">click here</a>
+                    </div>
+                  </mat-card>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </div>
+        </mat-drawer>
+        <mat-drawer-content>
+          <div class="map-fullview-container">
+            <div class="map-frame">
+              <div id="map"></div>
+            </div>
+          </div>
+        </mat-drawer-content>
+      </mat-drawer-container>
+
+    </mat-sidenav>
+  </mat-sidenav-container>
+</div>

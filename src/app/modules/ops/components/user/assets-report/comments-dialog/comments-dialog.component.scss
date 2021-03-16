@@ -1,0 +1,64 @@
+.main-container {
+	width: 93%;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 20px;
+}
+
+.example-container.mat-elevation-z8 {
+	padding: 10px;
+	margin-bottom: 15px;
+	width: 100%;
+	overflow: auto;
+}
+
+::ng-deep {
+	.mat-form-field-infix {
+		width: 140px !important;
+	}
+	
+	.mat-form-field-appearance-outline .mat-form-field-wrapper {
+		margin-top: 1.33em !important;
+		margin-bottom: 1.25em !important;
+	}
+	
+	.mat-form-field-wrapper {
+		padding-bottom: 0.33em;
+	}
+}
+
+.vatPercetangeForm {
+	float: right;
+	margin-right: 20px;
+	margin-top: 10px;
+}
+
+td.mat-cell, th.mat-header-cell {
+	padding: 0px 10px;
+	flex: 0 0 80px;
+	white-space: nowrap;
+}
+
+.footer-cell {
+	padding: 0px 10px;
+}
+
+.MR {
+	margin-right: 10px;
+}
+
+.commentsArea {
+	height: 250px;
+	width: 450px;
+}
+
+.hc {
+	height: 170px;
+}
+
+.asset-reporting-table {
+	height: 700px;
+	padding-top: 0px;
+}
+
+

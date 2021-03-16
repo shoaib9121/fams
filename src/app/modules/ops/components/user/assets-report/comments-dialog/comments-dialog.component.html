@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>
+	{{ globalVars.translation["Comments"][globalVars.LNG] }}
+</h2>
+<mat-dialog-content class="pt-2 pb-3 commentsArea">
+	<mat-form-field class="w-100" appearance="outline">
+		<mat-label>{{ globalVars.translation["Add"][globalVars.LNG] }} {{ globalVars.translation["Comments"][globalVars.LNG] }}</mat-label>
+		<textarea matInput matTextareaAutosize MatTextareaAutosizeMinRows="2" MatTextareaAutosizeMaxRows="4"
+		          [(ngModel)]="comment" class="hc"></textarea>
+	</mat-form-field>
+</mat-dialog-content>
+
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onNoClick()"
+	        tabindex="-1">{{ globalVars.translation["Cancel"][globalVars.LNG] }}</button>
+	<button mat-raised-button color="primary" (click)="onYesClick()"
+	        tabindex="1">{{ globalVars.translation["Add"][globalVars.LNG] }}</button>
+</mat-dialog-actions>

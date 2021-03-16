@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>
+	{{ globals.translation["Are you sure?"][globals.LNG] }}
+</h2>
+<mat-dialog-content class="pt-2 pb-3">
+  {{ globals.translation["The status will be updated to"][globals.LNG] }}
+	<span class="mx-1 status-label" [style.backgroundColor]="data.status.color">{{ data.status.name[globals.LNG] }}</span>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onNoClick('no')" tabindex="-1">NO</button>
+	<button mat-raised-button color="primary" (click)="onYesClick('yes')" tabindex="1">YES</button>
+</mat-dialog-actions>
+

@@ -1,0 +1,7 @@
+<div class="demo-full-width margin-top" [formGroup]="group">
+  <label class="radio-label-padding">{{field.label+  required}} :</label>
+  <mat-radio-group [formControlName]="field.col">
+  <mat-radio-button *ngFor="let item of field.options" [value]="item" registerChildComponentToForm>{{item.value }}</mat-radio-button>
+  
+  </mat-radio-group>
+  </div>

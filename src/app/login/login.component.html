@@ -1,0 +1,36 @@
+<div class="login-component">
+	<ngx-spinner
+			bdColor="rgba(51,51,51,0.8)"
+			size="medium"
+			color="#008755"
+			type="ball-scale-multiple"
+	></ngx-spinner>
+	<div class="login-card-wrapper">
+		<mat-card class="login text-center">
+			<img mat-card-image [src]="globalVariables.environment.corporateIdentity.logo.darkPath" [alt]="globalVariables.environment.corporateIdentity.logo.alt" class="logo">
+			<mat-card-content>
+				<div [formGroup]="credentialsFG" (ngSubmit)="login()">
+					<mat-form-field appearance="outline" class="w-100">
+						<mat-label>{{ globalVariables.translation["username"][globalVariables.LNG] }}</mat-label>
+						<input type="text" matInput formControlName="username">
+						<mat-error *ngIf="credentialsFG.controls.username.hasError('incorrect')">
+							{{ globalVariables.translation["incorrect_username"][globalVariables.LNG] }}
+						</mat-error>
+					</mat-form-field>
+					
+					<mat-form-field appearance="outline" class="w-100">
+						<mat-label>{{ globalVariables.translation["Password"][globalVariables.LNG] }}</mat-label>
+						<input type="password" matInput (keyup.enter)="login()" formControlName="password">
+						<mat-error *ngIf="credentialsFG.controls.password.hasError('incorrect')">
+							{{ globalVariables.translation["incorrect_password"][globalVariables.LNG] }}
+						</mat-error>
+					</mat-form-field>
+				</div>
+			</mat-card-content>
+			
+			<mat-card-actions>
+				<button type="submit" class="w-100 fw-400" mat-raised-button color="primary" (click)="login()"> {{ globalVariables.translation["login"][globalVariables.LNG] }} </button>
+			</mat-card-actions>
+		</mat-card>
+	</div>
+</div>

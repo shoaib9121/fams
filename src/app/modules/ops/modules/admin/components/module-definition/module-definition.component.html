@@ -1,0 +1,974 @@
+<div class="module-definition-component">
+	<ngx-spinner
+			bdColor="rgba(255, 255, 255, 0.7)"
+			size="medium"
+			color="#008755"
+			type="ball-scale-multiple"
+			name="modules"
+			[fullScreen]="false"
+	>
+	</ngx-spinner>
+	
+	<mat-drawer-container hasBackdrop>
+		<mat-drawer-content>
+			<mat-toolbar color="white">
+				<mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center" fxLayout.gt-md="row">
+					<span>
+						{{ globals.translation["Modules"][globals.LNG] }}
+					</span>
+					<span>
+						<mat-slide-toggle class="example-margin" [(ngModel)]="isInTranslationMode"
+						                  [checked]="isInTranslationMode">
+		                    <h5>{{ globals.translation["Translation Mode"][globals.LNG] }}</h5>
+	                    </mat-slide-toggle>
+					</span>
+				</mat-toolbar-row>
+			</mat-toolbar>
+			
+			<div class="h-100 mb-4 overflow-auto mt-1">
+				<app-table-widget *ngIf="tableWidgetData"
+                                  #tableWidget
+				                  [tableData]="tableWidgetData"
+				                  (rowClicked)="openDrawer($event)"
+				>
+				</app-table-widget>
+			</div>
+			
+			<button mat-fab color="primary" class="sticky-fab-button" *ngIf="!isInTranslationMode"
+			        (click)="openDrawer()">
+				<mat-icon svgIcon="plus"></mat-icon>
+			</button>
+		</mat-drawer-content>
+		
+		<mat-drawer fxLayout="column" fxLayoutAlign="space-between stretch" class="mat-sidenav-fixed primary-bg-color"
+                    #drawer mode="over" position="end" style="width: 80vw;" disableClose>
+			<ngx-spinner
+					bdColor="rgba(255, 255, 255, 0.7)"
+					size="medium"
+					color="#008755"
+					type="ball-scale-multiple"
+					name="module-definition"
+					[fullScreen]="false"
+			>
+			</ngx-spinner>
+			
+			<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+				<div class="h-100" fxLayout="row">
+					<button mat-button (click)="cancelDrawer()" tabindex="-1">
+						<mat-icon svgIcon="close"></mat-icon>
+					</button>
+					<mat-divider vertical></mat-divider>
+					<span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+					{{ drawerTitle }}
+				</span>
+				</div>
+				<div class="px-4" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+					<button mat-raised-button color="primary" (click)="saveDefinition()">
+						{{ globals.translation["Save"][globals.LNG] }}
+					</button>
+				</div>
+			</mat-toolbar>
+			
+			<div class="p-2 pr-5 mx-auto content-container mt-1 overflow-auto">
+				<div [formGroup]="rootForm">
+					<mat-card class="pb-0">
+						<mat-horizontal-stepper class="position-relative" [linear]="isLinear" #stepper
+							                        (selectionChange)="syncFields()">
+								<!-- MODULE NAME -->
+								<mat-step [stepControl]="rootForm.controls['name']">
+									<ng-template
+											matStepLabel>{{ globals.translation["Module Name"][globals.LNG] }}</ng-template>
+									
+									<div class="mx-auto" fxLayout="column wrap" fxLayoutAlign="stretch center">
+										<mat-form-field class="w-100" appearance="outline">
+											<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+											<input matInput [formControl]="rootForm.controls['name']">
+										</mat-form-field>
+										
+										<mat-form-field class="w-100" appearance="outline">
+											<mat-label>{{ globals.translation["Name AR"][globals.LNG] }}</mat-label>
+											<input matInput [formControl]="rootForm.controls['nameArabic']">
+										</mat-form-field>
+									</div>
+									
+									<mat-form-field class="w-100" appearance="outline" *ngIf="!isInTranslationMode">
+										<mat-label>{{ globals.translation["Notes"][globals.LNG] }}</mat-label>
+										<textarea matInput [formControl]="rootForm.controls['notes']"></textarea>
+									</mat-form-field>
+									
+									<div class="mt-5">
+										<span fxFlex="auto"></span>
+										<button type="button" color="primary"
+										        mat-raised-button matStepperNext
+										        [disabled]="rootForm.controls['name'].invalid || rootForm.controls['nameArabic'].invalid"
+										        (click)="logFormState()">
+											{{ globals.translation["Next"][globals.LNG] }}
+										</button>
+									</div>
+								</mat-step>
+								
+								<!-- MODULE FIELDS -->
+								<mat-step [stepControl]="rootForm.controls['columns']">
+									<ng-template
+											matStepLabel>{{ globals.translation["Module Fields"][globals.LNG] }}</ng-template>
+									
+									<div [formGroup]="rootForm.get('columns.moduleField')">
+										<div class="mb-4"
+										     *ngFor="let moduleField of moduleFields.controls; let moduleFieldIndex = index">
+											<div class="mb-1" fxLayout="row" fxLayoutAlign="space-between center">
+												<span>#{{ moduleFieldIndex }}</span>
+												<button mat-icon-button *ngIf="!isInTranslationMode"
+												        (click)="removeFormControl(moduleFields, moduleFieldIndex)">
+													<mat-icon color="secondary" svgIcon="close-circle"></mat-icon>
+												</button>
+											</div>
+											
+											<div [formGroup]="moduleField" fxLayout="row wrap"
+											     fxLayoutAlign="flex-start flex-start"
+											     fxLayoutGap="10px">
+												<div fxFlex="auto" fxLayout="column wrap" fxLayoutAlign="stretch"
+												     formGroupName="name">
+													
+													<!-- Field Name -->
+													<div fxLayout="row wrap" fxLayoutGap="10px">
+														<mat-form-field appearance="outline" fxFlex="auto">
+															<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+															<input matInput formControlName="en"
+															       (ngModelChange)="updateFieldKey(moduleField)">
+														</mat-form-field>
+														<mat-form-field appearance="outline" fxFlex="auto">
+															<mat-label>{{ globals.translation["Name AR"][globals.LNG] }}</mat-label>
+															<input matInput formControlName="ar">
+														</mat-form-field>
+													</div>
+													
+													<!-- Field field_id -->
+													<mat-form-field appearance="outline" *ngIf="!isInTranslationMode">
+														<mat-label>{{ globals.translation["Field Id"][globals.LNG] }}</mat-label>
+														<input matInput [formControl]="moduleField.get('field_id')">
+													</mat-form-field>
+													
+													<!-- Field Type -->
+													<mat-form-field appearance="outline" *ngIf="!isInTranslationMode">
+														<mat-label>{{ globals.translation["Type"][globals.LNG] }}</mat-label>
+														<mat-select [formControl]="moduleField.get('data_type')"
+														            (selectionChange)="generateTypeFields(moduleField, moduleFieldIndex)">
+															<mat-option *ngFor="let fieldType of fieldTypeOptions"
+															            [value]="fieldType">
+																{{ fieldType }}
+															</mat-option>
+														</mat-select>
+													</mat-form-field>
+													
+													<!-- Calculation & Formula Type -->
+													<mat-form-field appearance="outline" *ngIf="!isInTranslationMode">
+														<mat-label>{{ globals.translation["Calculation?"][globals.LNG] }}</mat-label>
+														<mat-select [formControl]="moduleField.get('calculation')"
+														            (selectionChange)="renderFormulaControl(moduleField)">
+															<mat-option
+																	[value]="true">{{ globals.translation["Yes"][globals.LNG] }}</mat-option>
+															<mat-option
+																	[value]="false">{{ globals.translation["No"][globals.LNG] }}</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline"
+													                *ngIf="moduleField.get('formula') && !isInTranslationMode">
+														<mat-label>{{ globals.translation["Formula"][globals.LNG] }}</mat-label>
+														<textarea matInput
+														          [formControl]="moduleField.get('formula')"></textarea>
+													</mat-form-field>
+													
+													<!-- Validation -->
+													<ng-container
+															*ngIf="moduleField.get('validation') && !isInTranslationMode">
+														<div fxFlex="auto" fxLayout="row wrap"
+														     fxLayoutAlign="spcae-between center"
+														     fxLayoutGap="10px"
+														     *ngFor="let validation of moduleField.get('validation').controls; let validationIndex = index">
+															<mat-form-field fxFlex="auto" appearance="outline">
+																<mat-label>{{ globals.translation["Type"][globals.LNG] }}</mat-label>
+																<mat-select [formControl]="validation.get('type')"
+																            (selectionChange)="generateValidationFields(validation)">
+																	<mat-option>None</mat-option>
+																	<mat-option
+																			*ngFor="let validation of defaultValidationTypes"
+																			[value]="validation">
+																		{{ validation }}
+																	</mat-option>
+																</mat-select>
+															</mat-form-field>
+															
+															<!-- Pattern -->
+															<mat-form-field fxFlex="auto" appearance="outline"
+															                *ngIf="validation.get('pattern')">
+																<mat-label>{{ globals.translation["Define Pattern"][globals.LNG] }}</mat-label>
+																<input matInput
+																       [formControl]="validation.get('pattern')">
+															</mat-form-field>
+															
+															<!-- Error Message -->
+															<mat-form-field fxFlex="auto" appearance="outline"
+															                [formGroup]="validation.get('message')">
+																<mat-label>{{ globals.translation["Error Message"][globals.LNG] }}</mat-label>
+																<input matInput formControlName="en">
+															</mat-form-field>
+															
+															<mat-form-field fxFlex="auto" appearance="outline"
+															                [formGroup]="validation.get('message')">
+																<mat-label>{{ globals.translation["Error Message Arabic"][globals.LNG] }}</mat-label>
+																<input matInput formControlName="ar">
+															</mat-form-field>
+															
+															<button mat-icon-button
+															        class="outline-form-vertical-alignment-fix"
+															        *ngIf="!isInTranslationMode"
+															        (click)="removeFormControl(moduleField.get('validation'), validationIndex)">
+																<mat-icon svgIcon="close-circle"
+																          color="secondary"></mat-icon>
+															</button>
+														</div>
+													</ng-container>
+													
+													<button mat-button (click)="addValidationField(moduleField)"
+													        *ngIf="!isInTranslationMode">
+														{{ globals.translation["Add Validation"][globals.LNG] }}
+													</button>
+												
+												</div>
+												
+												<!-- Field Specification Depending on selected Type -->
+												<div fxFlex="auto"
+												     *ngIf="moduleField.get('data_type').value && !isInTranslationMode">
+													<ng-container [ngSwitch]="moduleField.get('data_type').value">
+														
+														<!-- Reference Field -->
+														<ng-container *ngSwitchCase="'module-reference'">
+															<div fxFlex="auto" fxLayout="column wrap">
+																<!-- Reference Module ID -->
+																<mat-form-field appearance="outline"
+																                *ngIf="moduleField.get('reference_module_id')">
+																	<mat-label>{{ globals.translation["Reference Module ID"][globals.LNG] }}</mat-label>
+																	<mat-select
+																			[formControl]="moduleField.get('reference_module_id')"
+																			(selectionChange)="fetchReferenceModuleValues(moduleField.get('reference_module_id').value)">
+																		<mat-option
+																				*ngFor="let referenceModule of referenceModules"
+																				[value]="referenceModule.id">
+																			{{ referenceModule.id }}
+																			- {{ referenceModule["name" + (globals.LNG == 'ar' ? "Arabic" : "")] }}
+																		</mat-option>
+																	</mat-select>
+																</mat-form-field>
+																
+																<!-- Reference Module Values -->
+																<mat-form-field appearance="outline">
+																	<mat-label>{{ globals.translation["Reference Module Values"][globals.LNG] }}</mat-label>
+																	<mat-chip-list #chipList>
+																		<mat-chip
+																				*ngFor="let referenceKey of moduleField.get('reference_module_values')?.value">
+																			{{ referenceKey }}
+																		</mat-chip>
+																		
+																		<input matInput #input="matAutocompleteTrigger"
+																		       [matAutocomplete]="auto"
+																		       [matChipInputFor]="chipList"
+																		       [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+																	</mat-chip-list>
+																	<mat-autocomplete #auto="matAutocomplete"
+																	                  (optionSelected)="setReferenceModuleValue($event, moduleField, input)">
+																		<mat-option>None</mat-option>
+																		<mat-option (click)="$event.stopPropagation()"
+																		            *ngFor="let referenceKey of referenceModuleValues[moduleField.get('reference_module_id')?.value]"
+																		            [value]="referenceKey.field_id">
+																			{{ referenceKey.name[globals.LNG] }}
+																		</mat-option>
+																	</mat-autocomplete>
+																</mat-form-field>
+																
+																<!-- KeyShow -->
+																<mat-form-field appearance="outline">
+																	<mat-label>{{ globals.translation["KeyShow"][globals.LNG] }}</mat-label>
+																	<input matInput #inputKeyShow
+																	       [formControl]="moduleField.get('key_show')"
+																	       [matAutocomplete]="keyShowAuto">
+																	<mat-autocomplete #keyShowAuto="matAutocomplete">
+																		<mat-option>None</mat-option>
+																		<mat-option
+																				*ngFor="let potentialKeyShow of referenceModuleValues[moduleField.get('reference_module_id')?.value]"
+																				[value]="potentialKeyShow.field_id">
+																			{{ potentialKeyShow.name[globals.LNG] }}
+																		</mat-option>
+																	</mat-autocomplete>
+																</mat-form-field>
+															</div>
+														</ng-container>
+														
+														<!-- Table Field -->
+														<ng-container *ngSwitchCase="'table'">
+															<div fxLayout="column" fxLayoutAlign="stretch"
+															     fxLayoutGap="20px">
+																<div fxLayout="row wrap"
+																     fxLayoutAlign="space-between center"
+																     fxLayoutGap="10px"
+																     *ngFor="let column of moduleField.get('columns').controls; let columnIndex = index;">
+																	<mat-form-field fxFlex="auto" appearance="outline"
+																	                [formGroup]="column.get('name')">
+																		<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+																		<input matInput formControlName="en">
+																	</mat-form-field>
+																	
+																	<mat-form-field fxFlex="auto" appearance="outline"
+																	                [formGroup]="column.get('name')">
+																		<mat-label>{{ globals.translation["Name AR"][globals.LNG] }}</mat-label>
+																		<input matInput formControlName="ar">
+																	</mat-form-field>
+																	
+																	<!-- Column read only ? -->
+																	<mat-form-field appearance="outline"
+																	                *ngIf="column.get('read_only')">
+																		<mat-label>{{ globals.translation["Read Only?"][globals.LNG] }}</mat-label>
+																		<mat-select
+																				[formControl]="column.get('read_only')"
+																				[value]="column.get('calculation')">
+																			<mat-option
+																					[value]="true">{{ globals.translation["Yes"][globals.LNG] }}</mat-option>
+																			<mat-option
+																					[value]="false">{{ globals.translation["No"][globals.LNG] }}</mat-option>
+																		</mat-select>
+																	</mat-form-field>
+																	
+																	<!-- Whether it has a calculation or not -->
+																	<mat-form-field fxFlex="auto" appearance="outline">
+																		<mat-label>{{ globals.translation["Calculation?"][globals.LNG] }}</mat-label>
+																		<mat-select
+																				[formControl]="column.get('calculation')"
+																				(selectionChange)="renderFormulaControl(column)">
+																			<mat-option
+																					[value]="true">{{ globals.translation["Yes"][globals.LNG] }}</mat-option>
+																			<mat-option
+																					[value]="false">{{ globals.translation["No"][globals.LNG] }}</mat-option>
+																		</mat-select>
+																	</mat-form-field>
+																	<mat-form-field fxFlex="auto" appearance="outline"
+																	                *ngIf="column.get('formula')">
+																		<mat-label>{{ globals.translation["Formula"][globals.LNG] }}</mat-label>
+																		<textarea matInput
+																		          [formControl]="column.get('formula')"
+																		          (change)="convertToJson(column.get('formula'))"></textarea>
+																	</mat-form-field>
+																
+																</div>
+																<button fxFlex="100%" class="w-100" mat-button
+																        *ngIf="!isInTranslationMode"
+																        (click)="addColumnToTable(moduleField)">
+																	{{ globals.translation["Add"][globals.LNG] }}
+																</button>
+															</div>
+														</ng-container>
+													</ng-container>
+												</div>
+											</div>
+											
+											<mat-divider></mat-divider>
+										</div>
+										
+										<button mat-button class="w-100" (click)="addModuleField()"
+										        *ngIf="!isInTranslationMode">
+											{{ globals.translation["Add new field"][globals.LNG] }}
+										</button>
+									</div>
+									
+									<div class="mt-5">
+										<span fxFlex="auto"></span>
+										<button mat-button
+										        matStepperPrevious>{{globals.translation["Previous"][globals.LNG]}}</button>
+										<button type="button" color="primary"
+										        mat-raised-button matStepperNext
+										        (click)="logFormState()">
+											{{ globals.translation["Next"][globals.LNG] }}
+										</button>
+									</div>
+								</mat-step>
+								
+								<!-- MODULE STATUSES -->
+								<mat-step [stepControl]="rootForm.controls['columns']">
+									<ng-template matStepLabel>Statuses</ng-template>
+									
+									<div [formGroup]="rootForm.get('columns.moduleStatus')">
+										<div fxLayout="column wrap" fxLayoutAlign="stretch center">
+											<div fxLayout="row wrap" fxLayoutAlign="space-between center"
+											     fxLayoutGap="10px"
+											     *ngFor="let moduleStatus of moduleStatuses.controls; let moduleStatusIndex = index"
+											>
+												<span class="outline-form-vertical-alignment-fix color-map" fxFlex="0 0 auto"
+												      fxLayout="row wrap" fxLayoutAlign="center center"
+												      [style.background]="moduleStatus.get('color').value">
+													#{{ moduleStatusIndex }}
+												</span>
+												
+												<div fxLayout="row wrap" fxLayoutAlign="space-between center"
+												      fxLayoutGap="10px">
+													<mat-form-field appearance="outline"
+													                [formGroup]="moduleStatus.get('name')">
+														<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+														<input matInput formControlName="en">
+													</mat-form-field>
+													
+													<mat-form-field appearance="outline"
+													                [formGroup]="moduleStatus.get('name')">
+														<mat-label>{{ globals.translation["Name AR"][globals.LNG] }}</mat-label>
+														<input matInput formControlName="ar">
+													</mat-form-field>
+													
+													<mat-form-field appearance="outline" *ngIf="!isInTranslationMode">
+														<mat-label>{{ globals.translation["Color"][globals.LNG]}}</mat-label>
+														<input matInput cpPosition="bottom" colorPicker
+														       (colorPickerChange)="moduleStatus.get('color').setValue($event)"
+														       [cpWidth]="200"
+														       [cpHeight]="200"
+														       [formControl]="moduleStatus.get('color')"
+														>
+													</mat-form-field>
+													
+													<button class="outline-form-vertical-alignment-fix" mat-icon-button
+													        *ngIf="!isInTranslationMode"
+													        (click)="moduleStatuses.controls.splice(moduleStatusIndex, 1)">
+														<mat-icon svgIcon="close-circle" color="secondary"></mat-icon>
+													</button>
+												</div>
+											</div>
+											
+											<button class="w-100" mat-button (click)="addModuleStatus()"
+											        *ngIf="!isInTranslationMode">
+												{{ globals.translation["Add"][globals.LNG] }}
+											</button>
+										</div>
+									</div>
+									
+									<div class="mt-5">
+										<span fxFlex="auto"></span>
+										<button mat-button matStepperPrevious>
+											{{ globals.translation["Previous"][globals.LNG] }}
+										</button>
+										<button type="button" color="primary"
+										        mat-raised-button matStepperNext
+										        (click)="logFormState()">
+											{{ globals.translation["Next"][globals.LNG] }}
+										</button>
+									</div>
+								</mat-step>
+								
+								<!-- MODULE TYPES -->
+								<mat-step [stepControl]="rootForm.controls['columns']">
+									<ng-template
+											matStepLabel>{{ globals.translation["Types"][globals.LNG]}}</ng-template>
+									
+									<div [formGroup]="rootForm.get('columns.moduleType')">
+										<mat-accordion>
+											<!-- Type -->
+											<mat-expansion-panel
+													*ngFor="let moduleType of moduleTypes.controls; let moduleStatusIndex = index">
+												<mat-expansion-panel-header>
+													<mat-panel-title fxLayout="row wrap"
+													                 fxLayoutAlign="flex-start center"
+													                 fxLayoutGap="10px">
+														<mat-icon [svgIcon]="moduleType.get('icon').value"></mat-icon>
+														<span>{{ moduleType.get("name").get(globals.LNG).value }}</span>
+													</mat-panel-title>
+													<button mat-icon-button *ngIf="!isInTranslationMode"
+													        (click)="removeFormControl(moduleTypes, moduleStatusIndex)">
+														<mat-icon svgIcon="close-circle" color="secondary"></mat-icon>
+													</button>
+												</mat-expansion-panel-header>
+												
+												<!-- Basic Info (name) -->
+												<div fxLayout="row wrap" fxLayoutAlign="flex-start center"
+												     fxLayoutGap="10px">
+									<span class="outline-form-vertical-alignment-fix color-map" fxFlex="0 0 auto"
+									      fxLayout="row wrap" fxLayoutAlign="center center">
+										#{{ moduleType.get('id').value }}
+									</span>
+													
+													<mat-form-field fxFlex="auto" appearance="outline"
+													                [formGroup]="moduleType.get('name')">
+														<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+														<input matInput formControlName="en">
+													</mat-form-field>
+													
+													<mat-form-field fxFlex="auto" appearance="outline"
+													                [formGroup]="moduleType.get('name')">
+														<mat-label>{{ globals.translation["Name AR"][globals.LNG] }}</mat-label>
+														<input matInput formControlName="ar">
+													</mat-form-field>
+													
+													<mat-form-field fxFlex="auto" appearance="outline"
+													                *ngIf="!isInTranslationMode">
+														<mat-label>{{ globals.translation["Icon"][globals.LNG] }}</mat-label>
+														<input matInput [formControl]="moduleType.get('icon')">
+													</mat-form-field>
+												</div>
+												
+												<!-- Trigger Info -->
+												<div fxLayout="column" fxLayoutAlign="stretch"
+												     *ngIf="!isInTranslationMode">
+													<mat-form-field fxFlex="100%" appearance="outline">
+														<mat-label>{{ globals.translation["Trigger?"][globals.LNG] }}</mat-label>
+														<mat-select [formControl]="moduleType.get('trigger')"
+														            (selectionChange)="renderTriggerConfigurationControl(moduleType)">
+															<mat-option
+																	[value]="true">{{ globals.translation["Yes"][globals.LNG] }}</mat-option>
+															<mat-option
+																	[value]="false">{{ globals.translation["No"][globals.LNG] }}</mat-option>
+														</mat-select>
+													</mat-form-field>
+													
+													<mat-form-field fxFlex="100%" class="w-100" appearance="outline"
+													                *ngIf="moduleType.get('trigger_config')">
+														<mat-label>{{ globals.translation["Trigger Configuration"][globals.LNG] }}</mat-label>
+														<textarea matInput
+														          [formControl]="moduleType.get('trigger_config')"></textarea>
+													</mat-form-field>
+												</div>
+												
+												<!-- Type Groups -->
+												<h2 class="fw-400">{{ globals.translation["Type Groups"][globals.LNG] }}</h2>
+												<mat-accordion class="w-100">
+													<mat-expansion-panel
+															*ngFor="let formGroup of moduleType.get('forms').get('groups').controls; let formGroupIndex = index;">
+														<mat-expansion-panel-header>
+															<mat-panel-title>{{ formGroup.get("name").get(globals.LNG).value }}</mat-panel-title>
+															<button mat-icon-button *ngIf="!isInTranslationMode"
+															        (click)="removeFormControl(moduleType.get('forms.groups'), moduleStatusIndex)">
+																<mat-icon svgIcon="close-circle"
+																          color="secondary"></mat-icon>
+															</button>
+														</mat-expansion-panel-header>
+														
+														<!-- Group Name -->
+														<div fxLayout="column wrap" fxLayoutAlign="stretch"
+														     fxLayoutGap="20px">
+															<div fxLayout="row wrap"
+															     fxLayoutAlign="space-between center"
+															     fxLayoutGap="10px"
+															     [formGroup]="formGroup.get('name')"
+															>
+																<mat-form-field fxFlex="auto" appearance="outline">
+																	<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+																	<input matInput formControlName="en">
+																</mat-form-field>
+																
+																<mat-form-field fxFlex="auto" appearance="outline">
+																	<mat-label>{{ globals.translation["Name AR"][globals.LNG]}}</mat-label>
+																	<input matInput formControlName="ar">
+																</mat-form-field>
+															</div>
+															
+															<!-- Optional or not -->
+															<mat-form-field appearance="outline"
+															                *ngIf="!isInTranslationMode">
+																<mat-label>{{ globals.translation["Is it optional?"][globals.LNG] }}</mat-label>
+																<mat-select [formControl]="formGroup.get('optional')">
+																	<mat-option
+																			[value]="true">{{ globals.translation["Yes"][globals.LNG] }}</mat-option>
+																	<mat-option
+																			[value]="false">{{ globals.translation["No"][globals.LNG] }}</mat-option>
+																</mat-select>
+															</mat-form-field>
+															
+															<!-- Selecting Fields -->
+															<mat-form-field appearance="outline"
+															                *ngIf="!isInTranslationMode">
+																<mat-label>{{ globals.translation["Fields"][globals.LNG] }}</mat-label>
+																<mat-chip-list #chipList>
+																	<mat-chip fxLayout="row"
+																	          fxLayoutAlign="space-between center"
+																	          [removable]="true"
+																	          *ngFor="let fieldIndex of formGroup.get('fields')?.value"
+																	          (removed)="removeField(fieldIndex, formGroup.get('fields'))"
+																	>
+																		{{ moduleFieldsListCopy[fieldIndex]?.field_id }}
+																		<mat-icon matChipRemove inline size="14px"
+																		          svgIcon="close-circle"></mat-icon>
+																	</mat-chip>
+																	
+																	<input matInput #input="matAutocompleteTrigger"
+																	       [formControl]="moduleFieldSearchCtrl"
+																	       [matAutocomplete]="auto"
+																	       [matChipInputFor]="chipList"
+																	       [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+																</mat-chip-list>
+																<mat-autocomplete #auto="matAutocomplete"
+																                  (optionSelected)="assignFieldToGroup($event, formGroup, input)">
+																	<mat-option
+																			(click)="resetArrayValue(formGroup.get('fields'))">
+																		None
+																	</mat-option>
+																	<mat-option (click)="$event.stopPropagation()"
+																	            *ngFor="let fieldFiltered of moduleFieldsListOptions$ | async; let fieldIndex = index;"
+																	            [value]="fieldFiltered"
+																	>
+																		{{ fieldFiltered.field_id }}
+																	</mat-option>
+																</mat-autocomplete>
+															</mat-form-field>
+														</div>
+														
+														<!-- Sub Groups -->
+														<mat-accordion *ngIf="formGroup.get('sub_group')">
+															<mat-expansion-panel
+																	*ngFor="let subFormGroup of formGroup.get('sub_group').controls; let subFormGroupIndex = index;">
+																<mat-expansion-panel-header>
+																	<mat-panel-title>{{ subFormGroup.get("name").get(globals.LNG).value }}</mat-panel-title>
+																	<button mat-icon-button *ngIf="!isInTranslationMode"
+																	        (click)="removeFormControl(formGroup.get('sub_group'), subFormGroupIndex)">
+																		<mat-icon svgIcon="close-circle"
+																		          color="secondary"></mat-icon>
+																	</button>
+																</mat-expansion-panel-header>
+																
+																<div fxLayout="column wrap" fxLayoutAlign="stretch"
+																     fxLayoutGap="20px">
+																	<div fxLayout="row wrap"
+																	     fxLayoutAlign="space-between center"
+																	     fxLayoutGap="10px"
+																	     [formGroup]="subFormGroup.get('name')"
+																	>
+																		<mat-form-field fxFlex="auto"
+																		                appearance="outline">
+																			<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+																			<input matInput formControlName="en">
+																		</mat-form-field>
+																		
+																		<mat-form-field fxFlex="auto"
+																		                appearance="outline">
+																			<mat-label>{{ globals.translation["Name AR"][globals.LNG]}}</mat-label>
+																			<input matInput formControlName="ar">
+																		</mat-form-field>
+																	</div>
+																	
+																	<!-- Optional or not -->
+																	<mat-form-field appearance="outline"
+																	                *ngIf="!isInTranslationMode">
+																		<mat-label>{{ globals.translation["Is it optional?"][globals.LNG] }}</mat-label>
+																		<mat-select
+																				[formControl]="subFormGroup.get('optional')">
+																			<mat-option
+																					[value]="true">{{ globals.translation["Yes"][globals.LNG] }}</mat-option>
+																			<mat-option
+																					[value]="false">{{ globals.translation["No"][globals.LNG] }}</mat-option>
+																		</mat-select>
+																	</mat-form-field>
+																	
+																	<!-- Selecting Fields -->
+																	<mat-form-field appearance="outline"
+																	                *ngIf="!isInTranslationMode">
+																		<mat-label>{{ globals.translation["Fields"][globals.LNG] }}</mat-label>
+																		<mat-chip-list #chipList>
+																			<mat-chip fxLayout="row"
+																			          fxLayoutAlign="space-between center"
+																			          [removable]="true"
+																			          *ngFor="let subFieldIndex of subFormGroup?.get('fields')?.value"
+																			          (removed)="removeField(subFieldIndex, subFormGroup.get('fields'))"
+																			>
+																				{{ moduleFieldsListCopy[subFieldIndex]?.field_id }}
+																				<mat-icon matChipRemove inline
+																				          size="14px"
+																				          svgIcon="close-circle"></mat-icon>
+																			</mat-chip>
+																			
+																			<input matInput
+                                                                                   #input="matAutocompleteTrigger"
+																			       [formControl]="moduleFieldSearchCtrl"
+																			       [matAutocomplete]="auto"
+																			       [matChipInputFor]="chipList"
+																			       [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+																		</mat-chip-list>
+																		<mat-autocomplete #auto="matAutocomplete"
+																		                  (optionSelected)="assignFieldToGroup($event, subFormGroup, input)">
+																			<mat-option
+																					(click)="resetArrayValue(formGroup.get('fields'))">
+																				None
+																			</mat-option>
+																			<mat-option
+																					(click)="$event.stopPropagation()"
+																					*ngFor="let field of moduleFieldsListOptions$ | async; let fieldIndex = index;"
+																					[value]="fieldIndex"
+																			>
+																				{{ field.field_id }}
+																			</mat-option>
+																		</mat-autocomplete>
+																	</mat-form-field>
+																</div>
+															
+															</mat-expansion-panel>
+														</mat-accordion>
+														
+														<button class="w-100 mt-2" mat-button
+														        *ngIf="!isInTranslationMode"
+														        (click)="addSubFormGroup(formGroup)">
+															{{ globals.translation["Add Sub group"][globals.LNG] }}
+														</button>
+													</mat-expansion-panel>
+												</mat-accordion>
+												<button mat-button class="w-100 mt-2"
+												        (click)="addTypeFormGroup(moduleType)"
+												        *ngIf="!isInTranslationMode">
+													{{ globals.translation["Add Form Group"][globals.LNG] }}
+												</button>
+												
+												<!-- Process Flow -->
+												<h2 class="fw-400"
+												    *ngIf="!isInTranslationMode">{{ globals.translation["Process Flow"][globals.LNG] }}</h2>
+												<mat-accordion class="w-100" displayMode="flat"
+												               *ngIf="!isInTranslationMode">
+													<mat-expansion-panel>
+														<mat-expansion-panel-header>
+															<mat-panel-title>{{ globals.translation["Process Flow"][globals.LNG] }}</mat-panel-title>
+														</mat-expansion-panel-header>
+														
+														<div *ngFor="let processFlow of moduleType.get('process_flow').controls; let processFlowIndex = index;">
+															<div fxLayout="row wrap"
+															     fxLayoutAlign="space-between center"
+															     fxLayoutGap="10px">
+																
+																<!-- Status -->
+																<mat-form-field fxFlex="auto" appearance="outline">
+																	<mat-label>{{ globals.translation["Status"][globals.LNG] }}</mat-label>
+																	<mat-select
+																			[formControl]="processFlow.get('status')">
+																		<mat-option>None</mat-option>
+																		<mat-option
+																				*ngFor="let status of rootForm.get('columns').get('moduleStatus').value; let statusIndex = index"
+																				[value]="status.id"
+																		>
+																			{{ status.name[globals.LNG] }}
+																		</mat-option>
+																	</mat-select>
+																</mat-form-field>
+																
+																<!-- User Role -->
+																<mat-form-field fxFlex="auto" appearance="outline">
+																	<mat-label>{{ globals.translation["User Role"][globals.LNG] }}</mat-label>
+																	
+																	<mat-chip-list #chipList>
+																		<mat-chip
+																				*ngFor="let userRoleId of processFlow.get('roles')?.value">
+																			{{ getUserRoleDescription(userRoleId) }}
+																		</mat-chip>
+																		
+																		<input matInput
+                                                                               #userRoleInput="matAutocompleteTrigger"
+																		       [matAutocomplete]="userRoleAutoComplete"
+																		       [matChipInputFor]="chipList"
+																		       [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+																	</mat-chip-list>
+																	<mat-autocomplete
+                                                                        #userRoleAutoComplete="matAutocomplete"
+																		(optionSelected)="addRoleToProcessFlow($event, processFlow, userRoleInput)">
+																		<mat-option>None</mat-option>
+																		<mat-option (click)="$event.stopPropagation()"
+																		            *ngFor="let userRole of userRoles"
+																		            [value]="userRole.id">
+																			{{ userRole.id }}
+																			- {{ userRole.name[globals.LNG] }}
+																		</mat-option>
+																	</mat-autocomplete>
+																</mat-form-field>
+																
+																<!-- Flow -->
+																<mat-form-field fxFlex="auto" appearance="outline">
+																	<mat-label>{{ globals.translation["Process Flow"][globals.LNG] }}</mat-label>
+																	<mat-chip-list #chipList>
+																		<mat-chip
+																				*ngFor="let statusId of processFlow.get('flow')?.value">
+																			{{ getStatusName(statusId) }}
+																		</mat-chip>
+																		
+																		<input matInput
+                                                                               #flowInput="matAutocompleteTrigger"
+																		       [matAutocomplete]="flowAutoComplete"
+																		       [matChipInputFor]="chipList"
+																		       [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+																	</mat-chip-list>
+																	<mat-autocomplete
+                                                                        #flowAutoComplete="matAutocomplete"
+																		(optionSelected)="addStatusToFlow($event, processFlow, flowInput)">
+																		<mat-option>None</mat-option>
+																		<mat-option (click)="$event.stopPropagation()"
+																		            *ngFor="let status of rootForm.get('columns').get('moduleStatus')?.value; let statusIndex = index"
+																		            [value]="status.id">
+																			{{ status.name[globals.LNG] }}
+																		</mat-option>
+																	</mat-autocomplete>
+																</mat-form-field>
+																
+																<!--<mat-form-field fxFlex="100%" appearance="outline">
+																	<mat-label>{{ globals.translation["Actions"][globals.LNG] }}</mat-label>
+																	<textarea [formControl]="processFlow.get('actions')" cols="30" rows="10"></textarea>
+																</mat-form-field>-->
+																
+																<button class="outline-form-vertical-alignment-fix"
+																        mat-icon-button *ngIf="!isInTranslationMode"
+																        (click)="removeFormControl(moduleType.get('process_flow'), processFlowIndex)">
+																	<mat-icon svgIcon="close-circle"
+																	          color="secondary"></mat-icon>
+																</button>
+															</div>
+														</div>
+														
+														<button class="w-100" mat-button
+														        (click)="addProcessFlow(moduleType)">
+															{{ globals.translation["Add Flow"][globals.LNG] }}
+														</button>
+													</mat-expansion-panel>
+												</mat-accordion>
+												
+												<!-- Status Stages -->
+												<h2 class="fw-400">{{ globals.translation["Status Stages"][globals.LNG] }}</h2>
+												<mat-accordion class="w-100" displayMode="flat">
+													<mat-expansion-panel>
+														<mat-expansion-panel-header>
+															<mat-panel-title>{{ globals.translation["Status Stages"][globals.LNG] }}</mat-panel-title>
+														</mat-expansion-panel-header>
+														
+														<div class="overflow-x-auto" fxLayout="row"
+														     fxLayoutAlign="flex-start stretch"
+														     fxLayoutGap="20px">
+															<div class="overflow-x-auto p-2" fxFlex="0 0 400px"
+															     *ngFor="let statusStage of moduleType.get('status_stages').controls; let statusStageIndex = index;"
+															>
+																<mat-card class="h-100">
+																	<span class="mb-4" fxLayout="row wrap"
+																	      fxLayoutAlign="flex-start center"
+																	      fxLayoutGap="10px">
+																		<mat-icon
+																				[svgIcon]="statusStage.get('icon').value"></mat-icon>
+																		<span>{{ statusStage.get("name").get(globals.LNG).value }}</span>
+																	</span>
+																	
+																	<mat-card-content>
+																		<ng-container
+																				[formGroup]="statusStage.get('name')">
+																			<mat-form-field class="w-100"
+																			                appearance="outline">
+																				<mat-label>{{ globals.translation["Name EN"][globals.LNG] }}</mat-label>
+																				<input matInput formControlName="en">
+																			</mat-form-field>
+																			
+																			<mat-form-field class="w-100"
+																			                appearance="outline">
+																				<mat-label>{{ globals.translation["Name AR"][globals.LNG] }}</mat-label>
+																				<input matInput formControlName="ar">
+																			</mat-form-field>
+																		</ng-container>
+																		
+																		<mat-form-field class="w-100"
+																		                appearance="outline"
+																		                *ngIf="!isInTranslationMode">
+																			<mat-label>{{ globals.translation["Icon"][globals.LNG] }}</mat-label>
+																			<input matInput
+																			       [formControl]="statusStage.get('icon')">
+																		</mat-form-field>
+																		
+																		<mat-form-field class="w-100"
+																		                appearance="outline"
+																		                *ngIf="!isInTranslationMode">
+																			<mat-label>{{ globals.translation["Status"][globals.LNG] }}</mat-label>
+																			<mat-chip-list #statusChipList>
+																				<mat-chip
+																						*ngFor="let status of statusStage.get('statuses')?.value; let statusIndex = index;"
+																						[selectable]="false"
+																						[removable]="true"
+																						(removed)="statusStage.get('statuses').value.splice(statusIndex, 1)"
+																				>
+																					{{ getStatusName(status) }}
+																					<mat-icon matChipRemove inline
+																					          size="14px"
+																					          svgIcon="close"></mat-icon>
+																				</mat-chip>
+																				<input
+                                                                                    #statusInput="matAutocompleteTrigger"
+																					[matAutocomplete]="statusAutoComplete"
+																					[matChipInputFor]="statusChipList"
+																					[matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+																			</mat-chip-list>
+																			<mat-autocomplete
+                                                                                #statusAutoComplete="matAutocomplete"
+																				(optionSelected)="addStatusToStage($event, statusStage, statusInput)">
+																				<mat-option
+																						*ngFor="let status of statusList"
+																						[value]="status.id">
+																					{{ status.name[globals.LNG] }}
+																				</mat-option>
+																			</mat-autocomplete>
+																		</mat-form-field>
+																	
+																	</mat-card-content>
+																</mat-card>
+															</div>
+															
+															<div>
+																<button mat-button class="h-100 p-2"
+																        *ngIf="!isInTranslationMode"
+																        (click)="addStatusStageFormGroup(moduleType)">
+																	<mat-icon svgIcon="plus"></mat-icon>
+																	add stage
+																</button>
+															</div>
+														</div>
+													</mat-expansion-panel>
+												</mat-accordion>
+											
+											</mat-expansion-panel>
+										</mat-accordion>
+										
+										<button class="w-100 mt-2" mat-button (click)="addModuleType()"
+										        *ngIf="!isInTranslationMode">
+											{{ globals.translation["Add Type"][globals.LNG] }}
+										</button>
+									</div>
+									
+									<div class="mt-5">
+										<span fxFlex="auto"></span>
+										<button class="mx-2" type="button" mat-button matStepperPrevious
+										        (click)="logFormState()">
+											{{ globals.translation["Previous"][globals.LNG] }}
+										</button>
+										<button type="button" color="primary" mat-raised-button matStepperNext
+										        (click)="logFormState()">
+											{{ globals.translation["Next"][globals.LNG] }}
+										</button>
+									</div>
+								</mat-step>
+								
+								<mat-step>
+									<ng-template matStepLabel>
+										{{ globals.translation["Final Check"][globals.LNG] }}
+									</ng-template>
+									<textarea [disabled]="isInTranslationMode" class="w-100" rows="100"
+									          cols="50">{{ rootForm.value | json }}</textarea>
+									<div>
+										<button mat-button matStepperPrevious>
+											{{ globals.translation["Previous"][globals.LNG] }}
+										</button>
+									</div>
+								</mat-step>
+							</mat-horizontal-stepper>
+					</mat-card>
+				</div>
+			</div>
+			
+			<!--<mat-toolbar>
+				<mat-toolbar-row class="p-2 px-5">
+					<span fxFlex="auto"></span>
+					<button mat-button (click)="stepper.previous()" *ngIf="stepper.selectedIndex > 0">
+						{{ globals.translation["Previous"][globals.LNG] }}
+					</button>
+					<button mat-raised-button color="primary" (click)="stepper.next()" [disabled]="disableIfInvalid(stepper.selectedIndex)">
+						{{ globals.translation["Next"][globals.LNG] }}
+					</button>
+				</mat-toolbar-row>
+			</mat-toolbar>-->
+		</mat-drawer>
+	</mat-drawer-container>
+</div>

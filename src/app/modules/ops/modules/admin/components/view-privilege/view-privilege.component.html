@@ -1,0 +1,61 @@
+<div >
+	<mat-sidenav-container [hasBackdrop]="true" >
+		<mat-sidenav-content>
+			<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="views-list" [fullScreen]="false" > </ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row>
+					<mat-toolbar-row fxLayoutAlign="space-between center" fxLayout.gt-md="row">
+                        <span> {{ viewTitle[globalVars.LNG] }} </span>
+                        <span>
+                            <mat-slide-toggle class="example-margin" [(ngModel)]="translateMode" [checked]="translateMode">
+                                <h5>{{ globalVars.translation["Translation Mode"][globalVars.LNG] }}</h5>
+                            </mat-slide-toggle>
+                        </span>
+					</mat-toolbar-row>
+				</mat-toolbar-row>
+			</mat-toolbar>
+			<div>
+				<div class="w-100">
+					<!-- <app-table-widget *ngIf="tableWidgetData"
+										#tableWidget
+										[tableData]="tableWidgetData"
+										(rowClicked)="rowClicked($event)"
+										(statusUpdated)="statusUpdated($event)">
+					</app-table-widget> -->
+					<app-table-widget *ngIf="tableWidgetData"
+										#tableWidget
+										[tableData]="tableWidgetData"
+										(rowClicked)="rowClicked($event)">
+					</app-table-widget>
+				</div>
+
+				<div class="h-100" *ngIf="hasNoData" fxLayout="column" fxLayoutAlign="center center">
+					<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+					<div class="text-center">
+						<h1 class="empty-state-color">{{ globalVars.translation["No"][globalVars.LNG] }} {{ viewTitle[globalVars.LNG] }}</h1>
+						<button class="mx-auto" mat-raised-button color="primary" fxLayout="row" fxLayoutAlign="space-between center" (click)="openDrawerComponent('add')"  *ngIf="!translateMode">
+							<mat-icon svgIcon="plus"></mat-icon>
+							<span>
+								{{ globalVars.translation["Create"][globalVars.LNG] }} {{ viewTitle[globalVars.LNG] }}
+							</span>
+						</button>
+					</div>
+				</div>
+				<!-- <div class="h-100" *ngIf="hasNoData" fxLayout="column" fxLayoutAlign="center center">
+					<img src="assets/svg-icons/no-results.svg" alt="Empty Item" style="width: 300px;">
+					<div class="text-center">
+						<h3 class="primary-color">No Result Found</h3>
+					</div>
+				</div> -->
+			</div>
+
+			<button mat-fab color="primary" class="sticky-fab-button" (click)="openDrawerComponent('add')" *ngIf="!translateMode"><mat-icon>add</mat-icon></button>
+		</mat-sidenav-content>
+		
+		<mat-sidenav #drawer mode="over" position="end" [autoFocus]="false" style="width: 80vw;" [ngStyle.md]="{width: '90vw'}" disableClose
+				fixedInViewport fixedTopGap="0" fixedBottomGap="0" (opened)="openedDrawerComponent()">
+			<ng-template #container></ng-template>
+			<!-- <app-permission-matrix [translateMode]="translateMode" [drawerType]="drawerType" [drawerItemRecord]="drawerItemRecord" (submitted)="permissionDrawerSubmitted($event)" (cancelled)="permissionDrawerCancelled($event)"></app-permission-matrix> -->
+		</mat-sidenav>
+	</mat-sidenav-container>
+</div>

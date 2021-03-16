@@ -1,0 +1,46 @@
+.h-sidenav {
+	height: calc(100vh - 50px);
+}
+
+mat-sidenav {
+	width: 250px;
+}
+
+.sticky-fab-button {
+	position: fixed !important;
+	bottom: 20px;
+}
+
+.sticky-fab-button:lang(en) {
+	right: 20px;
+}
+
+.sticky-fab-button:lang(ar) {
+	left: 20px;
+	bottom: 20px;
+}
+
+app-core {
+	.headings-font {
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			font-family: "Bukra";
+		}
+	}
+
+	mat-tab-header{
+		.mat-icon {
+			width: 20px;
+			height: 20px;
+			
+			svg{
+				width: 20px;
+				height: 20px;
+			}
+		}
+	}
+}

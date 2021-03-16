@@ -1,0 +1,193 @@
+// region chat
+::ng-deep {
+	.chat-form {
+		.mat-form-field-wrapper {
+			padding-bottom: 0 !important;
+		}
+	}
+	
+	.chat-headline {
+		padding-bottom: 1px !important;
+	}
+	
+	.chat-box {
+		margin: 10px 15px;
+		padding: 10px;
+		border-radius: 4px;
+	}
+	
+	.single-log {
+		padding-top: 15px;
+		position: relative;
+		padding-bottom: 15px;
+		
+		
+		&:lang(en) {
+			border-left: 2px solid darkgrey;
+			margin-left: 30px;
+			padding-left: 30px !important;
+		}
+		
+		&:lang(ar) {
+			border-right: 2px solid darkgrey;
+			margin-right: 30px;
+			padding-right: 30px !important
+		}
+		
+		&:before {
+			content: '';
+			position: absolute;
+			width: 10px;
+			height: 10px;
+			border-radius: 100%;
+			background-color: darkgrey;
+		}
+		
+		&:lang(en):before {
+			left: -6px;
+		}
+		
+		&:lang(ar):before {
+			right: -6px;
+		}
+	}
+	
+	
+	.dp-light-theme {
+		.chat-box {
+			background: #eeeeee !important;
+		}
+	}
+	
+	.dp-dark-theme {
+		.chat-box {
+			background: #303030 !important;
+		}
+	}
+}
+
+// endregion
+
+// region log
+.log-card {
+	border-radius: 25px;
+	background: #73AD21;
+	padding: 20px;
+	width: 200px;
+	height: 150px;
+}
+
+.log-box1 {
+	border-color: #c5c5c5;
+	border-style: solid;
+	padding-left: 4px;
+	border-radius: 0px 8px 8px 8px;
+}
+
+.log-box {
+	border-color: #c5c5c5;
+	border-style: solid;
+	padding-left: 4px;
+	border-radius: 8px 8px 0px 8px;
+}
+
+fieldset {
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.overflow-auto {
+	padding: 0px 14px 0px 15px;
+}
+
+.fieldPadding {
+	padding: 0px 5px 0px 8px;
+}
+
+.panWidth {
+	width: 93%;
+}
+
+.log-subhead {
+	font-size: 10px;
+	font-weight: 400;
+	color: #7b7b7b
+}
+
+.panWidth ::ng-deep .mat-expansion-panel-header {
+	padding: 0px 8px !important;
+}
+
+.panWidth ::ng-deep .mat-expansion-panel-body {
+	padding: 0 0px 16px !important;
+}
+
+.dateStyle {
+	font-weight: 100;
+	color: #9c9b9b;
+}
+
+.legendStyle {
+	font-size: 12px;
+	font-weight: 500;
+	position: relative;
+	right: 7px;
+	text-indent: 1em;
+	
+	&:lang(ar) {
+		right: -7px;
+	}
+}
+
+.newStyle {
+	font-size: 12px;
+	font-weight: 500;
+	color: black;
+}
+
+.updatedClaim {
+	font-weight: 100;
+	color: #9c9b9b;
+	font-size: 14px;
+}
+
+.dateCreated {
+	font-weight: bold;
+	margin-bottom: 6px;
+	margin-top: 6px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	
+	* {
+		flex: 0.03 1 auto;
+	}
+}
+
+::ng-deep {
+	.uploadFile-form {
+		.mat-form-field-wrapper {
+			padding-bottom: 0 !important;
+		}
+	}
+	
+	.listStyle :hover {
+		background: transparent;
+	}
+	
+	.no-hover-effect.mat-button.mat-button-base {
+		.mat-button-focus-overlay {
+			background: transparent;
+			
+		}
+	}
+	
+}
+
+.sendingIcon {
+	width: 15px;
+	font-size: 16px;
+}
+
+// endregion

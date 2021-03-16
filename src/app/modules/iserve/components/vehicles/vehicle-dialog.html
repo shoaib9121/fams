@@ -1,0 +1,17 @@
+  <mat-dialog-content>
+    <h2>{{data.iserveId}}</h2>
+    <div>
+      <img src="data:image/jpeg;base64,{{data.qrCodeImage}}" alt="{{data.qrCodeImage}}">
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" tabindex="1">{{globalVars.translation['Close'][globalVars.LNG]}}</button>
+    <!-- <button mat-icon-button (click)="downloadImage()"> -->
+    <a href="data:image/jpeg;base64,{{data.qrCodeImage}}" download="{{data.iserveId}}" style="color: inherit;margin-left: 10px;margin-top: 5px;">
+      <mat-icon svgIcon="download"></mat-icon>
+    </a>  
+      
+    <!-- </button> -->
+  </mat-dialog-actions>
+  
+  

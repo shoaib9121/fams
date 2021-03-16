@@ -1,0 +1,397 @@
+
+<div class="dashboard-component mx-4">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="dashboard" [fullScreen]="false"></ngx-spinner>
+	<div *ngIf="dashBoarDataCounts" class="content-outer" fxLayout="row wrap" fxLayoutAlign="space-around">
+		<div class="main-flex-container h-100" fxLayout="row wrap" fxLayout.sm="column" fxFlex="85" fxFlex.md="100" fxLayoutAlign="space-between">
+           
+            <mat-card fxFlex="32.5" fxFlex.lg="32.7" fxFlex.xl="32.7">
+				<h4> {{ globalVars.translation["issue_summary"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+						<canvas fxHide [fxShow.sm]="true" baseChart [data]="issueSummaryChartData"
+							[labels]="issueSummaryChartLabels" [options]="issueSummaryChartOptions"
+							[chartType]="issueSummaryChartType" [colors]="issueSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.md]="true" baseChart [data]="issueSummaryChartData"
+							[labels]="issueSummaryChartLabels" [options]="issueSummaryChartOptionsForMedium"
+							[chartType]="issueSummaryChartType" [colors]="issueSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.lg]="true" baseChart [data]="issueSummaryChartData"
+							[labels]="issueSummaryChartLabels" [options]="issueSummaryChartOptions"
+							[chartType]="issueSummaryChartType" [colors]="issueSummaryColors">
+						</canvas>
+						<canvas fxHide [fxShow.xl]="true" baseChart [data]="issueSummaryChartData"
+							[labels]="issueSummaryChartLabels" [options]="issueSummaryChartOptions"
+							[chartType]="issueSummaryChartType" [colors]="issueSummaryColors">
+						</canvas>
+					</div>
+				</mat-card-content>
+			</mat-card>
+           
+            <mat-card fxFlex="32.5" fxFlex.lg="32.7" fxFlex.xl="32.7">
+				<h4> {{ globalVars.translation["jobcard_summary"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content style="height: calc(100% - 20px)" fxLayout="row" fxLayoutAlign="space-between">
+					<ng-container *ngIf="dashBoarDataCounts.jobcard_summary?.length > 0">
+						<div class="chart-container w-100" style="position: relative;" fxLayout="column" fxLayoutAlign="center center">
+							<canvas fxHide [fxShow.sm]="true" baseChart [data]="jobcardSummaryChartData"
+								[labels]="jobcardSummaryChartLabels" [options]="jobcardSummaryChartOptions"
+								[chartType]="jobcardSummaryChartType" [colors]="jobcardSummaryColors">
+							</canvas>
+							<canvas fxHide [fxShow.md]="true" baseChart [data]="jobcardSummaryChartData"
+								[labels]="jobcardSummaryChartLabels" [options]="jobcardSummaryChartOptionsForMedium"
+								[chartType]="jobcardSummaryChartType" [colors]="jobcardSummaryColors">
+							</canvas>
+							<canvas fxHide [fxShow.lg]="true" baseChart [data]="jobcardSummaryChartData"
+								[labels]="jobcardSummaryChartLabels" [options]="jobcardSummaryChartOptions"
+								[chartType]="jobcardSummaryChartType" [colors]="jobcardSummaryColors">
+							</canvas>
+							<canvas fxHide [fxShow.xl]="true" baseChart [data]="jobcardSummaryChartData"
+								[labels]="jobcardSummaryChartLabels" [options]="jobcardSummaryChartOptions"
+								[chartType]="jobcardSummaryChartType" [colors]="jobcardSummaryColors">
+							</canvas>
+						</div>
+					</ng-container>
+					<ng-container *ngIf="dashBoarDataCounts.jobcard_summary?.length === 0 || !dashBoarDataCounts.jobcard_summary">
+						<div class="h-100 w-100" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 180px;">
+							<div class="text-center">
+								<h4 class="empty-state-color"> {{ globalVars.translation["no_opened_jobcards"][globalVars.LNG] }}</h4>
+							</div>
+						</div>
+					</ng-container>
+				</mat-card-content>
+			</mat-card>
+			<mat-card class="table-card min-height" fxFlex="32.5" fxFlex.lg="32.7" fxFlex.xl="32.7">
+				<h4> {{ globalVars.translation["unoccupied_staff"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="overflow-auto" [ngClass]="{'table-card-content': true}">
+					<table *ngIf="notWorkingStaffDataSource?.length > 0" class="w-100" mat-table [dataSource]="notWorkingStaffDataSource">
+						<ng-container matColumnDef="staff_id">
+							<th mat-header-cell *matHeaderCellDef>
+                                {{ globalVars.translation["staff_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.staff_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="account-details" color="secondary"></mat-icon> {{ element.staff_id }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.staff_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="account-details" color="secondary"></mat-icon> <span> &mdash; </span>
+									</span>
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="staff_name">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["staff_name"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.staff_name">
+									<mat-chip-list class="mb-1">
+                                        <mat-chip disableRipple fxLayoutGap="5px">
+											<mat-icon svgIcon="account" color="secondary" size="14px"></mat-icon>
+                                            <span>{{ element.staff_name[globalVars.LNG] }}</span>
+                                        </mat-chip>
+									</mat-chip-list>
+								</ng-container>
+								<ng-container *ngIf="!element.staff_name">
+									<mat-chip-list class="mb-1">
+                                        <mat-chip disableRipple fxLayoutGap="5px">
+											<mat-icon svgIcon="account" color="secondary" size="14px"></mat-icon>
+                                            <span> &mdash; </span>
+                                        </mat-chip>
+									</mat-chip-list>
+								</ng-container>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="notWorkingStaffColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: notWorkingStaffColumns"></tr>
+					</table>
+					<ng-container *ngIf="notWorkingStaffDataSource?.length === 0 || !notWorkingStaffDataSource">
+						<div class="h-100" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 180px;">
+							<div class="text-center">
+								<h4 class="empty-state-color">{{ globalVars.translation["workshop_staff_unoccupied"][globalVars.LNG] }}</h4>
+							</div>
+						</div>
+					</ng-container>
+				</mat-card-content>
+			</mat-card>
+
+            <!-- <mat-card class="table-card min-height" fxFlex="49" fxFlex.lg="49.5" fxFlex.xl="49.5">
+				<h4> {{ globalVars.translation["working_staff_overview"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="overflow-auto" [ngClass]="{'table-card-content': true}">
+					<table *ngIf="workingStaffServiceManagerOtherDataSource?.length > 0" class="w-100" mat-table [dataSource]="workingStaffServiceManagerOtherDataSource">
+						<ng-container matColumnDef="staff_name">
+							<th mat-header-cell *matHeaderCellDef>
+                                {{ globalVars.translation["staff_name"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.staff_name">
+									<mat-chip-list class="mb-1">
+                                        <mat-chip disableRipple fxLayoutGap="5px">
+											<mat-icon svgIcon="account" color="secondary" size="14px"></mat-icon>
+                                            <span>{{ element.staff_name[globalVars.LNG]  }}</span>
+                                        </mat-chip>
+									</mat-chip-list>
+								</ng-container>
+								<ng-container *ngIf="!element.staff_name">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="equipment_number">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["equipment_number"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.equipment_number">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> {{element.equipment_number}}
+									</span> 
+								</ng-container>
+								<ng-container *ngIf="!element.equipment_number">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="issue_name">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["issue_name"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.issue_name">
+									{{ element.issue_name }}
+								</ng-container>
+								<ng-container *ngIf="!element.issue_name">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="issue_status">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["issue_status"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.issue_status">
+									<span class="status-label" [ngStyle]="{'background-color':element?.issue_status.color ? element?.issue_status.color : '#e0e0e0'}">
+										{{ element?.issue_status.name[globalVars.LNG]  }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.issue_status">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="jobcard_status">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["jobcard_status"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.jobcard_status">
+									<span fxLayoutGap="5px">
+										<span class="status-label" [ngStyle]="{'background-color':element?.jobcard_status.color ? element?.jobcard_status.color : '#e0e0e0'}">
+											{{ element?.jobcard_status.name[globalVars.LNG]  }} </span>
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.jobcard_status">-</ng-container>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="workingStaffServiceManagerOtherColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: workingStaffServiceManagerOtherColumns"></tr>
+					</table>
+					<ng-container *ngIf="workingStaffServiceManagerOtherDataSource?.length === 0 || !workingStaffServiceManagerOtherDataSource">
+						<div class="h-100" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 180px;">
+							<div class="text-center">
+								<h4 class="empty-state-color"> {{ globalVars.translation["no_workshop_staff_overview"][globalVars.LNG] }}</h4>
+							</div>
+						</div>
+					</ng-container>
+				</mat-card-content>
+			</mat-card> -->
+			
+			<mat-card class="table-card min-height" fxFlex="49" fxFlex.md="49.3" fxFlex.lg="49.5" fxFlex.xl="49.5">
+				<h4> {{ globalVars.translation["opened_and_upcoming_jobcards"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="overflow-auto" [ngClass]="{'table-card-content': true}">
+					<table *ngIf="summaryOpenedUpcomingJobcadsDataSource?.length > 0" class="w-100" mat-table [dataSource]="summaryOpenedUpcomingJobcadsDataSource">
+						<ng-container matColumnDef="bay">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["bay"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.bay">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-cog" color="secondary"></mat-icon> {{ element.bay }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.bay">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="equipment_number">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["equipment_number"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.equipment_number">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> {{element.equipment_number}}
+									</span> 
+								</ng-container>
+								<ng-container *ngIf="!element.equipment_number">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> <span> &mdash; </span>
+									</span>
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="manufacturer_id">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["manufacturer_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.manufacturer_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> {{ element.manufacturer_id[globalVars.LNG] }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.manufacturer_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> <span> &mdash; </span>
+									</span> 
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="model_id">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["model_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.model_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-connected" color="secondary"></mat-icon> {{ element.model_id[globalVars.LNG] }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.model_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-connected" color="secondary"></mat-icon> <span> &mdash; </span>
+									</span>
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="issue_count">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["issue_count"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.issue_count">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="counter" color="secondary"></mat-icon> <span>{{ element.issue_count }}</span>
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.issue_count">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="counter" color="secondary"></mat-icon> <span> {{ element.issue_count }} </span>
+									</span>
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="jobcard_status">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["jobcard_status"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.jobcard_status">
+									<span class="multi-status">
+										<span class="status-label" [ngStyle]="{'background-color':element.jobcard_status.color ? element.jobcard_status.color : '#e0e0e0'}">
+											{{ element.jobcard_status.name[globalVars.LNG]  }}</span>
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.jobcard_status">-</ng-container>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="summaryOpenedUpcomingJobcadsColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: summaryOpenedUpcomingJobcadsColumns" (click)="openRecordInDrawer(row)" class="clickable-row"></tr>
+					</table>
+					<ng-container *ngIf="summaryOpenedUpcomingJobcadsDataSource?.length === 0 || !summaryOpenedUpcomingJobcadsDataSource">
+						<div class="h-100" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 180px;">
+							<div class="text-center">
+								<h4 class="empty-state-color">{{ globalVars.translation["no_opened_or_upcoming_jobcards"][globalVars.LNG] }}</h4>
+							</div>
+						</div>
+					</ng-container>
+				</mat-card-content>
+			</mat-card>
+			
+            <mat-card class="table-card min-height" fxFlex="49" fxFlex.md="49.3" fxFlex.lg="49.5" fxFlex.xl="49.5">
+				<h4> {{ globalVars.translation["working_staff_overview"][globalVars.LNG] }} </h4>
+				<mat-divider></mat-divider>
+				<mat-card-content class="overflow-auto" [ngClass]="{'table-card-content': true}">
+					<table *ngIf="workingStaffServiceManagerDataSource?.length > 0" class="w-100" mat-table [dataSource]="workingStaffServiceManagerDataSource">
+						<ng-container matColumnDef="staff_name">
+							<th mat-header-cell *matHeaderCellDef>
+                                {{ globalVars.translation["staff_name"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.staff_name">
+									<mat-chip-list class="mb-1">
+                                        <mat-chip disableRipple fxLayoutGap="5px">
+											<mat-icon svgIcon="account" color="secondary" size="14px"></mat-icon>
+                                            <span>{{ element.staff_name[globalVars.LNG]  }}</span>
+                                        </mat-chip>
+									</mat-chip-list>
+								</ng-container>
+								<ng-container *ngIf="!element.staff_name">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="equipment_number">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["equipment_number"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.equipment_number">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> {{element.equipment_number}}
+									</span> 
+								</ng-container>
+								<ng-container *ngIf="!element.equipment_number">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="manufacturer_id">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["manufacturer_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.manufacturer_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> {{element.manufacturer_id[globalVars.LNG]}}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.manufacturer_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-info" color="secondary"></mat-icon> <span> &mdash; </span>
+									</span> 
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="model_id">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["model_id"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.model_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-connected" color="secondary"></mat-icon> {{ element.model_id[globalVars.LNG] }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.model_id">
+									<span class="only-icon-label">
+										<mat-icon svgIcon="car-connected" color="secondary"></mat-icon> <span> &mdash; </span>
+									</span>
+								</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="issue_name">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["issue_name"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.issue_name">
+									{{ element.issue_name }}
+								</ng-container>
+								<ng-container *ngIf="!element.issue_name">-</ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="issue_status">
+							<th mat-header-cell *matHeaderCellDef> {{ globalVars.translation["issue_status"][globalVars.LNG] }} </th>
+							<td mat-cell *matCellDef="let element">
+								<ng-container *ngIf="element.issue_status">
+									<span class="status-label" [ngStyle]="{'background-color':element?.issue_status.color ? element?.issue_status.color : '#e0e0e0'}">
+										{{ element?.issue_status.name[globalVars.LNG] }}
+									</span>
+								</ng-container>
+								<ng-container *ngIf="!element.issue_status">-</ng-container>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="workingStaffServiceManagerColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: workingStaffServiceManagerColumns"></tr>
+					</table>
+					<ng-container *ngIf="workingStaffServiceManagerDataSource?.length === 0 || !workingStaffServiceManagerDataSource">
+						<div class="h-100" fxLayout="column" fxLayoutAlign="center center">
+							<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 180px;">
+							<div class="text-center">
+								<h4 class="empty-state-color">{{ globalVars.translation["no_workshop_staff_overview"][globalVars.LNG] }}</h4>
+							</div>
+						</div>
+					</ng-container>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</div>

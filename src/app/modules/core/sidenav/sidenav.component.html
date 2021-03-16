@@ -1,0 +1,76 @@
+<div class="sidenav-component h-100" fxLayout="column" fxLayoutAlign="space-between flex-start">
+	<div *ngIf="!appNavigation">&nbsp;</div>
+	<mat-accordion class="w-100 pb-2 overflow-auto" multi *ngIf="appNavigation" displayMode="flat">
+		<mat-expansion-panel class="mat-elevation-z0" #panel
+			hideToggle="true" expanded *ngFor="let workspace of appNavigation.workspaces">
+			<mat-expansion-panel-header expandedHeight="50px" collapsedHeight="50px">
+				<mat-panel-title fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="5px">
+					<span fxLayout="row">
+						<mat-icon color="secondary" [svgIcon]="panel.expanded  ? 'menu-down':'menu-right'"
+							*ngIf="globalVars.LNG === 'en'"></mat-icon>
+						<mat-icon color="secondary" [svgIcon]="panel.expanded  ? 'menu-down':'menu-left'"
+							*ngIf="globalVars.LNG === 'ar'"></mat-icon>
+						<mat-icon color="secondary" [svgIcon]="workspace.icon"></mat-icon>
+					</span>
+					<span>
+						{{ workspace.workspaceName[globalVars.LNG] }}
+					</span>
+				</mat-panel-title>
+			</mat-expansion-panel-header>
+
+			<mat-nav-list dense>
+				<a mat-list-item
+					[routerLink]="globalVars.getCurrentApplicationName() + '/' + workspace.type + '/' + appNavigation.route + '/' + view.module + '/' + view.viewId + '/' + view.role"
+					routerLinkActive="active-route" *ngFor="let view of workspace.views" fxLayout="row"
+					fxLayoutAlign="start center" fxLayoutGap="10px">
+					<mat-icon class="sidebar-navigation mx-1" [svgIcon]="view.viewIcon"></mat-icon>
+					<span>
+						{{ view.viewName[globalVars.LNG] }}
+					</span>
+				</a>
+			</mat-nav-list>
+		</mat-expansion-panel>
+	</mat-accordion>
+
+	<div class="px-2 w-100 sidenav-bottom" fxLayout="column" fxLayoutAlign="space-between stretch" color="white">
+		<mat-divider class="pt-2"></mat-divider>
+		<div fxLayout="row" fxLayoutAlign="space-between center">
+			<mat-chip-list>
+				<mat-chip disableRipple>
+					<span class="username" [matTooltip]="userName[globalVars.LNG]"> {{ userName[globalVars.LNG] }} </span>
+					<button mat-icon-button color="secondary" [matTooltip]="globalVars.translation['logout'][globalVars.LNG]" (click)="logout()">
+						<mat-icon svgIcon="power" color="secondary"></mat-icon>
+					</button>
+				</mat-chip>
+			</mat-chip-list>
+
+			<div>
+				<!--<actionButton mat-icon-actionButton [matMenuTriggerFor]="languageMenu">
+					<mat-icon svgIcon="eye"></mat-icon>
+				</actionButton>
+				<mat-menu #languageMenu="matMenu">
+					<actionButton mat-mini-fab>
+						<mat-icon>dialpad</mat-icon>
+					</actionButton>
+					<actionButton mat-menu-item>
+						<actionButton mat-mini-fab>
+							<mat-icon>dialpad</mat-icon>
+						</actionButton>
+					</actionButton>
+				</mat-menu>-->
+
+				<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Button for changing the language">
+					<mat-icon svgIcon="earth" color="secondary"></mat-icon>
+				</button>
+				<mat-menu #menu="matMenu">
+					<button mat-menu-item (click)="changeLanguage('ar');">
+						<span> {{ globalVars.translation["Arabic"]["ar"] }} </span>
+					</button>
+					<button mat-menu-item (click)="changeLanguage('en');">
+						<span> {{ globalVars.translation["English"]["en"] }} </span>
+					</button>
+				</mat-menu>
+			</div>
+		</div>
+	</div>
+</div>

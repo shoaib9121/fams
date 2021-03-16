@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>
+	{{ dialogTitle}}
+</h2>
+
+<mat-dialog-content class="pt-2 pb-3">
+	<div [formGroup]="dialogForm">
+		<form #DynamicMasterForm="ngForm"  id="DynamicMasterForm">
+			<app-reactive-dynamic-form [groups]="groups" (checkIsFormDirty)="checkIsFormDirty($event)">
+			</app-reactive-dynamic-form>
+		</form>
+	</div>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+
+	<button mat-button mat-dialog-close (click)="onNoClick('no')"
+		tabindex="-1">{{ globalVars.translation["Cancel"][globalVars.LNG] }}</button>
+
+	<button mat-raised-button color="primary"  (click)="eventSubmitted()" tabindex="1"
+		[disabled]="!dialogForm.valid">{{ globalVars.translation["Save"][globalVars.LNG] }}</button>
+
+</mat-dialog-actions>

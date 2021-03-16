@@ -1,0 +1,26 @@
+mat-sidenav-content {
+	height: calc(100vh - 50px);
+}
+mat-sidenav{
+    position: fixed;
+}
+.card-view{
+    min-height: 50px;
+    margin: 5px;
+}
+.department-drawer-component {
+	height: calc(100%);
+}
+::ng-deep {
+    .department-drawer-component {
+        .overflow-auto {
+            overflow: auto;
+        }
+
+        .content-container {
+            height: calc(100vh - 120px - 24px) !important;
+            padding-left: 40px !important;
+            padding-right: 40px !important;
+        }
+    }
+}

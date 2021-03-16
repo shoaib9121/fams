@@ -1,0 +1,152 @@
+<div class="dashboard-component">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="dashboard"
+	             [fullScreen]="false">
+	</ngx-spinner>
+	<div *ngIf="dashBoardDatas" class="mt-2" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px">
+		<div fxFlex="32%" class="container"   class="dashboard-card"  >
+			<div fxLayout="row" fxLayoutGap="10px" class="mat-card-item">
+			<ng-container >
+				<mat-card fxFlex="50%"  *ngFor="let datas of bookingsSummery | slice:0:2;let i=index" class="card-item" fxFlex="50%" [ngStyle]="{'background-color':i == 1 ? '#06B1B1': '#00AD67' }">
+					<mat-card-title >
+						<span class="md-headline">{{datas?.name[globalVars.LNG]}}</span>
+					</mat-card-title>
+					<mat-card-content>
+                  <span fxFlex="1 1 auto">
+                  <h3 style="margin: 0;" [style.color]="'#FFFFFF'">{{datas?.count}}</h3>
+                  </span>
+						<span class="card-icon"
+						><mat-icon [style.color]="'#FFFFFF'"
+						           svgIcon="{{datas?.icon}}"
+						></mat-icon></span>
+					</mat-card-content>
+				</mat-card>
+			</ng-container>
+		   </div>
+		   <div fxLayout="row" fxLayoutGap="10px" class="mat-card-item">
+			<ng-container *ngFor="let datas of bookingsSummery| slice:2:4">
+				<mat-card class="card-item" fxFlex="50%">
+					<mat-card-title>
+						<span class="md-headline">{{datas?.name[globalVars.LNG]}}</span>
+					</mat-card-title>
+					<mat-card-content>
+                  <span fxFlex="1 1 auto">
+                  <h3 style="margin: 0;" [ngStyle]="{'color':datas?.color}">{{datas?.count}}</h3>
+                  </span>
+						<span class="card-icon"
+						><mat-icon [ngStyle]="{'color':datas?.color}"
+						           svgIcon="{{datas?.icon}}"
+						></mat-icon></span>
+					</mat-card-content>
+				</mat-card>
+			</ng-container>
+		</div>
+			<div fxLayout="row" fxLayoutGap="10px" class="mat-card-item">
+			<ng-container *ngFor="let datas of bookingsSummery | slice:4:6">
+				<mat-card  class="card-item" fxFlex="50%">
+					<mat-card-title>
+						<span class="md-headline">{{datas?.name[globalVars.LNG]}}</span>
+					</mat-card-title>
+					<mat-card-content>
+                  <span fxFlex="1 1 auto">
+                  <h3 style="margin: 0;" [ngStyle]="{'color':datas.color}">{{datas?.count}}</h3>
+                  </span>
+						<span class="card-icon"
+						><mat-icon [ngStyle]="{'color':datas?.color}"
+						           svgIcon="{{datas?.icon}}"
+						></mat-icon></span>
+					</mat-card-content>
+				</mat-card>
+			</ng-container>
+		</div>
+		</div>
+		<mat-card fxFlex="32%">
+			<h4>{{globalVars.translation['Most Used Vehicles Today'][globalVars.LNG]}}</h4>
+			<mat-divider></mat-divider>
+			<mat-card-content>
+				<div class="chart-container" style="position: relative;">
+          <canvas
+							baseChart
+							width="130"
+							height="110"
+							[data]="mostUsedTodayChartData"
+							[labels]="mostUsedTodayChartLabels"
+							[options]="mostUsedTodayChartOptions"
+							[chartType]="mostUsedTodayChartType"
+					>
+					</canvas>
+				</div>
+			</mat-card-content>
+		</mat-card>
+
+		<mat-card fxFlex="32%">
+			<h4>{{globalVars.translation['booking Locations'][globalVars.LNG]}}</h4>
+			<mat-divider></mat-divider>
+			<mat-card-content>
+				<div class="chart-container" style="position: relative;">
+          <canvas
+							baseChart
+							width="150"
+							height="120"
+							[datasets]="bookingLocationChartData"
+							[labels]="bookingLocationChartLabels"
+							[options]="bookingLocationChartOptions"
+							[chartType]="bookingLocationChartType"
+							[colors]="bookingLocationChartColors"
+					>
+					</canvas>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+
+	<div *ngIf="dashBoardDatas" class="mt-2" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px" alignItems="stretch">
+		<mat-card fxFlex="42">
+			<h4>{{globalVars.translation['Active Booking List'][globalVars.LNG]}}</h4>
+			<mat-divider></mat-divider>
+			<table mat-table [dataSource]="activeBookingsDataSource" style="width: 100%;">
+				<ng-container matColumnDef="Date">
+					<th mat-header-cell *matHeaderCellDef>{{globalVars.translation['Date'][globalVars.LNG]}}</th>
+					<td mat-cell *matCellDef="let element">{{ element.bookingDate|date}}</td>
+				</ng-container>
+				<ng-container matColumnDef="Time">
+					<th mat-header-cell *matHeaderCellDef>{{globalVars.translation['Time'][globalVars.LNG]}}</th>
+					<td mat-cell *matCellDef="let element">{{ element.bookingDate| date :  'hh:mm: a' }}</td>
+				</ng-container>
+				<ng-container matColumnDef="User">
+					<th mat-header-cell *matHeaderCellDef>{{globalVars.translation['Users'][globalVars.LNG]}}</th>
+					<td mat-cell *matCellDef="let element">{{ element.user }}</td>
+				</ng-container>
+				<ng-container matColumnDef="Vehicle">
+					<th mat-header-cell *matHeaderCellDef>{{globalVars.translation['Vehicles'][globalVars.LNG]}}</th>
+					<td mat-cell *matCellDef="let element">{{ element.vehicle }}</td>
+				</ng-container>
+				<ng-container matColumnDef="iServe ID">
+					<th mat-header-cell *matHeaderCellDef>{{globalVars.translation['iServe ID'][globalVars.LNG]}}</th>
+					<td mat-cell *matCellDef="let element">{{ element.iserveId }}</td>
+				</ng-container>
+				
+				<tr mat-header-row *matHeaderRowDef="activeBookings"></tr>
+				<tr mat-row *matRowDef="let row; columns: activeBookings"></tr>
+			</table>
+		</mat-card>
+
+		<mat-card fxFlex="55%">
+			<h4>{{globalVars.translation['Most Used Vehicles'][globalVars.LNG]}}</h4>
+			<mat-divider></mat-divider>
+			<mat-card-content>
+				<div class="chart-container" style="position: relative;">
+          <canvas
+							baseChart
+							[datasets]="mostUsedVehicleChartData"
+							[labels]="mostUsedVehicleChartLabels"
+							[options]="mostUsedVehicleChartOptions"
+							[chartType]="mostUsedVehicleChartType"
+							[colors]="mostUsedVehicleChartColors"
+          >
+          </canvas>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+
+</div>

@@ -1,0 +1,794 @@
+<div class="permission-drawer-component primary-bg-color">
+	<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="permission" [fullScreen]="false">
+	</ngx-spinner>
+	<mat-drawer-container>
+		<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+			<div class="h-100" fxLayout="row" >
+				<button mat-button (click)="eventCancelledDrawer()" tabindex="-1">
+					<mat-icon svgIcon="close"></mat-icon>
+				</button>
+				<mat-divider vertical></mat-divider>
+				<span class="mx-4" fxLayout="row" fxLayoutAlign="space-between center">
+					{{ viewTitle[globalVariables.LNG] }}
+					<div class=" mx-4" *ngIf="drawerType == 'edit' && selectedViewUserDataSet">
+						<div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="5px">
+							<mat-chip-list [fxFlex]="'0 0 auto'" style="line-height: initial;">
+								<mat-chip disableRipple matTooltipPosition="above" [matTooltip]="'User'" fxLayoutGap="5px" *ngIf="selectedViewUserDataSet?.userRole != null">
+									<mat-icon class="h-100" size="14px" inline [svgIcon]="'account'" color="secondary"></mat-icon>
+									<span>{{selectedViewUserDataSet?.userRole?.name[globalVariables.LNG]}}</span>
+								</mat-chip>
+								<mat-chip disableRipple matTooltipPosition="above" [matTooltip]="'Module'" fxLayoutGap="5px" >
+									<mat-icon  size="14px" inline [svgIcon]="'file'" color="secondary"></mat-icon>
+									<span>{{selectedViewUserDataSet?.module?.name[globalVariables.LNG]}}</span>
+								</mat-chip>
+							</mat-chip-list>
+						</div>
+					</div>
+				</span>
+			</div>
+			<div class="px-4" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" *ngIf="selectedTab == 1">
+				<button mat-raised-button (click)="generateView()" color="primary" [disabled]="!basicForm.valid || !statusForm.valid || !loadedModuleTypeAndGroupsForm.valid || !tableStructureForm.valid || !groupByForm.valid || !userRoleForm.valid" *ngIf="!translateMode">
+					<span *ngIf="drawerType == 'edit' && selectedViewUserDataSet?.userRole != null"> Generate Modified View</span>
+					<span *ngIf="drawerType == 'edit' && selectedViewUserDataSet?.userRole == null"> Generate User View</span>
+					<span *ngIf="drawerType != 'edit'"> {{ globalVariables.translation["generate_view"][globalVariables.LNG] }}</span>
+				</button>
+				<button mat-raised-button (click)="UpdatedTranslates()" color="primary" *ngIf="translateMode">
+					<span> {{ globalVariables.translation["update_translates"][globalVariables.LNG] }}</span>
+				</button>
+			</div>
+		</mat-toolbar>
+
+		<div class="p-2 pt-5 mx-auto content-container mt-1 overflow-auto">
+			<mat-tab-group [selectedIndex]="selectedTab" animationDuration="0">
+				<mat-tab label="viewUserList">
+					<ng-template matTabContent>
+						<mat-accordion multi>
+							<mat-expansion-panel class="mat-elevation-z3" expanded >
+								<mat-expansion-panel-header>
+									<mat-panel-title fxFlex="row" fxLayoutAlign="flex-start center" fxLayoutGap="10px">
+										<h3 fxFlex="100%">{{ globalVariables.translation['view_user_roles'][globalVariables.LNG] }}</h3>
+									</mat-panel-title>
+								</mat-expansion-panel-header>
+								
+								<div class="px-5 py-3" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="10px" id="permission-matrix-users-list">
+									<mat-card class="p-0 mb-4 primary-bg-color" fxLayout="row" fxLayoutAlign="flex-start stretch"
+											  fxFlex="48%" *ngFor="let ur of drawerItemRecord.dataset.user_roles_permission_matrix">
+										<div class="type-icon" fxFlex="0 1 100px" fxLayout="row" fxLayoutAlign="center center">
+											<mat-icon color="secondary" [svgIcon]="'account'"></mat-icon>
+										</div>
+										<div class="p-3 w-100" fxLayout="row" fxLayoutAlign="space-between center">
+											<strong>{{ ur.name[globalVariables.LNG] }}</strong>
+
+											<!-- <mat-card-subtitle class="mt-2">{{ ur.name[globalVariables.LNG] }}</mat-card-subtitle> -->
+											<div fxLayout="row" fxLayoutAlign="space-between center">
+												<button class="mat-icon-button" aria-label="Translate" type='button' (click)="chooseSavedUserRoleForTranslate(ur)" fxLayoutAlign="center center" matTooltipPosition="above" [matTooltip]='globalVariables.translation["translate"][lng]' *ngIf="disableNonTranslateActions">
+													<mat-icon svgIcon="translate"></mat-icon>
+												</button>
+												<button class="mat-icon-button" aria-label="Clone" type='button' (click)="cloneUserViewMatrix(ur)" fxLayoutAlign="center center" matTooltipPosition="above" [matTooltip]='globalVariables.translation["clone"][lng]' *ngIf="!disableNonTranslateActions">
+													<mat-icon svgIcon="content-copy"></mat-icon>
+												</button>
+												<button class="mat-icon-button" aria-label="Edit" type='button' (click)="chooseSavedUserRole(ur)" fxLayoutAlign="center center" matTooltipPosition="above" [matTooltip]='globalVariables.translation["edit"][lng]' *ngIf="!disableNonTranslateActions">
+													<mat-icon svgIcon="pencil"></mat-icon>
+												</button>
+												<button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeUserViewMatrix(ur)" fxLayoutAlign="center center" matTooltipPosition="above" [matTooltip]='globalVariables.translation["remove"][lng]' *ngIf="!disableNonTranslateActions">
+													<mat-icon svgIcon="delete"></mat-icon>
+												</button>
+											</div>
+										</div>
+									</mat-card>
+									<mat-card class="p-0 mb-4 primary-bg-color-green add-user" fxLayout="row" fxLayoutAlign="flex-start stretch" fxFlex="48%" (click)="addNewUserRole()" *ngIf="!disableNonTranslateActions">
+										<div class="type-icon" fxFlex="0 1 100px" fxLayout="row" fxLayoutAlign="center center">
+											<mat-icon  [svgIcon]="'account'"></mat-icon>
+										</div>
+										<div class="p-3 w-100 primary" fxLayout="row" fxLayoutAlign="space-between center">
+											<strong>{{ globalVariables.translation["Add"][lng] }} +</strong>
+											<div fxLayout="row" fxLayoutAlign="space-between center" style="visibility: hidden;">
+												<button class="mat-icon-button" aria-label="Remove" type='button' fxLayoutAlign="center center">
+													<mat-icon svgIcon="pencil"></mat-icon>
+												</button>
+											</div>
+										</div>
+									</mat-card>
+								</div>
+							</mat-expansion-panel>
+						</mat-accordion>
+					</ng-template>
+				</mat-tab>
+				<mat-tab label="form">
+					<ng-template matTabContent>
+						<mat-card class="p-0">
+							<mat-horizontal-stepper [linear]="isLinear" labelPosition="bottom" #stepper>
+								<mat-step *ngFor="let step of availableStages;let i=index;" [stepControl]="step.formName" ><!--[state]="(step.name.en)" [completed]="step.completed"  disabled [stepControl]="step.formName"-->
+										  
+									<!-- <ng-template matStepLabel *ngIf="focusedStep === 1">
+										Testing.....
+									</ng-template> -->
+									<ng-template matStepLabel>
+										{{step.name[globalVariables.LNG]}}
+										<div class="error_description" *ngIf="!translateMode">
+											<div class="entry" *ngIf="i === 0 && !basicForm.valid"> {{ globalVariables.translation["field_missing"][globalVariables.LNG] }} </div>
+											<div class="entry" *ngIf="i === 1 && !statusForm.valid"> {{ globalVariables.translation["field_missing"][globalVariables.LNG] }} </div>
+											<div class="entry" *ngIf="i === 2 && !loadedModuleTypeAndGroupsForm.valid"> {{ globalVariables.translation["field_missing"][globalVariables.LNG] }} </div>
+											<div class="entry" *ngIf="i === 3 && !tableStructureForm.valid"> {{ globalVariables.translation["field_missing"][globalVariables.LNG] }} </div>
+											<div class="entry" *ngIf="i === 4 && !groupByForm.valid"> {{ globalVariables.translation["field_missing"][globalVariables.LNG] }} </div>
+											<!-- <div class="entry"> * Permission Form Field Missing</div> -->
+											<div class="entry" *ngIf="i === 6 && !userRoleForm.valid"> {{ globalVariables.translation["field_missing"][globalVariables.LNG] }} </div>
+										</div>
+									</ng-template>
+		
+									<!-- Basic Info -->
+									<mat-expansion-panel [expanded]="true" *ngIf="i === 0" >
+										<mat-expansion-panel-header>
+											<mat-panel-title>
+												<span> 	{{ globalVariables.translation["basic_info"][globalVariables.LNG] }} </span>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div [formGroup]="basicForm">
+											<div fxLayout="column wrap" fxLayoutAlign="stretch">
+												<div formGroupName="name" fxLayout="row wrap" fxLayoutGap="10px">
+													<mat-form-field  appearance="outline" fxFlex="auto">
+														<mat-label>Name (EN)</mat-label>
+														<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="en">
+													</mat-form-field>
+													<mat-form-field  appearance="outline" fxFlex="auto">
+														<mat-label>Name (AR)</mat-label>
+														<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="ar">
+													</mat-form-field>
+												</div>
+												<mat-form-field class="w-100 "  floatLabel="never" appearance="outline" *ngIf="!translateMode">
+													<mat-label>Description</mat-label>
+													<textarea [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="description"></textarea>
+												</mat-form-field>
+												<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Module</mat-label>
+														<mat-select matInput formControlName="module" (selectionChange)="loadModuleAttributes($event)" [disabled]="drawerType == 'edit'">
+															<mat-option *ngFor="let module of availableModules" [value]="+module.id" >
+																{{module.name[globalVariables.LNG]}}
+															</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Workspace</mat-label>
+														<mat-select matInput formControlName="workspace">
+															<mat-option *ngFor="let workspace of availableWorkspaces" [value]="+workspace.id" >
+																{{workspace.name[globalVariables.LNG]}}
+															</mat-option>
+														</mat-select>
+													</mat-form-field>
+												</div>
+												<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Icon</mat-label>
+														<mat-select matInput formControlName="icon">
+															<mat-option value="" > --- </mat-option>
+															<mat-option *ngFor="let ficon of availableIcons" [value]="ficon.field_id" >
+																<mat-icon [svgIcon]="ficon.field_id"></mat-icon> {{ficon.name}}
+															</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Sort Order</mat-label>
+														<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="sort_order">
+													</mat-form-field>
+												</div>
+												<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Status</mat-label>
+														<mat-select matInput formControlName="status">
+															<mat-option [value]="'true'" >Yes</mat-option>
+															<mat-option [value]="'false'" >No</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Is system view?</mat-label>
+														<mat-select matInput formControlName="is_system_view">
+															<mat-option [value]="'true'" >Yes</mat-option>
+															<mat-option [value]="'false'" >No</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Deleted</mat-label>
+														<mat-select matInput formControlName="deleted">
+															<mat-option [value]="'true'" >Yes</mat-option>
+															<mat-option [value]="'false'" >No</mat-option>
+														</mat-select>
+													</mat-form-field>
+												</div>
+												<mat-form-field class="w-100 "  floatLabel="never" appearance="outline" *ngIf="!translateMode">
+													<mat-label>Filters</mat-label>
+													<textarea [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="filters" placeholder="Filter should be in JSON Format"></textarea>
+												</mat-form-field>
+												<!-- <button style="float: none;" mat-raised-button color="primary" matStepperNext>Next</button> -->
+												<div class="mt-2">
+													<span fxFlex="auto"></span>
+													<button style="float: none;" mat-raised-button (click)="gotoStatusStage()" color="primary" [disabled]="!basicForm.valid" matStepperNext> {{ globalVariables.translation["Next"][globalVariables.LNG] }} </button>
+												</div>
+											</div>
+										</div>
+									</mat-expansion-panel>
+		
+									<!-- Statuses -->
+									<mat-expansion-panel [expanded]="true" *ngIf="i === 1" >
+										<mat-expansion-panel-header>
+											<mat-panel-title>
+												<span> 	{{ globalVariables.translation["statuses_and_details"][globalVariables.LNG] }} </span>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div [formGroup]="statusForm">
+											<div fxLayout="column wrap" fxLayoutAlign="stretch" *ngIf="!translateMode">
+												<mat-form-field class="w-100" floatLabel="never" appearance="outline">
+													<mat-label>Allowed Statuses</mat-label>
+													<mat-select matInput formControlName="statuses" multiple >
+														<mat-option *ngFor="let status of availableStatuses" [value]="status.id" >
+														{{status.name[globalVariables.LNG]}}
+														</mat-option>
+													</mat-select>
+													<!-- <mat-checkbox matInput [formControl]="statuses" *ngFor="let status of availableStatuses">{{status.name[globalVariables.LNG]}}</mat-checkbox> -->
+												</mat-form-field>
+												<div fxLayout="row wrap" fxLayoutGap="10px">
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>View Modes</mat-label>
+														<mat-select matInput formControlName="viewModes" multiple>
+															<mat-option value="List">List</mat-option>
+															<mat-option value="Board">Board</mat-option>
+															<mat-option value="Dashboard">Dashboard</mat-option>
+															<mat-option value="Calendar">Calendar</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Allow to Add Records</mat-label>
+														<mat-select matInput formControlName="allow_to_add">
+															<mat-option [value]="'true'" >Yes</mat-option>
+															<mat-option [value]="'false'" >No</mat-option>
+														</mat-select>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Allow to Delete Records</mat-label>
+														<mat-select matInput formControlName="allow_to_delete">
+															<mat-option [value]="'true'" >Yes</mat-option>
+															<mat-option [value]="'false'" >No</mat-option>
+														</mat-select>
+													</mat-form-field>
+												</div>
+												<div fxLayout="row wrap" fxLayoutGap="10px">
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Overview</mat-label>
+														<textarea [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="overview" placeholder="Overview should be in JSON Format"></textarea>
+													</mat-form-field>
+													<mat-form-field appearance="outline" fxFlex="auto">
+														<mat-label>Edit Overview</mat-label>
+														<textarea [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="edit_overview" placeholder="Edit Overview should be in JSON Format"></textarea>
+													</mat-form-field>
+												</div>
+											</div>
+											<div class="mt-2">
+												<span fxFlex="auto"></span>
+												<button style="float: none;" mat-raised-button (click)="gotoTypesNGroupsStage()" color="primary" [disabled]="!statusForm.valid" matStepperNext>{{ globalVariables.translation["Next"][globalVariables.LNG] }}</button>
+											</div>
+										</div>
+									</mat-expansion-panel>
+		
+									<!-- Types & Groups -->
+									<div *ngIf="i === 2">
+										<div [formGroup]="loadedModuleTypeAndGroupsForm" class="p-3">
+											<div  fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start top">
+												<div fxFlex="50%" *ngIf="!translateMode">
+													<mat-expansion-panel [expanded]="true">
+														<mat-expansion-panel-header>
+															<mat-panel-title>
+																<span> 	{{ globalVariables.translation["module_types"][globalVariables.LNG] }} </span>
+															</mat-panel-title>
+														</mat-expansion-panel-header>
+														<div fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+															<mat-form-field class="w-100" floatLabel="never" appearance="outline">
+																<mat-select matInput formControlName="types" multiple (selectionChange)="modifyTableStructureFormObject($event)">
+																	<mat-option *ngFor="let mtype of availableModuleTypes" [value]="mtype" (onSelectionChange)="modifyTableStructureFormObjectAdvanced($event)">
+																		{{mtype.name[globalVariables.LNG]}}
+																	</mat-option>
+																</mat-select>
+															</mat-form-field>
+														</div>
+													</mat-expansion-panel>
+												</div>
+												<div fxFlex="!translateMode ? 50% : 100%">
+													<mat-expansion-panel [expanded]="true">
+														<mat-expansion-panel-header>
+															<mat-panel-title>
+																<span> {{ globalVariables.translation["type_groups"][globalVariables.LNG] }} </span>
+															</mat-panel-title>
+														</mat-expansion-panel-header>
+														<div fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+															<ng-container formArrayName="typeGroups" *ngFor="let item of loadedModuleTypeAndGroupsForm.controls['typeGroups']['controls']; let i = index;">
+																<ng-container [formGroupName]="i">
+																	<mat-card class=" mb-4 w-100 special" >
+																		<mat-card-actions align="end" *ngIf="i !== 0 && !translateMode">
+																			<button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeTypeGroup(i)">
+																				<mat-icon svgIcon="close-circle-outline"></mat-icon>
+																			</button>
+																		</mat-card-actions>
+																		<div formGroupName="name" fxLayout="row wrap" fxLayoutGap="10px">
+																			<mat-form-field appearance="outline" fxFlex="auto">
+																				<mat-label>Group Name (EN)</mat-label>
+																				<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="en">
+																			</mat-form-field>
+																			<mat-form-field appearance="outline" fxFlex="auto">
+																				<mat-label>Group Name (AR)</mat-label>
+																				<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="ar">
+																			</mat-form-field>
+																		</div>
+																		<mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="!translateMode">
+																			<mat-label>Icon</mat-label>
+																			<mat-select matInput formControlName="icon">
+																				<mat-option value="" > --- </mat-option>
+																				<mat-option *ngFor="let ficon of availableIcons" [value]="ficon.field_id" >
+																					<mat-icon [svgIcon]="ficon.field_id"></mat-icon> {{ficon.name}}
+																				</mat-option>
+																			</mat-select>
+																		</mat-form-field>
+																		<mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="!translateMode">
+																			<mat-label>Types</mat-label>
+																			<mat-select matInput formControlName="types" multiple >
+																				<mat-option *ngFor="let typ of loadedModuleTypeAndGroupsForm.value.types" [value]="typ.id" >
+																					{{typ.name[globalVariables.LNG]}}
+																				</mat-option>
+																			</mat-select>
+																		</mat-form-field>
+																	</mat-card>
+																</ng-container>
+															</ng-container>
+		
+															<div class="w-100" *ngIf="!translateMode">
+																<button style="float: none;" mat-raised-button (click)="addNewTypeGroup()" color="primary" type="button">{{ globalVariables.translation["add_new_group"][globalVariables.LNG] }}</button>
+															</div>
+														</div>
+													</mat-expansion-panel>
+												</div>
+											</div>
+											<div class="w-100 mt-2">
+												<span fxFlex="auto"></span>
+												<button style="float: none;" mat-raised-button (click)="gotoTableStructure()" color="primary" [disabled]="!loadedModuleTypeAndGroupsForm.valid" matStepperNext>{{ globalVariables.translation["Next"][globalVariables.LNG] }}</button>
+											</div>
+										</div>
+									</div>
+		
+									<!-- Table Structure -->
+									<div *ngIf="i === 3">
+										<div [formGroup]="tableStructureForm" class="p-3">
+											<mat-accordion>
+												<mat-expansion-panel *ngFor="let typ of tableStructureForm.controls['typeGroups']['controls'];  let k = index;">
+													<mat-expansion-panel-header>
+														<!-- <mat-panel-title>Type Group: {{ typ.type_name.value | json}}</mat-panel-title> -->
+														<!-- <mat-panel-title>Type Group: {{ typ.value.type_name[globalVariables.LNG]}}</mat-panel-title> -->
+														<mat-panel-title fxFlex="row" fxLayoutAlign="flex-start center" fxLayoutGap="10px">
+															<mat-icon fxFlex="auto" size="14px" inline [svgIcon]="typ.value.type_icon || 'file-document-box'"></mat-icon>
+															<h4 fxFlex="100%" class="font-weight-500">#{{k+1}}. {{ globalVariables.translation["type_group"][globalVariables.LNG] }}: <span class="color-light-green font-size-17">{{ typ.value.type_name[globalVariables.LNG]}}</span></h4>
+														</mat-panel-title>
+														<!-- <mat-panel-description>Description</mat-panel-description> -->
+													</mat-expansion-panel-header>
+		
+													<ng-container [formGroup]="typ">
+														<ng-container *ngFor="let control of typ.controls['type_columns']['controls'];  let m = index;">
+															<mat-card class=" mb-4 w-100 p-0 special" >
+																<mat-accordion>
+																	<mat-expansion-panel [expanded]="true">
+																		<mat-expansion-panel-header>
+																			<mat-panel-title>
+																				<span>  #{{m+1}}. Column Header: <span class="color-blue">{{control.value.name[globalVariables.LNG] != '' ? control.value.name[globalVariables.LNG] : '_________'}} </span></span>
+																			</mat-panel-title>
+																			<!-- <mat-action-row> -->
+																				<div align="end" fxLayoutAlign="end start" *ngIf="!translateMode">
+																					<button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeTypeGroupColumn(k, m)" style="height: auto;line-height: normal;">
+																						<mat-icon svgIcon="close-circle-outline"></mat-icon>
+																					</button>
+																				</div>
+																			<!-- </mat-action-row> -->
+																		</mat-expansion-panel-header>
+																		<ng-container [formGroup]="control"> 
+																			<div  fxLayout="row wrap" fxLayoutGap="15px" fxLayoutAlign="start top" class="w-100 p-3 pt-0">
+																				<div fxFlex="auto">
+																					<mat-accordion>
+																						<mat-expansion-panel [expanded]="true">
+																							<mat-expansion-panel-header>
+																								<mat-panel-title>
+																									<span> 	Column Basic Details </span>
+																								</mat-panel-title>
+																							</mat-expansion-panel-header>
+																							<div fxLayout="column wrap" fxLayoutAlign="stretch">
+																								<div formGroupName="name" fxLayout="row wrap" fxLayoutGap="10px">
+																									<mat-form-field appearance="outline" fxFlex="auto">
+																										<mat-label>Column Name (EN)</mat-label>
+																										<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="en" (ngModelChange)="updateFieldKey(control)">
+																									</mat-form-field>
+																									<mat-form-field appearance="outline" fxFlex="auto">
+																										<mat-label>Column Name (AR)</mat-label>
+																										<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="ar">
+																									</mat-form-field>
+																								</div>
+																								<mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="!translateMode">
+																									<mat-label>Column Type</mat-label>
+																									<mat-select matInput formControlName="field_type" (selectionChange)="modifyParentColumnType($event, k, m)">
+																										<mat-option *ngFor="let ftype of availableFieldTypes" [value]="ftype.field_id" >
+																											{{ftype.name[globalVariables.LNG]}}
+																										</mat-option>
+																									</mat-select>
+																								</mat-form-field>
+																								<mat-form-field class="w-100 "  floatLabel="never" appearance="outline" *ngIf="control.value.field_type != 'frontend_module_type_name' && control.value.field_type != 'flag' && control.value.field_type != 'thumbnail' && !translateMode">
+																									<mat-label>Field ID</mat-label>
+																									<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="field_id">
+																								</mat-form-field>
+																								<!-- <mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="control.value.field_type != 'frontend_module_type_name' && control.value.field_type != 'flag'  && control.value.field_type != 'thumbnail' && control.value.field_type != 'group' && !translateMode"> -->
+																								<mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="control.value.field_type == 'table' && !translateMode">
+																									<mat-label>Field</mat-label>
+																									<!-- <mat-select matInput formControlName="keys"  (selectionChange)="modifyFrontEndTypesObject($event, k, m)"  panelClass="custom-panel" *ngIf="control.value.field_type != 'group' && control.value.field_type != 'table'">
+																										<mat-option *ngFor="let fld of typ.value.avail_fields.normalFields" [value]="fld.field_id" >
+																											{{fld.name[globalVariables.LNG]}}
+																										</mat-option>
+																										<mat-optgroup *ngFor="let fldGrp of typ.value.avail_fields.refFields" [label]="fldGrp.name[globalVariables.LNG]">
+																											<mat-option *ngFor="let subfld of fldGrp.moduleDefinition" [value]="fldGrp.field_id+'.'+subfld.field_id">
+																												{{subfld.name[globalVariables.LNG]}}
+																											</mat-option>
+																										</mat-optgroup>
+																									</mat-select> -->
+																									<!-- <mat-select matInput formControlName="keys"  (selectionChange)="modifyFrontEndTypesObject($event, k, m)" multiple panelClass="custom-panel" *ngIf="control.value.field_type == 'group'">
+																										<mat-option *ngFor="let fld of typ.value.avail_fields.normalFields" [value]="fld.field_id" (onSelectionChange)="modifyFrontEndTypesObjectAdvanced($event, k, m)">
+																											{{fld.name[globalVariables.LNG]}}
+																										</mat-option>
+																										<mat-optgroup *ngFor="let fldGrp of typ.value.avail_fields.refFields" [label]="fldGrp.name[globalVariables.LNG]">
+																											<mat-option *ngFor="let subfld of fldGrp.moduleDefinition" [value]="fldGrp.field_id+'.'+subfld.field_id" (onSelectionChange)="modifyFrontEndTypesObjectAdvanced($event, k, m)">
+																												{{subfld.name[globalVariables.LNG]}}
+																											</mat-option>
+																										</mat-optgroup>
+																									</mat-select> -->
+																									<mat-select matInput formControlName="keys"  (selectionChange)="loadTableFieldColumns($event, k, m)"  panelClass="custom-panel" *ngIf="control.value.field_type == 'table'">
+																										<mat-option *ngFor="let fld of typ.value.avail_fields.tableFields" [value]="fld.field_id" >
+																											{{fld.name[globalVariables.LNG]}}
+																										</mat-option>
+																									</mat-select>
+																								</mat-form-field>
+																								<!-- <mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="control.value.field_type == 'table' && !translateMode">
+																									<mat-label>Table Columns</mat-label>
+																									<mat-select matInput formControlName="table_key_indexes" (selectionChange)="modifyFrontEndTypesObjectForTableField($event, k, m)" multiple>
+																										<mat-option *ngFor="let tblcol of control.value.table_columns_available;  let tblcolIndex = index;" [value]="tblcolIndex" (onSelectionChange)="modifyFrontEndTypesObjectForTableFieldAdvanced($event, k, m)">
+																											{{tblcol.name[globalVariables.LNG]}}
+																										</mat-option>
+																									</mat-select>
+																								</mat-form-field> -->
+																							</div>
+																						</mat-expansion-panel>
+																					</mat-accordion>
+																				</div>
+																				<div fxFlex="auto" *ngIf="(control.value.field_type == 'group' || control.value.field_type == 'table') || ((control.value.field_type == 'id' || control.value.field_type == 'status' || control.value.field_type == 'single') && !translateMode )">
+																					<mat-accordion>
+																						<mat-expansion-panel [expanded]="true">
+																							<mat-expansion-panel-header>
+																								<mat-panel-title>
+																									<span> 	Field Configuration (<b>{{control.controls['front_end_types'].controls.length}}</b> fields selected)</span>
+																								</mat-panel-title>
+																							</mat-expansion-panel-header>
+																							<div fxLayout="column wrap" fxLayoutAlign="stretch" fxFlex="auto">
+																								<ng-container *ngFor="let ftype of control.controls['front_end_types'].controls;  let fk = index;">
+																									<ng-container [formGroup]="ftype"> 
+																										<mat-card class=" mb-4 w-100 p-0 special" >
+																											<mat-accordion>
+																												<mat-expansion-panel [expanded]="true">
+																													<mat-expansion-panel-header>
+																														<mat-panel-title>
+																															<span class="subtitle-special">  #{{fk+1}}. Field: <i>{{ftype.value.name}}</i></span>
+																														</mat-panel-title>
+																														<div align="end" fxLayoutAlign="end start" *ngIf="!translateMode && (control.value.field_type == 'group' || control.value.field_type == 'table')">
+																															<button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeFrontEndTypesObject(k, m, fk)" style="height: auto;line-height: normal;">
+																																<mat-icon svgIcon="close-circle-outline"></mat-icon>
+																															</button>
+																														</div>
+																													</mat-expansion-panel-header>
+																													<div fxLayout="column wrap" >
+																														<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode && (control.value.field_type == 'group' || control.value.field_type == 'id' || control.value.field_type == 'status' || control.value.field_type == 'single')">
+																															<mat-form-field appearance="outline" fxFlex="auto">
+																																<mat-label>Field</mat-label>
+																																<mat-select matInput formControlName="selected_field_l0" (selectionChange)="modifyFrontEndTypesObjectFieldLevel0($event, k, m, fk)">
+																																	<mat-option *ngFor="let fld of typ.value.avail_fields.normalFields" [value]="fld.field_id" >
+																																		{{fld.name[globalVariables.LNG]}}
+																																	</mat-option>
+																																	<mat-option *ngFor="let fldGrp of typ.value.avail_fields.refFields" [value]="fldGrp.field_id">
+																																		{{fldGrp.name[globalVariables.LNG]}}
+																																	</mat-option>
+																																</mat-select>
+																															</mat-form-field>
+																															<mat-form-field appearance="outline" fxFlex="auto" *ngIf="ftype.value.available_child_fields_l1.length > 0">
+																																<mat-label>Sub Field</mat-label>
+																																<mat-select matInput formControlName="selected_field_l1"  (selectionChange)="modifyFrontEndTypesObjectFieldLevel1($event, k, m, fk)">
+																																	<mat-option *ngFor="let fld of ftype.value.available_child_fields_l1" [value]="fld.field_id" >
+																																		{{fld.name[globalVariables.LNG]}}
+																																	</mat-option>
+																																</mat-select>
+																															</mat-form-field>
+																															<mat-form-field appearance="outline" fxFlex="auto" *ngIf="ftype.value.available_child_fields_l2.length > 0">
+																																<mat-label>Sub Field</mat-label>
+																																<mat-select matInput formControlName="selected_field_l2"  (selectionChange)="modifyFrontEndTypesObjectFieldLevel2($event, k, m, fk)">
+																																	<mat-option *ngFor="let fld of ftype.value.available_child_fields_l2" [value]="fld.field_id" >
+																																		{{fld.name[globalVariables.LNG]}}
+																																	</mat-option>
+																																</mat-select>
+																															</mat-form-field>
+																														</div>
+																														<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode && control.value.field_type == 'table'">
+																															<mat-form-field appearance="outline" fxFlex="auto">
+																																<mat-label>Table Column</mat-label>
+																																<mat-select matInput formControlName="selected_field_l0" (selectionChange)="modifyFrontEndTypesObjectFieldLevel0ForTable($event, k, m, fk)">
+																																	<mat-option *ngFor="let tblcol of control.value.table_columns_available;  let tblcolIndex = index;" [value]="tblcolIndex">
+																																		{{tblcol.name[globalVariables.LNG]}}
+																																	</mat-option>
+																																</mat-select>
+																															</mat-form-field>
+																														</div>
+																														<div *ngIf="!(control.value.field_type == 'id' || control.value.field_type == 'status' || control.value.field_type == 'single')">
+																															<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+																																<mat-divider horizontal></mat-divider>
+																															</div>
+																															<div fxLayout="row wrap" fxLayoutGap="10px" class="mb-2"></div>
+				
+																															<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Field Type</mat-label>
+																																	<mat-select matInput formControlName="type" >
+																																		<mat-option *ngFor="let fftype of availableFrontendFieldTypes" [value]="fftype.field_id" >
+																																			{{fftype.name[globalVariables.LNG]}}
+																																		</mat-option>
+																																	</mat-select>
+																																</mat-form-field>
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Is new line?</mat-label>
+																																	<mat-select matInput formControlName="is_new_line">
+																																		<mat-option [value]="true" >Yes</mat-option>
+																																		<mat-option [value]="false" >No</mat-option>
+																																	</mat-select>
+																																</mat-form-field>
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Field Value Format</mat-label>
+																																	<mat-select matInput formControlName="field_type">
+																																		<mat-option value="" > --- </mat-option>
+																																		<mat-option *ngFor="let ffformat of availableFrontendFieldValueFormats" [value]="ffformat.field_id" >
+																																			{{ffformat.name[globalVariables.LNG]}}
+																																		</mat-option>
+																																	</mat-select>
+																																</mat-form-field>
+																															</div>
+																															<div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Icon</mat-label>
+																																	<mat-select matInput formControlName="icon_name">
+																																		<mat-option value="" > --- </mat-option>
+																																		<mat-option *ngFor="let ficon of availableIcons" [value]="ficon.field_id" >
+																																			<mat-icon [svgIcon]="ficon.field_id"></mat-icon> {{ficon.name}}
+																																		</mat-option>
+																																	</mat-select>
+																																</mat-form-field>
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Icon Position</mat-label>
+																																	<mat-select matInput formControlName="icon_position" >
+																																		<mat-option value="before" >Before</mat-option>
+																																		<mat-option value="after" >After</mat-option>
+																																	</mat-select>
+																																</mat-form-field>
+																															</div>
+																															<div formGroupName="tooltip" fxLayout="row wrap" fxLayoutGap="10px">
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Tooltip (EN)</mat-label>
+																																	<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="en">
+																																</mat-form-field>
+																																<mat-form-field appearance="outline" fxFlex="auto">
+																																	<mat-label>Tooltip (AR)</mat-label>
+																																	<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="ar">
+																																</mat-form-field>
+																															</div>
+																														</div>
+																													</div>
+																												</mat-expansion-panel>
+																											</mat-accordion>
+																										</mat-card>
+																									</ng-container>
+																								</ng-container>
+		
+																								<div class="w-100" *ngIf="!translateMode  && (control.value.field_type == 'group' || control.value.field_type == 'table')">
+																									<button style="float: none;" mat-raised-button (click)="addNewFrontEndTypesObject(k, m)" color="primary" type="button">Add NEW FIELD</button>
+																								</div>
+																							</div>
+																						</mat-expansion-panel>
+																					</mat-accordion>
+																				</div>
+																			</div>
+																		</ng-container>
+																	</mat-expansion-panel>
+																</mat-accordion>
+															</mat-card>
+														</ng-container>
+													</ng-container>
+													
+													<div class="w-100" *ngIf="!translateMode">
+														<button style="float: none;" mat-raised-button (click)="addNewTypeGroupColumn(k)" color="primary" type="button">{{ globalVariables.translation["add_new_column"][globalVariables.LNG] }}</button>
+													</div>
+												</mat-expansion-panel>
+											</mat-accordion>
+											<div class="w-100 mt-2">
+												<span fxFlex="auto"></span>
+												<button style="float: none;" mat-raised-button (click)="goto___()" color="primary" [disabled]="!tableStructureForm.valid" matStepperNext>{{ globalVariables.translation["Next"][globalVariables.LNG] }}</button>
+											</div>
+										</div>
+									</div>
+		
+									<!-- Group By -->
+									<div *ngIf="i === 4">
+										<div [formGroup]="groupByForm" class="p-3">
+											<mat-accordion>
+												<mat-expansion-panel [expanded]="true">
+													<mat-expansion-panel-header>
+														<mat-panel-title>{{ globalVariables.translation["group_by"][globalVariables.LNG] }}</mat-panel-title>
+													</mat-expansion-panel-header>
+		
+													<ng-container>
+														<ng-container *ngFor="let group of groupByForm.controls['groupBy']['controls'];  let k = index;">
+															<mat-card class=" mb-4 w-100 p-0 special" >
+																<mat-card-header class="p-2" fxLayout="row" fxLayoutAlign="end start">
+																	<div *ngIf="!translateMode">
+																		<button class="mat-icon-button" aria-label="Remove" type='button' (click)="removeGroupBy(k)">
+																			<mat-icon svgIcon="close-circle-outline"></mat-icon>
+																		</button>
+																	</div>
+																</mat-card-header>
+																<ng-container [formGroup]="group"> 
+																	<div  fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start top" class="w-100 p-3 pt-0">
+																		<ng-container formGroupName="name">
+																			<mat-form-field class="w-100 "  floatLabel="never" appearance="outline">
+																				<mat-label>Group By Name (EN)</mat-label>
+																				<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="en">
+																			</mat-form-field>
+																			<mat-form-field class="w-100 "  floatLabel="never" appearance="outline">
+																				<mat-label>Group By Name (AR)</mat-label>
+																				<input [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="ar">
+																			</mat-form-field>
+																		</ng-container>
+																		<mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="!translateMode">
+																			<mat-label>Field</mat-label>
+																			<mat-select matInput formControlName="field_id">
+																				<mat-option *ngFor="let fld of availableFields" [value]="fld.field_id" >
+																					{{fld.name[globalVariables.LNG]}}
+																				</mat-option>
+																			</mat-select>
+																		</mat-form-field>
+																	</div>
+																</ng-container>
+															</mat-card>
+														</ng-container>
+													</ng-container>
+													
+													<div class="w-100" *ngIf="!translateMode">
+														<button style="float: none;" mat-raised-button (click)="addNewGroupBy()" color="primary" type="button">{{ globalVariables.translation["add_new_group"][globalVariables.LNG] }}</button>
+													</div>
+												</mat-expansion-panel>
+											</mat-accordion>
+											<div class="w-100 mt-2">
+												<span fxFlex="auto"></span>
+												<button style="float: none;" mat-raised-button (click)="goto___()" color="primary" [disabled]="!groupByForm.valid" matStepperNext>{{ globalVariables.translation["Next"][globalVariables.LNG] }}</button>
+											</div>
+										</div>
+									</div>
+		
+									<!-- Permission -->
+									<mat-expansion-panel [expanded]="true" *ngIf="i === 5">
+										<mat-expansion-panel-header>
+											<mat-panel-title>
+												<span> {{ globalVariables.translation["add_field_privileges"][globalVariables.LNG] }} </span>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div>
+											<div fxLayout="row wrap" fxLayoutAlign="space-between flex-start" *ngIf="!translateMode">
+												<mat-table #table [dataSource]="dataSource" class="mat-elevation-z8 w-100">
+		
+													<ng-container matColumnDef="field_id">
+														<mat-header-cell *matHeaderCellDef> {{ globalVariables.translation["Fields"][globalVariables.LNG] }} </mat-header-cell>
+														<mat-cell *matCellDef="let element"> {{element.name[globalVariables.LNG]}} </mat-cell>
+													</ng-container>
+													<ng-container matColumnDef="options">
+														<mat-header-cell *matHeaderCellDef> {{ globalVariables.translation["options"][globalVariables.LNG] }}</mat-header-cell>
+														<mat-cell *matCellDef="let element"> 
+															<mat-checkbox [checked]="element.view" (change)="update(element, !(element.view), 'view')"> View</mat-checkbox> &nbsp; &nbsp;
+															<mat-checkbox [checked]="element.edit" (change)="update(element, !(element.edit), 'edit')"> Edit</mat-checkbox>
+														</mat-cell>
+													</ng-container>
+		
+													<!-- <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+														<mat-header-cell *matHeaderCellDef>{{disCol}}</mat-header-cell>
+														<mat-cell *matCellDef="let element">
+															{{!(disCol != 'id' && disCol != 'field_id')? element[disCol] : ''}}
+															<mat-checkbox [checked]="element[disCol].view" *ngIf="disCol != 'id' && disCol != 'field_id'"
+																(change)="update(element, !(element[disCol].view), disCol, 'view')"> view</mat-checkbox> &nbsp; &nbsp;
+															<mat-checkbox [checked]="element[disCol].edit" *ngIf="disCol != 'id' && disCol != 'field_id'"
+																(change)="update(element, !(element[disCol].edit), disCol, 'edit')"> edit</mat-checkbox>
+														</mat-cell>
+													</ng-container> -->
+								
+													<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+													<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+													<!-- <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+													  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+												</mat-table>
+											</div>
+											<div class="mt-2">
+												<span fxFlex="auto"></span>
+												<button class="mt-2" style="float: none;" mat-raised-button (click)="goto___()" color="primary" matStepperNext>{{ globalVariables.translation["Next"][globalVariables.LNG] }}</button>
+											</div>
+										</div>
+									</mat-expansion-panel>
+		
+									<!-- User Roles -->
+									<mat-expansion-panel [expanded]="true" *ngIf="i === 6">
+										<mat-expansion-panel-header>
+											<mat-panel-title>
+												<span> 	{{ globalVariables.translation["user_roles"][globalVariables.LNG] }} </span>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div [formGroup]="userRoleForm">
+											<div fxLayout="row wrap" fxLayoutAlign="space-between flex-start">
+												<mat-form-field class="w-100" floatLabel="never" appearance="outline" *ngIf="!translateMode">
+													<mat-label>Role</mat-label>
+													<mat-select matInput formControlName="roles" multiple [disabled]="drawerType == 'edit' && selectedViewUserDataSet?.userRole != null">
+														<mat-option *ngFor="let role of availableUserRoles" [value]="role" >
+														{{role.name[globalVariables.LNG]}}
+														</mat-option>
+													</mat-select>
+												</mat-form-field>
+												<!-- <button class="mt-2" style="float: none;" mat-raised-button (click)="generateView()" color="primary" [disabled]="!basicForm.valid || !statusForm.valid || !loadedModuleTypeAndGroupsForm.valid || !tableStructureForm.valid || !groupByForm.valid || !userRoleForm.valid" *ngIf="!translateMode">
+													<span *ngIf="drawerType == 'edit' && selectedViewUserDataSet?.userRole != null"> Generate Modified View</span>
+													<span *ngIf="drawerType == 'edit' && selectedViewUserDataSet?.userRole == null"> Generate User View</span>
+													<span *ngIf="drawerType != 'edit'"> Generate View</span>
+												</button>
+												<button class="mt-2" style="float: none;" mat-raised-button (click)="UpdatedTranslates()" color="primary" *ngIf="translateMode">
+													<span> Update Translates</span>
+												</button> -->
+												<div class="w-100 pt-2" id="error_display_panel" fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="start top" *ngIf="(!basicForm.valid || !statusForm.valid || !loadedModuleTypeAndGroupsForm.valid || !tableStructureForm.valid || !groupByForm.valid || !userRoleForm.valid) && !translateMode">
+													<div class="entry" *ngIf="!basicForm.valid"> * Basic Form Field Missing</div>
+													<div class="entry" *ngIf="!statusForm.valid"> * Status & Other Details Form Field Missing</div>
+													<div class="entry" *ngIf="!loadedModuleTypeAndGroupsForm.valid"> * Types & Groups Form Field Missing</div>
+													<div class="entry" *ngIf="!tableStructureForm.valid"> * Table Structure Form Field Missing</div>
+													<div class="entry" *ngIf="!groupByForm.valid"> * Group By Form Field Missing</div>
+													<!-- <div class="entry"> * Permission Form Field Missing</div> -->
+													<div class="entry" *ngIf="!userRoleForm.valid"> * User Role Form Field Missing</div>
+												</div>
+											</div>
+										</div>
+		
+										<ng-container *ngIf="isShowJson">
+											<mat-card class=" mb-4 w-100 p-0 special mt-5" >
+												<mat-card-header class="p-2" fxLayout="row" fxLayoutAlign="start start" >
+													<mat-card-title>Generated Json</mat-card-title>
+												</mat-card-header>
+												<div class="w-100 p-3">
+													<pre>{{basePermissionMatrix | json}}</pre>
+												</div>
+											</mat-card>
+										</ng-container>
+									</mat-expansion-panel>
+		
+								</mat-step>
+								<!-- <ng-template matStepperIcon="edit">
+									<mat-icon>insert_drive_file</mat-icon>
+								</ng-template>
+								<ng-template matStepperIcon="done">
+									<mat-icon>done_all</mat-icon>
+								</ng-template> -->
+								<!-- <ng-template *ngFor="let step of availableStages" [matStepperIcon]="step.name.en">
+									<mat-icon *ngIf="step.completed" svgIcon="check"></mat-icon>
+									<mat-icon *ngIf="!step.completed || step.current" [svgIcon]="number"></mat-icon>
+								</ng-template> -->
+							</mat-horizontal-stepper>
+						</mat-card>
+					</ng-template>
+
+				</mat-tab>
+			</mat-tab-group>
+		</div>
+	</mat-drawer-container>
+
+	<!-- SMSDN ENDZZZ -->
+</div>

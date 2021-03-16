@@ -1,0 +1,33 @@
+mat-sidenav-content {
+    height: calc(100vh - 50px);
+    // height: 100vh;
+}
+mat-sidenav{
+    position: fixed;
+}
+.card-view{
+    min-height: 50px;
+    margin: 5px;
+}
+.workspace-drawer-component {
+	height: calc(100%);
+}
+
+mat-drawer-container {
+	// height: calc(100vh - 50px);
+	height: 100vh !important;
+	margin-top: 0;
+}
+::ng-deep {
+    .workspace-drawer-component {
+        .overflow-auto {
+            overflow: auto;
+        }
+
+        .content-container {
+            height: calc(100vh - 120px - 24px) !important;
+            padding-left: 40px !important;
+            padding-right: 40px !important;
+        }
+    }
+}

@@ -1,0 +1,139 @@
+.board-wrapper{
+    padding: 20px 30px;
+    background: transparent;
+    
+    .board-back{
+        overflow-x:scroll;
+        background: transparent;
+        
+        .board-card{
+            height: calc(100vh - 250px);
+            background:#ECECEC;
+            overflow: auto;
+            border: 1px;
+            cursor: move;
+
+           .mat-card-header{
+                position: sticky;
+                top: 0;
+                z-index: 99;
+                background: #ececec;
+                padding: 10px 0 0;
+           }
+           .mat-card-content{
+                padding: 0 16px;
+           }
+            .mat-icon
+            {
+                width:10px;
+                height:10px;
+            }
+        }
+    
+        .paginator-wrapper{
+            position: relative;
+        
+            ::ng-deep .mat-paginator-range-actions{
+                .mat-paginator-navigation-previous {
+                    margin-right: 10px;
+                }
+                .mat-paginator-navigation-next {
+                    margin-left: 10px;
+                }
+            }
+        
+            .current-index {
+                width: 50px;
+                height: 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                right: 33px;
+                bottom: 20px;
+                color:rgba(0, 0, 0, 0.54);
+            
+                ::ng-deep .mat-select-trigger {
+                    width: 90%;
+                }
+            
+                ::ng-deep .mat-select-value{
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+
+::ng-deep {
+    @media screen and (max-width: 1024px) {
+        .board-wrapper {
+            .board-back {
+                .board-card {
+                    height: calc(100vh - 290px) !important;
+                }
+            }
+            .paginator-wrapper {
+                .mat-paginator-page-size {
+                    margin-right: 0;
+                }
+            }
+        }
+        .global-sidenav-content {
+            mat-drawer-container:first-child{
+                height: calc(100vh - 100px) !important;
+            }
+        }
+    }
+}
+
+.chip-margin{
+    font-size: small;
+    &:lang(en){
+        margin-left:15px;
+    }
+    
+    &:lang(ar){
+        margin-right:15px;
+    }
+}
+.card-date{
+    float:right;
+    font-size:12px;
+    color: silver;
+}
+
+
+.heading{
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+.subHeading{
+    font-size:14px;
+    margin: 10px 0px !important;
+    margin-right: 10px;
+}
+.inner-card-content{
+    margin-bottom:0px;
+}
+.inner-mat-chip{
+    margin-right: 10px !important;
+    margin-bottom: 20px !important;
+}
+.text{
+    /* margin: 5px 5px 5px 0px; */
+    margin: 1px 0px;
+    display: inline-block;
+}
+mat-divider{
+    margin-bottom : 10px !important;
+    position : relative !important;
+}
+.newLine{
+    display: block;
+}
+
+
+
+

@@ -1,0 +1,74 @@
+<div class="roles-component">
+	<mat-drawer-container hasBackdrop>
+		<mat-drawer-content>
+			<ngx-spinner
+					bdColor="rgba(255, 255, 255, 0.7)"
+					size="medium"
+					color="#008755"
+					type="ball-scale-multiple"
+					name="create"
+					[fullScreen]="false"
+			>
+			</ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row class="z-index-2 ">
+					{{globalVars.translation["Roles"][globalVars.LNG]}}
+				</mat-toolbar-row>
+			</mat-toolbar>
+			
+			<div class="p-2 pr-5 mx-auto content-container mt-1 overflow-auto">
+				<app-table-widget
+                    #tableWidget *ngIf="tableWidgetData"
+					[tableData]="tableWidgetData"
+					(rowClicked)="rowClicked($event)"
+				>
+				</app-table-widget>
+			</div>
+			
+			<button mat-fab color="primary" class="sticky-fab-button" (click)="openDrawer('add')">
+				<mat-icon svgIcon="plus"></mat-icon>
+			</button>
+		</mat-drawer-content>
+		
+		<mat-drawer class="mat-sidenav-fixed" #drawer mode="over" position="end" style="width: 50vw;" disableClose>
+			<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+				<div class="h-100" fxLayout="row">
+					<button mat-button (click)="drawerClosed($event)" tabindex="-1">
+						<mat-icon svgIcon="close"></mat-icon>
+					</button>
+					<mat-divider vertical></mat-divider>
+					<span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                        <span>{{ globalVars.translation["update_user_role"][globalVars.LNG] }}</span>
+                    </span>
+				</div>
+				<div class="px-4">
+					<button mat-raised-button color="primary" (click)="saveRole()">
+						{{globalVars.translation['Save'][globalVars.LNG]}}
+					</button>
+				</div>
+			</mat-toolbar>
+			<div class="p-2 pt-5 mx-auto content-container mt-1 overflow-auto main-container">
+				<mat-accordion>
+					<mat-expansion-panel expanded>
+						<mat-expansion-panel-header>
+							<mat-panel-title>{{ globalVars.translation["user_role"][globalVars.LNG] }}</mat-panel-title>
+						</mat-expansion-panel-header>
+						
+						<div [formGroup]="roleForm" fxLayout="row" fxLayoutAlign="space-between center">
+							<div formGroupName="name" fxLayoutGap="20px" fxFlex="100%">
+								<mat-form-field appearance="outline" fxFlex="100%">
+									<mat-label>{{globalVars.translation['name_english'][globalVars.LNG]}}</mat-label>
+									<input type="text" matInput formControlName="en">
+								</mat-form-field>
+								<mat-form-field appearance="outline" fxFlex="100%">
+									<mat-label>{{globalVars.translation['name_arabic'][globalVars.LNG]}}</mat-label>
+									<input type="text" matInput formControlName="ar">
+								</mat-form-field>
+							</div>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+		</mat-drawer>
+	</mat-drawer-container>
+</div>

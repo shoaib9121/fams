@@ -1,0 +1,30 @@
+<div class="side-time-tracker-component">
+    <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="time-tracking" [fullScreen]="false"></ngx-spinner>
+    
+    <div class="overflow-auto ">
+        <div class="p-2 pt-5 mx-auto">
+            <div class="clock-wrapper pb-2 m-4 mx-auto" fxLayout="column" fxLayoutAlign="space-between center">
+                <div class="clock">
+                    <div class="time">
+                        <span class="hours"> {{ hours }}:</span>
+                        <span class="minutes"> {{ minutes }}:</span>
+                        <span class="seconds"> {{ seconds }} </span>
+                    </div>
+                    <div class="overlap-outer">
+                        <div class="overlap">
+                            <mat-progress-spinner class="track" [mode]="spinnerProps.mode" [color]="spinnerProps.color" value="100" [strokeWidth]="spinnerProps.strokeWidth" [diameter]="spinnerProps.diameter"></mat-progress-spinner>
+                            <mat-progress-spinner class="progress" [mode]="spinnerProps.mode" [color]="spinnerProps.color" [value]="spinnerProps.value" [strokeWidth]="spinnerProps.strokeWidth" [diameter]="spinnerProps.diameter"></mat-progress-spinner>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="action-btn" mat-stroked-button color="primary" (click)="postTimeTracking('pause_time', $event)" *ngIf="stopWatch.state && stopWatch.state != ''" [disabled]="this.stopWatch.state == 'end_time' || this.stopWatch.state == 'pause_time'"> {{ globalVars.translation["pause"][globalVars.LNG] }} </button>
+                    <button class="action-btn" mat-stroked-button color="primary" (click)="postTimeTracking('continue_time', $event)" *ngIf="stopWatch.state && stopWatch.state != ''" [disabled]="this.stopWatch.state == 'end_time' || this.stopWatch.state == 'continue_time'"> {{ globalVars.translation["resume"][globalVars.LNG] }} </button>
+                    <button class="action-btn" mat-raised-button color="primary" (click)="postTimeTracking('start_time', $event)" *ngIf="!stopWatch.state || stopWatch.state == ''"> {{ globalVars.translation["start"][globalVars.LNG] }} </button>
+                    <button class="action-btn" mat-raised-button color="primary" (click)="postTimeTracking('end_time', $event)" *ngIf="stopWatch.state && stopWatch.state != ''" [disabled]="this.stopWatch.state == 'end_time'"> {{ globalVars.translation["end"][globalVars.LNG] }} </button>
+                    <!-- <button class="action-btn" mat-raised-button color="secondary" (click)="resetTimer()"> {{ globalVars.translation["reset"][globalVars.LNG] }} </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

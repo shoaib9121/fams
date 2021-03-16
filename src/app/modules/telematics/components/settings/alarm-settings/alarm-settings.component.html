@@ -1,0 +1,127 @@
+
+<div class="alarm-component">
+  <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+    <mat-drawer-container hasBackdrop>
+        <mat-drawer-content>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" style="float:right;margin:20px;">
+                <mat-icon (click)="drawer.toggle()">add</mat-icon>
+                <mat-icon>settings</mat-icon>
+                <mat-icon>cached</mat-icon>         
+               </div>
+                 <app-table-widget *ngIf="tableWidgetData"
+                #tableWidget
+                (actionButtonPressed)="tableActionEvent($event)"
+                [tableData]="tableWidgetData"
+                (rowClicked)="rowClicked($event)"
+                >
+                </app-table-widget>
+        </mat-drawer-content>
+        <mat-drawer #drawer mode="over" style="width: 40vw;" position="end">
+            <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="h-100" fxLayout="row">
+                    <button mat-button (click)="drawer.toggle()" tabindex="-1">
+                        <mat-icon svgIcon="close"></mat-icon>
+                    </button>
+                    <mat-divider vertical></mat-divider>
+                    <span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+                        Add Alarm
+                    </span>
+                </div>
+                <ng-container>
+
+
+                </ng-container>
+            </mat-toolbar>
+            <mat-card >
+                <mat-card-content fxLayout="column" fxLayoutAlign="space-between center">
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Enter Alarm Name</mat-label>
+                        <input matInput>
+                      </mat-form-field>
+                      <mat-form-field  appearance="outline">
+                        <mat-label>Enter Alarm Description</mat-label>
+                        <textarea matInput></textarea>
+                      </mat-form-field>
+                      <!-- <p>color</p> -->
+                      <div>
+                      <mat-checkbox>Events</mat-checkbox>
+                      <mat-form-field appearance="outline">
+                        <mat-select>
+                          <mat-option ></mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Trigger</mat-label>
+                        <mat-select>
+                          <mat-option ></mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <div>
+                        <mat-checkbox>min</mat-checkbox>
+                        <mat-form-field appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                        <mat-checkbox>max</mat-checkbox>
+                        <mat-form-field  appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                      </div>
+  
+                    </div>
+                     
+                    <div >
+                      <mat-checkbox>Time</mat-checkbox>
+                      <mat-form-field   appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                        <mat-form-field  appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                    </div>
+                  <div>
+                      <mat-checkbox>Valid Period</mat-checkbox>
+                      <mat-form-field   appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                        <mat-form-field  appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                  </div>
+                  
+                  <!-- fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start stretch" -->
+
+                    <div>
+                      <mat-checkbox>Email Notification</mat-checkbox>
+                      <mat-form-field  appearance="outline">
+                          <input matInput>
+                        </mat-form-field>
+                      </div>
+                        <div>
+                          <mat-checkbox>Sms Notification</mat-checkbox>
+                          <mat-form-field  appearance="outline">
+                              <input matInput>
+                            </mat-form-field>
+                      </div>
+                  
+                    <div>
+                      <mat-checkbox>Select Vehicles/Groups/Filters</mat-checkbox>
+                      <mat-checkbox>Select Zone/Zone category</mat-checkbox>
+                      </div>
+                    <div>
+                        <mat-checkbox>Day</mat-checkbox>
+                        <mat-checkbox *ngFor="let day of days">{{day[globalVars.LNG]}}</mat-checkbox>
+                    </div>
+                  
+                    <mat-checkbox>Critical</mat-checkbox>
+                </mat-card-content>
+                <mat-card-actions fxLayout="row" fxLayoutAlign="flex-end center">                            
+                    <button  mat-raised-button color="primary">Save</button>
+                    <button mat-raised-button>Reset</button>
+                    <button (click)="drawer.toggle()" mat-raised-button>Close</button>
+                  </mat-card-actions>
+            </mat-card>
+        </mat-drawer>
+    </mat-drawer-container>
+    </div>

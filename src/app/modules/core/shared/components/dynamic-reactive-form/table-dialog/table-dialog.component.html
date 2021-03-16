@@ -1,0 +1,5 @@
+<mat-form-field class="w-100" appearance="outline">
+	<mat-label>{{ field.label[globalVariables.LNG] }}</mat-label>
+	<input type="text" (click)="field.update?  raiseDialog(group, field) :''" [disabled]="!field.update" [formControl]="tableDialogForm.controls['field_show']" matInput readonly>
+	<mat-icon svgIcon="pencil-box-multiple-outline" *ngIf="field.update" matSuffix fieldor="secondary" (click)="raiseDialog(group, field)"></mat-icon>
+</mat-form-field>

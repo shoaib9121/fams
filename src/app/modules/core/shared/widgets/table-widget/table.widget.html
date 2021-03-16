@@ -1,0 +1,469 @@
+<div class="table-wrapper" [class.default-padding]="tableData.configuration?.defaultPadding ? !tableData.configuration?.hasParentChildRelation || tableData.configuration?.isParent : ''" [class.child-padding]="tableData.configuration?.isChild">
+	<div fxLayout fxLayoutAlign="flex-end center" class="search-wrapper">
+
+		<!-- Global Search -->
+		<div *ngIf="tableData.configuration?.haveSearch && 
+		    (tableData.configuration?.search?.searchLevel === 'global' || tableData.configuration?.search?.searchLogic === 'frontend') 
+		        && !tableData.configuration?.isChild" fxLayout="row" class="search-input w-100">
+			<mat-form-field appearance="outline" fxFlex="auto"class="w-100">
+				<mat-label>{{ (tableData.configuration && tableData.configuration.search) ? tableData.configuration.search.searchLabel[globals.LNG] : globals.translation['Search..'][globals.LNG] }}</mat-label>
+				<input type="text" matInput [(ngModel)]="searchQuery" (keyup.enter)="applyGlobalFilter($event.target.value)">
+				<span *ngIf="searchQuery?.length > 0" matSuffix fxLayout fxLayoutAlign="space-between center">
+					<button mat-icon-button>
+						<mat-icon svgIcon="close" color="secondary" matSuffix (click)="applyGlobalFilter(null)"></mat-icon>
+					</button>
+					<mat-icon svgIcon="magnify" color="secondary" matSuffix (click)="applyGlobalFilter(searchQuery)"></mat-icon>
+				</span>
+			</mat-form-field>
+		</div>
+
+		<!-- Statuses Filter Dropdown -->
+		<div *ngIf="tableData && tableData?.data?.length > 1" class="statuses-filter text-right">
+			<button mat-icon-button
+				[matMenuTriggerFor]="filterDropdown"
+				data-action="dropdown"
+				[matMenuTriggerData]="{availableTables: tableData?.data}"
+			>
+				<mat-icon svgIcon="filter-variant"></mat-icon>
+			</button>
+			<mat-menu #filterDropdown="matMenu" class="statuses-matmenu" xPosition="before" (click)="$event.stopPropagation();">
+				<ng-template matMenuContent let-availableTables="availableTables">
+					<div fxLayout="row" flexLayoutAlign="center" mat-menu-item *ngFor="let table of availableTables" (click)="$event.stopPropagation(); filterRecordsByStatus(table)">
+						<mat-checkbox class="mat-menu-item" [checked]="table.show" [class.pl-0]="globals.LNG == 'en'" [class.pr-0]="globals.LNG == 'ar'"></mat-checkbox>
+						<span class="statuses-label text-uppercase fw-500">{{ table.group.name[globals.LNG] }}</span>
+					</div>
+				</ng-template>
+			</mat-menu>
+		</div>
+	</div>
+
+	<ng-container *ngIf="tableData && tableData?.data[0]?.data?.length > 0">
+		<div class="header-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="tableData.configuration?.globalHeaders">
+			<span class="header-cell" *ngFor="let column of tableData.columnStructure; let i = index;" [fxFlex]="column?.width">
+				{{ column.name[globals.LNG] }}
+			</span>
+		</div>
+	</ng-container>
+
+	<div class="min-h-norecords" *ngIf="tableData?.data.length < 1 || tableData.data[0].data.length < 1" fxLayout="column" fxLayoutAlign="center center">
+		<ng-container>
+			<app-empty-state class="h-100" state='no_result' width="100"></app-empty-state>
+		</ng-container>
+	</div>
+	<div *ngFor="let table of tableData.data; let tableIndex = index;">
+		<div>
+			<div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="10px">
+				<div fxLayout="row" *ngFor="let bulkAction of bulkActions; let tableIndex = index;"
+					fxLayoutAlign="flex-end center" fxLayoutGap="10px">
+					<button mat-icon-button (click)="eventActionButtonPressedAll(bulkAction.action)"
+							[disabled]="isOneSelected" [title]="bulkAction.tooltip[globals.LNG]">
+						<mat-icon [svgIcon]="bulkAction.icon"></mat-icon>
+					</button>
+				</div>
+			
+			</div>
+			<mat-form-field *ngIf="tableSearch !== undefined && tableSearch == true"
+							style="font-size: 14px;width: 100%;">
+				<mat-label>{{globals.translation['Search..'][globals.LNG]}}</mat-label>
+				<input type="text" matInput (keyup)="applyFilter($event.target.value, tableIndex)">
+			</mat-form-field>
+		</div>
+
+		<mat-table class="w-100" [dataSource]="dataSources[tableIndex]"
+			[class.mb-2]="!tableData.configuration?.hasParentChildRelation || (tableData.configuration?.hasParentChildRelation && tableData.configuration?.isParent) || (dataSources.length > 1)"
+			*ngIf="tableData && tableData.data[tableIndex].show" multiTemplateDataRows
+		>
+		
+			<!-- Table Headers // only first table header is rendered -->
+			<!-- <ng-container *ngIf="tableData.configuration.globalHeaders">
+				<mat-header-row class="table-header-row table-sticky-header-row table-master-header" *cdkHeaderRowDef="displayedColumns; sticky: true;"></mat-header-row>
+			</ng-container> -->
+			
+			<!-- Grouped Status Header -->
+			<ng-container cdkColumnDef="groupHeader">
+				<mat-cell [attr.colspan]="tableData.columnStructure.length" *cdkCellDef="let group">
+					<ng-container *ngIf="table.group !== undefined">
+						<span class="group"
+							[style.backgroundColor]="table.group.color"
+							*ngIf="table.group.name.en !== undefined && table.show"
+						>
+							{{ table.group.name[globals.LNG] }}
+						</span>
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<!-- Table Row -->
+			<ng-container>
+				<mat-row class="group-header"
+					*cdkRowDef="let row; columns: ['groupHeader']; when: isFirstIndex"
+					[style.display]="(((table.group?.name?.en || table.group) === undefined) ? 'none' : '')"></mat-row>
+			</ng-container>
+			
+			
+			<!-- Plain Table -->
+			<ng-container
+					[cdkColumnDef]="column.field_id"
+					*ngFor="let column of tableData.columnStructure; let i = index;"
+			>
+				
+				<mat-header-cell *cdkHeaderCellDef [fxFlex]="column?.width">
+					
+					<span *ngIf="column.type !== 'select'">{{ column.name[globals.LNG] }}</span>
+					
+					<mat-checkbox *ngIf="column.type === 'select'"
+								(change)="$event ? masterToggle() : null"
+								[checked]="selection.hasValue() && isAllSelected()"
+								[indeterminate]="selection.hasValue() && !isAllSelected()"
+								[aria-label]="checkboxLabel()">
+					</mat-checkbox>
+				</mat-header-cell>
+				
+				<mat-cell class="table-cell-padding position-relative" *cdkCellDef="let row"
+						[class.p-0]="tableData.typeStructure[row.type_id][i].type == 'thumbnail'"
+						[fxFlex]="column?.width"
+						[fxFlexAlign]="tableData.typeStructure[row.type_id][i].type == 'thumbnail' ? 'stretch' : 'center'"
+				>
+					
+					<!-- Expand actionButton for subitems
+					<div *ngIf="i == 0 && row.SubItems" (click)="$event.stopPropagation()">
+						<button class="toggle-sub-item-btn" disableRipple mat-icon-button (click)="toggleSubItems(row)">
+							<mat-icon svgIcon="chevron-right"></mat-icon>
+						</button>
+					</div>
+					-->
+					
+					<!-- Thumbnail Column -->
+					<div class="h-100 row-thumb" *ngIf="tableData.typeStructure[row.type_id][i].type == 'thumbnail'">
+						<div class="placeholder" *ngIf="row.showPlaceholder || (!row.hasOwnProperty('showPlaceholder'))" fxLayout="row" fxLayoutAlign="center center">
+							&nbsp;
+						</div>
+						<img class="img-responsive-width" [alt]="'Thumbnail of ' + column.name.en"
+							[class.d-none]="!row.hasOwnProperty('showPlaceholder') || row.showPlaceholder"
+							[attr.src]="(globals.thumbnailBaseUrl + 3692) | secure | async"
+							(error)="errorEvent(row)"
+							(load)="loadEvent(row)"
+						>
+					</div>
+					
+					<!-- Status Column -->
+					<div *ngIf="tableData.typeStructure[row.type_id][i].type === 'status'" class="status-button"
+						(click)="$event.stopPropagation()">
+						
+						<!-- Displaying Status if it has no possible updates -->
+						<span class="lh-28px lp-1 px-3 text-uppercase fw-600"
+							[style.color]="row[tableData.typeStructure[row.type_id][i].field_id]?.color"
+							*ngIf="!row[tableData.typeStructure[row.type_id][i].field_id]?.updates?.length"
+						>
+							{{ row[tableData.typeStructure[row.type_id][i].field_id]?.name ? row[tableData.typeStructure[row.type_id][i].field_id]?.name[globals.LNG] : row[tableData.typeStructure[row.type_id][i].field_id]?.name }}
+						</span>
+						
+						<!-- Status actionButton for dropdown -->
+						<button class="lh-28px lp-1 text-uppercase status-button" mat-flat-button
+								[matMenuTriggerFor]="appMenu"
+								data-action="dropdown"
+								[matMenuTriggerData]="{futureStatuses: row[tableData.typeStructure[row.type_id][i].field_id]?.updates}"
+								[style.color]="row?.on_hold == 'true' ? (row[tableData.typeStructure[row.type_id][i].field_id]?.updates[row[tableData.typeStructure[row.type_id][i].field_id]?.updates?.length - 1]?.color) : (row[tableData.typeStructure[row.type_id][i].field_id]?.color)"
+								*ngIf="row[tableData.typeStructure[row.type_id][i].field_id]?.updates?.length"
+						>
+							<span class="status-name" *ngIf="row.on_hold == 'true'">
+								{{ row[tableData.typeStructure[row.type_id][i].field_id].updates[row[tableData.typeStructure[row.type_id][i].field_id].updates.length - 1]["name"][globals.LNG] }}
+							</span>
+							<span class="status-name" *ngIf="row.on_hold == 'false' || row.on_hold == 'null' || row.on_hold == undefined || !row.on_hold">
+								{{ row[tableData.typeStructure[row.type_id][i].field_id]["name"][globals.LNG] }}
+							</span>
+							<mat-icon svgIcon="chevron-down"></mat-icon>
+						</button>
+						
+						<!-- Dropdown -->
+						<mat-menu #appMenu="matMenu">
+							<ng-template matMenuContent let-futureStatuses="futureStatuses">
+								<div style="display: flex; align-items: center"
+									mat-menu-item
+									*ngFor="let status of futureStatuses"
+									(click)="eventStatusUpdated(status, row, table?.pageInfo)">
+									<span class="square-box"
+										[style.backgroundColor]="status.color"
+									></span>
+									<span class="text-uppercase fw-500">{{ status.name[globals.LNG] }}</span>
+								</div>
+							</ng-template>
+						</mat-menu>
+					</div>
+					
+					<!-- Grouped Buttons -->
+					<div fxLayout="row wrap" fxLayoutAlign="flex-start center" fxLayoutGap="10px"
+						*ngIf="tableData.typeStructure[row.type_id][i].type === 'grouped_button'"
+						(click)="$event.stopPropagation()"
+					>
+						<span fxLayout="row wrap" fxLayoutAlign="flex-start center"
+							*ngFor="let button of row[column.field_id]; let groupedColumnIndex = index;">
+							<button mat-icon-button (click)="eventActionButtonPressed(row, button)">
+								<mat-icon [svgIcon]="button.icon"></mat-icon>
+							</button>
+						</span>
+					</div>
+					
+					<!-- Toggle Slider -->
+					<div *ngIf="tableData.typeStructure[row.type_id][i].type === 'toggle_slider'"
+						(click)="$event.stopPropagation()">
+						<ng-container>
+							<section class="example-section">
+								<mat-slide-toggle
+										class="example-margin"
+										color="green"
+										[checked]="row[column.field_id]"
+										disabled=false
+										(change)="eventActionToggleButtonPressed(row)">
+								</mat-slide-toggle>
+							</section>
+						</ng-container>
+					</div>
+					
+					<!-- Type Table -->
+					<ng-container *ngIf="column.type == 'table'">
+						<div class=" mb-1 mx-1"
+							fxLayout="row wrap"
+							fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+							*ngFor="let table of row[tableData.typeStructure[row.type_id][i].field_id]; let tableIndex = index;"
+							fxFlex="1 1 100%"
+						>
+							<mat-chip-list class="mb-1" fxFlex="0 0 auto">
+								<mat-chip disableRipple matTooltipPosition="above"
+										*ngFor="let tableCell of table; let layoutIndex = index"
+										[matTooltip]="tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex] ? tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex].tooltip[globals.LNG] : ''"
+										fxLayoutGap="5px"
+								>
+									<mat-icon class="h-100" size="14px" inline
+											[svgIcon]="tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex]?.icon?.name"
+											color="secondary"></mat-icon>
+									<span>{{ tableCell || "&mdash;" }}</span>
+								</mat-chip>
+							</mat-chip-list>
+						</div>
+					</ng-container>
+
+					<!-- Type Table Object -->
+					<ng-container *ngIf="column.type == 'table_object'">
+						<div class=" mb-1 mx-1"
+							fxLayout="row wrap"
+							fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+							*ngFor="let table of row[tableData.typeStructure[row.type_id][i].field_id]; let tableIndex = index;"
+							fxFlex="1 1 100%"
+						>
+							<mat-chip-list class="mb-1" fxFlex="0 0 auto">
+								<mat-chip disableRipple matTooltipPosition="above"
+										*ngFor="let tableCell of table; let layoutIndex = index"
+										[matTooltip]="tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex] ? tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex].tooltip[globals.LNG] : ''"
+										fxLayoutGap="5px"
+								>
+									<mat-icon class="h-100" size="14px" inline
+											[svgIcon]="tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex]?.icon?.name"
+											color="secondary"></mat-icon>
+									<span>{{ tableCell || "&mdash;" }}</span>
+								</mat-chip>
+							</mat-chip-list>
+						</div>
+					</ng-container>
+					
+					<!-- New easier, better structure -->
+					<ng-container class="w-100"
+								*ngIf="tableData.typeStructure[row.type_id][i].type !== 'status' && tableData.typeStructure[row.type_id][i].type !== 'table' && tableData.typeStructure[row.type_id][i].type !== 'table_object' && (tableData.typeStructure[row.type_id][i].front_end_type?.length >= 0);">
+						<div [ngClass]="{'w-100': column?.field_id=='type_name' || column?.field_id=='status'}"
+							class="px-1 mb-1"
+							fxLayout="row wrap"
+							fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+							*ngFor="let layout of tableData.typeStructure[row.type_id][i].front_end_type; let layoutIndex = index;"
+							[fxFlex]="tableData.typeStructure[row.type_id][i].front_end_type && tableData.typeStructure[row.type_id][i].front_end_type[layoutIndex]?.newline ? '1 1 100%' : '0 0 auto'"
+						>
+							<mat-chip-list class="mb-1" [fxFlex]="'0 0 auto'"
+										*ngIf="layout.type === 'chip'">
+								<mat-chip disableRipple matTooltipPosition="above"
+										[matTooltip]="layout.tooltip ? layout.tooltip[globals.LNG] : ''"
+										[style.backgroundColor]="row[tableData.typeStructure[row.type_id][i].field_id]?.color"
+										fxLayoutGap="5px"
+								>            <!-- TODO: should be layout.color -->
+									<mat-icon class="h-100" size="14px" inline [svgIcon]="layout.icon?.name"
+											*ngIf="layout.icon?.position === 'before'" color="secondary"></mat-icon>
+									<ng-container
+											*ngIf="tableData.typeStructure[row.type_id][i].field_id === 'claim_no'">
+										<span>
+											{{ getClaimInfo(row[tableData.typeStructure[row.type_id][i].field_id])?.number }}
+										</span>
+									</ng-container>
+									
+									<ng-container
+											*ngIf="tableData.typeStructure[row.type_id][i].field_id !== 'claim_no'">
+										<span *ngIf="isObject(row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex])">
+											{{ (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) || "&mdash;" }}
+										</span>
+										<span *ngIf="!isObject(row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex])">
+											{{ (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) || "&mdash;" }}
+										</span>
+									</ng-container>
+									<mat-icon class="h-100" size="14px" inline [svgIcon]="layout.icon?.name"
+											*ngIf="layout.icon?.position === 'after'" color="secondary"></mat-icon>
+								</mat-chip>
+							</mat-chip-list>
+
+                            <!-- Barcode -->
+                            <span [fxFlex]="'0 0 auto'" fxLayout="row"
+                                  fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+                                  [matTooltip]="layout.tooltip ? layout.tooltip[globals.LNG] : ''"
+                                  matTooltipPosition="above"
+                                  *ngIf="layout.type === 'action_button'" class="w-100"
+                            >
+                                <span fxLayout="row wrap" fxLayoutAlign="flex-start center">
+                                    <button mat-icon-button (click)="fireActionButton(layout, row, row[tableData.typeStructure[row.type_id][i].field_id], tableData.configuration);  $event.stopPropagation();">
+                                        <mat-icon [svgIcon]="layout.icon.name"></mat-icon>
+                                    </button>
+
+                                </span>
+							</span>
+                            
+							<!-- Icon -->
+							<span [fxFlex]="'0 0 auto'" class="w-100" fxLayout="row"
+								fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+								[matTooltip]="layout.tooltip ? layout.tooltip[globals.LNG] : ''"
+								matTooltipPosition="above"
+								*ngIf="layout.type === 'icon'"
+							>
+								<mat-icon size="14px" color="secondary" inline [svgIcon]="layout.icon?.name"
+										*ngIf="layout.icon?.position === 'before'"></mat-icon>
+								<ng-container [ngSwitch]="layout.type">
+									<span *ngSwitchCase="'date'">
+										{{ row[tableData.typeStructure[row.type_id][i].field_id] | date }}
+									</span>
+									<span *ngSwitchCase="'group'">
+										<ng-container *ngIf="layout.field_type == 'date'; else noFieldType">
+											{{ row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex] ? (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex] | date) : "&mdash;" }}
+										</ng-container>
+										<ng-template #noFieldType>
+											{{ (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) || "&mdash;" }}
+										</ng-template>
+									</span>
+									<span *ngSwitchCase="'group-reference'">
+										{{ (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) || "&mdash;" }}
+									</span>
+									<span *ngSwitchDefault>
+										<ng-container [ngSwitch]="layout?.field_type">
+											<span *ngSwitchCase="'date'">
+												{{ (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) ? ((row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex] | date)) : "&mdash;" }}
+											</span>
+											<span *ngSwitchCase="'scale'">
+												{{ (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) ? ((row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex] | number) + " km") : "&mdash;" }}
+											</span>
+											<span *ngSwitchDefault>
+												{{ row[tableData.typeStructure[row.type_id][i].field_id] ? (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) : "&mdash;" }}
+											</span>
+										</ng-container>
+									</span>
+								</ng-container>
+								<mat-icon size="14px" color="secondary" inline [svgIcon]="layout.icon?.name"
+										*ngIf="layout.icon?.position === 'after'"></mat-icon>
+							</span>
+							
+							<!-- Text -->
+							<span [fxFlex]="'0 0 auto'" fxLayout="row"
+								fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+								[matTooltip]="layout.tooltip ? layout.tooltip[globals.LNG] : ''"
+								matTooltipPosition="above"
+								*ngIf="layout.type === 'text'" class="w-100"
+							>
+								<span class="w-100">{{ row[tableData.typeStructure[row.type_id][i].field_id] ? (row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex]) : "&mdash;" }}</span>
+							</span>
+
+							<!-- Overview -->
+							<span *ngIf="layout.type === 'overview'" class="overview-type" [fxFlex]="'0 0 auto'" fxLayout="row"
+								fxLayoutAlign="flex-start center" fxLayoutGap="5px"
+							>	
+								<span fxLayout="column" fxLayoutAlign="start">
+									<span class="title"> {{ layout.tooltip[globals.LNG] }} </span>
+									<span class="barval-group" fxLayout="row" fxLayoutAlign="start">
+										<span class="bar" [style.backgroundColor]="layout.color"></span>
+										<span class="value">{{ row[tableData.typeStructure[row.type_id][i].field_id][layoutIndex] }}</span>
+									</span>
+								</span>
+							</span>
+						</div>
+					</ng-container>
+					
+					<div class="p-1"
+						*ngIf="tableData.typeStructure[row.type_id][i].type == 'date' && tableData.typeStructure[row.type_id][i].type != 'single' && tableData.typeStructure[row.type_id][i].type != 'status' && (!column.front_end_type || column.front_end_type?.length === 0 )">
+						{{ (row[tableData.typeStructure[row.type_id][i].field_id]) | date }}
+					</div>
+					
+					<div class="w-100 p-1"
+						*ngIf="tableData.typeStructure[row.type_id][i].type == 'single' && tableData.typeStructure[row.type_id][i].type != 'status' && (!column.front_end_type || column.front_end_type?.length == 0)">
+						{{ (row[tableData.typeStructure[row.type_id][i].field_id]) || "&mdash;" }}
+					</div>
+					
+					<!-- Tempo Solution -->
+					<div *ngIf="tableData.typeStructure[row.type_id][i].type === 'ajeesh'">
+						<ng-container *ngIf="row[column.field_id].type == 'chip'">
+							<mat-chip-list>
+								<mat-chip disableRipple matTooltipPosition="above"
+										[matTooltip]="row[column.field_id].tooltip ? row[column.field_id].tooltip[globals.LNG] : ''"
+										[style.backgroundColor]="row[column.field_id]?.color"
+										fxLayoutGap="5px">
+									{{ row[column.field_id].value[globals.LNG] }}
+								</mat-chip>
+							</mat-chip-list>
+						</ng-container>
+					</div>
+					
+					<!-- Checkbox -->
+					<div *ngIf="tableData.typeStructure[row.type_id][i].type === 'select'"
+						(click)="$event.stopPropagation()">
+						<ng-container>
+							<mat-checkbox (click)="$event.stopPropagation()"
+										(change)="eventCheckboxClicked($event,row); $event ? selection.toggle(row) : null"
+										[checked]="selection.isSelected(row)"
+										[aria-label]="checkboxLabel(row)">
+							</mat-checkbox>
+						</ng-container>
+					</div>
+				</mat-cell>
+			</ng-container>
+
+
+			<!-- Table Rows -->
+			<mat-row class="table-row" [id]="'table-row-' + row.id " matRipple
+					*cdkRowDef="let row; columns: displayedColumns;"
+					(click)="tableRowClicked(row, table?.pageInfo)"></mat-row>
+			
+			
+			<!-- Sub Rows -->
+			<ng-container cdkColumnDef="SubItems">
+				<mat-cell *cdkCellDef="let subItem" colspan="999" class="p-0 position-relative" [@detailExpand]="subItem.expanded ? 'expanded' : 'collapsed'">
+					<div class="subitems-highlighter"></div>
+					<div class="w-100 subitems-table-wrapper" *ngIf="subItem.SubItems">
+						<app-table-widget class="w-100" [tableData]="subItem.SubItems" (rowClicked)="childTableRowClicked($event, childTable)" 
+						(pagedDataRequest)="fetchChildPaginatedData($event, childTable, subItem)" (statusUpdated)="childTableStatusUpdated($event, subItem, childTable)"
+                        (actionButtonPressed)="fireActionButton($event.layout, $event.row, $event.value, childTable.tableData.configuration)"
+                        #childTable></app-table-widget>
+					</div>
+				</mat-cell>
+			</ng-container>
+			<mat-row class="mat-elevation-z1 table-row subitems-table-row"
+					*cdkRowDef="let row; columns: ['SubItems']; when: hasChildren"></mat-row>
+					
+		</mat-table>
+		<div *ngIf="table.show && table?.pageInfo" class="paginator-wrapper">
+			<mat-paginator class="bg-transparent"
+				[length]="table.pageInfo.totalRecords"
+				[pageSize]="table.pageInfo.recordPerPage"
+				[pageSizeOptions]="pageSizeOptions"
+				(page)="getPagedData(table, $event, paginator)"
+				#paginator
+			>
+			</mat-paginator>
+			<mat-select class="current-index" #selectedPageIndex [value]="paginator.pageIndex+1" (selectionChange)="getPagedDataForPageIndex(table, $event.value, paginator)"
+				matTooltipPosition="above" [matTooltip]="paginator.pageIndex+1" [disabled]="(totalPages | totalPagesPipe:paginator.length:paginator.pageSize).length < 2"
+				>
+				<mat-option *ngFor="let item of totalPages | totalPagesPipe:paginator.length:paginator.pageSize" [value]="item">
+					{{ item }}
+				</mat-option>
+			</mat-select>
+		</div>
+	</div>
+</div>

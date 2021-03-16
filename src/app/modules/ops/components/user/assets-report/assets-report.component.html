@@ -1,0 +1,81 @@
+<!-- <mat-toolbar class="p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+	<div class="h-100" fxLayout="row"></div>
+	<div class="px-4">
+	
+	</div>
+</mat-toolbar> -->
+<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+	<div class="h-100" fxLayout="row">
+		<button mat-button (click)="eventCancelledDrawer()" tabindex="-1">
+			<mat-icon svgIcon="close"></mat-icon>
+		</button>
+		<mat-divider vertical></mat-divider>
+		<span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+			{{ drawerTitle }}
+		</span>
+	</div>
+	<div class="px-4" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+		<button class="MR" mat-stroked-button
+		        color=primary
+		        (click)="downloadAssets()">
+			{{ globals.translation['download'][globals.LNG] }}
+		</button>
+		<button mat-raised-button color="primary" (click)="saveAssets()">
+			{{ globals.translation['Save'][globals.LNG] }}
+		</button>
+	</div>
+</mat-toolbar>
+
+<!-- <mat-form-field appearance="outline" class="vatPercetangeForm">
+	<mat-label>Issuance Fee</mat-label>
+	<input type="number" matInput (change)="reCalculateFormulas()"
+	       [(ngModel)]="issuanceFee">
+</mat-form-field> -->
+<mat-form-field appearance="outline" class="vatPercetangeForm">
+	<mat-label>{{ globals.translation['VAT_Percentage'][globals.LNG] }}</mat-label>
+	<input type="number" matInput (change)="reCalculateFormulas()"
+	       [(ngModel)]="vatPercentage">
+</mat-form-field>
+<div class="main-container">
+	<div class="example-container mat-elevation-z8 asset-reporting-table">
+		<table class="w-100" mat-table [dataSource]="dataSource">
+			<ng-container [matColumnDef]="column.field_id"
+			              *ngFor="let column of tableHeader; let i = index;">
+				<th mat-header-cell *matHeaderCellDef> {{ globals.translation[column.name][globals.LNG] }} </th>
+				<td mat-cell *matCellDef="let element">
+					<ng-container *ngIf="!isObject(element[column.field_id])">
+						<mat-form-field appearance="outline"
+						                *ngIf="isEditable(element.type_id, column.field_id); else numberValue">
+							<input type="number" matInput (change)="calculateFormulas(element)"
+							       [(ngModel)]="element[column.field_id]">
+						</mat-form-field>
+						<ng-template #numberValue>
+							<ng-container *ngIf="column.field_id == 'type_id' || column.field_id == 'total_assets'">
+								{{element[column.field_id]}}
+							</ng-container>
+							<ng-container *ngIf="column.field_id == 'comments'">
+								<button mat-button (click)="addComments(element)">
+									<mat-icon svgIcon="comment-plus"></mat-icon>
+								</button>
+							</ng-container>
+							<ng-container *ngIf="column.field_id != 'type_id' && column.field_id != 'total_assets'
+									&& column.field_id != 'comments'">
+								{{setFormat(element[column.field_id])}}
+							</ng-container>
+						</ng-template>
+					</ng-container>
+					<ng-container *ngIf="isObject(element[column.field_id])">
+						{{element[column.field_id][globals.LNG]}}
+					</ng-container>
+				</td>
+				<td mat-footer-cell *matFooterCellDef>
+					<span class="footer-cell">{{ setFormat(getTotalValue(column.field_id)) }}</span>
+				</td>
+			</ng-container>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+			<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+		</table>
+	</div>
+</div>
+<a id="downloadPdf" [downloadFile]="downloadFileUrl" [filename]="downloadFilename"></a>

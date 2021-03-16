@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>
+	{{ globals.translation["status_cannot_be_updated"][globals.LNG] }}
+</h2>
+<mat-dialog-content  *ngIf="data.status?.length>0" class="pt-2 pb-3">
+  {{ globals.translation["you_can_only_update_this_status_to"][globals.LNG] }}
+  <span *ngFor="let update of data.status">
+    <span class="mx-1 status-label"  [style.backgroundColor]="update.color">{{ update.name[globals.LNG] }}</span>
+</span>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onOkClick('ok')" tabindex="-1">{{ globals.translation["OK"][globals.LNG] }}</button>
+</mat-dialog-actions>
+
+
+

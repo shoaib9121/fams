@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Dubai Police</title>
+        <base href="/">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+        
+    </head>
+    <body class="dp-light-theme" dir="ltr">
+        <script>
+            let lang = localStorage.getItem("lang");
+            if(lang == "ar"){
+                document.getElementsByTagName("html")[0].setAttribute("lang", "ar");
+                document.getElementsByTagName("body")[0].setAttribute("dir", "rtl"); 
+            }
+            else{	
+                document.getElementsByTagName("body")[0].setAttribute("dir", "ltr"); 
+            }
+        </script>
+        <script src="assets/configuration/config.js" ></script>
+        <script>
+            if (global === undefined) {
+              var global = window;
+            }
+          </script>
+
+        <app-root></app-root>
+    </body>
+</html>

@@ -1,0 +1,149 @@
+<div >
+	<mat-sidenav-container [hasBackdrop]="true" >
+		<mat-sidenav-content>
+			<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="workspace-list" [fullScreen]="false" > </ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row>
+					<mat-toolbar-row fxLayoutAlign="space-between center" fxLayout.gt-md="row">
+                        <span> {{ viewTitle[globalVars.LNG] }} </span>
+                        <span>
+                            <mat-slide-toggle class="example-margin" [(ngModel)]="translateMode" [checked]="translateMode">
+                                <h5>{{ globalVars.translation["Translation Mode"][globalVars.LNG] }}</h5>
+                            </mat-slide-toggle>
+                        </span>
+					</mat-toolbar-row>
+
+				</mat-toolbar-row>
+			</mat-toolbar>
+			<div>
+				<div class="w-100">
+					<app-table-widget *ngIf="tableWidgetData"
+										#tableWidget
+										[tableData]="tableWidgetData"
+										(rowClicked)="rowClicked($event)">
+					</app-table-widget>
+				</div>
+
+				<div class="h-100" *ngIf="hasNoData" fxLayout="column" fxLayoutAlign="center center">
+					<img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+					<div class="text-center">
+						<h1 class="empty-state-color">{{ globalVars.translation["No"][globalVars.LNG] }} {{ viewTitle[globalVars.LNG] }}</h1>
+						<button class="mx-auto" mat-raised-button color="primary" fxLayout="row" fxLayoutAlign="space-between center" (click)="openDrawerComponent()"  *ngIf="!translateMode">
+							<mat-icon svgIcon="plus"></mat-icon>
+							<span>
+								{{ globalVars.translation["Create"][globalVars.LNG] }} {{ viewTitle[globalVars.LNG] }}
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<button mat-fab color="primary" class="sticky-fab-button" (click)="openDrawerComponent()" *ngIf="!translateMode"><mat-icon svgIcon="plus"></mat-icon></button>
+		</mat-sidenav-content>
+		
+        <mat-sidenav #drawer mode="over" position="end" [autoFocus]="false" style="width: 50vw;" disableClose (opened)="openedDrawerComponent()">
+            <div class="workspace-drawer-component primary-bg-color">
+                <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="workspace-drawer" [fullScreen]="false" > </ngx-spinner>
+                <mat-drawer-container>
+                    <mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+                        <div class="h-100" fxLayout="row" >
+                            <button mat-button (click)="eventCancelledDrawer()" tabindex="-1">
+                                <mat-icon svgIcon="close"></mat-icon>
+                            </button>
+                            <mat-divider vertical></mat-divider>
+                            <span class="mx-4" fxLayout="row" fxLayoutAlign="space-between center">
+                                {{ drawerTitle[globalVars.LNG] }}
+                            </span>
+                        </div>
+                        <div class="px-4" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+                            <button mat-raised-button (click)="saveFormDialog()" color="primary" [disabled]="!basicForm.valid">{{ globalVars.translation["Save"][globalVars.LNG] }}</button>
+                            <!-- <button mat-raised-button (click)="saveFormDialogForTranslate()" color="primary" *ngIf="translateMode">Update Translates</button> -->
+                        </div>
+                    </mat-toolbar>
+                    <div class="p-2 pt-5 mx-auto content-container mt-1 overflow-auto">
+                        <mat-card class="p-0">
+                            <mat-expansion-panel [expanded]="true" >
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <span> 	Workspace Info </span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div [formGroup]="basicForm">
+                                    <div fxLayout="column wrap" fxLayoutAlign="stretch">
+                                        <div formGroupName="name" fxLayout="row wrap" fxLayoutGap="10px">
+                                            <mat-form-field  appearance="outline" fxFlex="auto">
+                                                <mat-label>Name (EN)</mat-label>
+                                                <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="en">
+                                            </mat-form-field>
+                                            <mat-form-field  appearance="outline" fxFlex="auto">
+                                                <mat-label>Name (AR)</mat-label>
+                                                <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="ar">
+                                            </mat-form-field>
+                                        </div>
+                                        <!-- <div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                <mat-label>Application</mat-label>
+                                                <mat-select matInput formControlName="application" (selectionChange)="modifyAppName($event)">
+                                                    <mat-option *ngFor="let application of availableApplications" [value]="+application.id" >
+                                                        {{application.name[globalVars.LNG]}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                <mat-label>Menu</mat-label>
+                                                <mat-select matInput formControlName="menu">
+                                                    <mat-option *ngFor="let menu of availableMenus" [value]="menu.key" >
+                                                        {{menu.Name[globalVars.LNG]}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div> -->
+                                        <mat-form-field appearance="outline" fxFlex="auto" *ngIf="!translateMode">
+                                            <mat-label>Modules</mat-label>
+                                            <mat-select matInput formControlName="modules" multiple>
+                                                <mat-option *ngFor="let module of availableModules" [value]="+module.id" >
+                                                    {{module.name[globalVars.LNG]}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                <mat-label>Icon</mat-label>
+                                                <mat-select matInput formControlName="icon">
+                                                    <mat-option value="" > --- </mat-option>
+                                                    <mat-option *ngFor="let ficon of availableIcons" [value]="ficon.field_id" >
+                                                        <mat-icon [svgIcon]="ficon.field_id"></mat-icon> {{ficon.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                <mat-label>Sort Order</mat-label>
+                                                <input [style]="globalVars.LNG == 'ar' ? 'text-align: end;' : ''" matInput formControlName="sort_order">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row wrap" fxLayoutGap="10px" *ngIf="!translateMode">
+                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                <mat-label>Status</mat-label>
+                                                <mat-select matInput formControlName="status">
+                                                    <mat-option [value]="'true'" >Yes</mat-option>
+                                                    <mat-option [value]="'false'" >No</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" fxFlex="auto">
+                                                <mat-label>Type</mat-label>
+                                                <mat-select matInput formControlName="type">
+                                                    <mat-option [value]="'system'" >System</mat-option>
+                                                    <mat-option [value]="'user'" >User</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-card>
+                    </div>
+                </mat-drawer-container>
+            </div>
+		</mat-sidenav>
+	</mat-sidenav-container>
+</div>

@@ -1,0 +1,147 @@
+<div class="users-component">
+	<mat-drawer-container hasBackdrop>
+		<mat-drawer-content>
+			<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+				[fullScreen]="false">
+			</ngx-spinner>
+			<mat-toolbar color="white">
+				<mat-toolbar-row class="z-index-2 ">
+					{{globalVars.translation['Users'][globalVars.LNG]}}
+				</mat-toolbar-row>
+			</mat-toolbar>
+			<div class="iserve-content-container">
+				<div class="mini-dashboard-cards" fxLayout="row" fxLayoutAlign="space-between stretch"
+					fxLayoutGap="20px">
+
+					<mat-card class="closed-booking" fxFlex="auto" fxLayout="row" fxLayoutAlign="space-between center">
+						<span fxFlex="1 1 auto">
+							<h2 class="fw-400" mat-card-title> {{globalVars.translation['Active'][globalVars.LNG]}}</h2>
+
+						</span>
+						<span>
+							<h1 class="fw-400">
+								{{statusModel.active}}
+							</h1>
+							<span mat-card-subtitle>{{globalVars.translation['Users'][globalVars.LNG]}}</span>
+						</span>
+					</mat-card>
+
+					<mat-card class="cancelled-booking" fxFlex="auto" fxLayout="row"
+						fxLayoutAlign="space-between center">
+						<span fxFlex="1 1 auto">
+							<h2 class="fw-400" mat-card-title>{{globalVars.translation['Inactive'][globalVars.LNG]}}
+							</h2>
+
+						</span>
+						<span>
+							<h1 class="fw-400">
+								{{statusModel.inactive}}
+							</h1>
+							<span mat-card-subtitle>{{globalVars.translation['Users'][globalVars.LNG]}}</span>
+						</span>
+					</mat-card>
+				</div>
+				<app-table-widget #tableWidget [tableData]="tableWidgetData" (rowClicked)="rowClicked($event)"
+					(statusUpdated)="statusUpdated($event)" (actionButtonPressed)="tableActionEvent($event)"
+					(toggleButtonPressed)="availableToggleEvent($event)">
+				</app-table-widget>
+			</div>
+			
+			
+			<button mat-fab color="primary" class="sticky-fab-button" (click)="openDrawer('add')">
+				<mat-icon svgIcon="plus"></mat-icon>
+			</button>
+		</mat-drawer-content>
+
+		<mat-drawer #drawer mode="over" position="end" style="width: 40vw;" disableClose>
+			<mat-toolbar class="mat-elevation-z3 p-0" color="white" fxLayout="row" fxLayoutAlign="space-between center">
+				<div class="h-100" fxLayout="row">
+					<button mat-button (click)="drawerClosed($event)" tabindex="-1">
+						<mat-icon svgIcon="close"></mat-icon>
+					</button>
+					<mat-divider vertical></mat-divider>
+					<span class="mx-4" fxLayout="row" fxLayoutAlign="center center">
+
+					</span>
+				</div>
+				<div class="px-4">
+					<button mat-raised-button color="primary" *ngIf="drawerType == 'add'" form="ngForm" (click)="saveUser(this)">
+						{{globalVars.translation['Add'][globalVars.LNG]}}
+					</button>
+					<button mat-raised-button color="primary" form="ngForm"  *ngIf="drawerType == 'edit'" (click)="saveUser(this)">
+						{{globalVars.translation['Update'][globalVars.LNG]}}
+					</button>
+				</div>
+			</mat-toolbar>
+
+			<div *ngIf="addFormVisible" [formGroup]="userModel" appearance="outline" class="mx-auto" id="ngForm"
+				style="width: 90%;margin-left: auto; margin-right: auto;margin-top: 30px;">
+
+				<mat-card>
+
+					<mat-card-content fxLayout="row wrap" fxLayoutAlign="space-between baseline">
+						
+						<!-- removed due to production <input type="hidden" [(ngModel)]="userModel.id" [ngModelOptions]="{standalone: true}">-->
+						<mat-form-field fxFlex="48%">
+							<mat-label>{{globalVars.translation['Full Name'][globalVars.LNG]}}</mat-label>
+							<input type="text" matInput formControlName="fullName" required>
+							<mat-error>full name is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field fxFlex="48%">
+							<mat-label>{{globalVars.translation['User Name'][globalVars.LNG]}}</mat-label>
+							<input type="text" matInput formControlName="userName"required>
+							<mat-error>user name is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field fxFlex="48%">
+							<mat-label>{{globalVars.translation['Password'][globalVars.LNG]}}</mat-label>
+							<input type="password" matInput formControlName="password" required>
+							<mat-error>password is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field color="warn" fxFlex="48%">
+							<mat-label>{{globalVars.translation['Re Password'][globalVars.LNG]}}</mat-label>
+							<input  type="password" matInput formControlName="rePassword"required>
+							<mat-hint  [ngStyle]="{color: '#ff0000'}" *ngIf="userModel.errors?.misMatch" >Password Mismatch</mat-hint>
+							<mat-error>Re password is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field fxFlex="48%" danger>
+							<mat-label>{{globalVars.translation['Employee Id'][globalVars.LNG]}}</mat-label>
+							<input type="text" matInput formControlName="employeeId" required>
+							<mat-error>Employee Id is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field fxFlex="48%" danger>
+							<mat-label>{{globalVars.translation['Email'][globalVars.LNG]}}</mat-label>
+							<input type="text" matInput formControlName="email"required>
+							<mat-error>{{getErrorMessage()}}</mat-error>
+						</mat-form-field>
+
+						<mat-form-field fxFlex="48%">
+							<mat-label>{{globalVars.translation['Mobile Number'][globalVars.LNG]}}</mat-label>
+							<input type="text" matInput formControlName="mobileNumber"required>
+							<mat-error>mobile number is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field fxFlex="48%">
+							<mat-label>{{globalVars.translation['User Type'][globalVars.LNG]}}</mat-label>
+							<mat-select formControlName="userType" required>
+								<mat-option value="standard">{{globalVars.translation['Standard'][globalVars.LNG]}}
+								</mat-option>
+								<mat-option value="premium">{{globalVars.translation['Premium'][globalVars.LNG]}}
+								</mat-option>
+							</mat-select>
+							<mat-error>please select a user type</mat-error>
+						</mat-form-field>
+
+
+					</mat-card-content>
+
+				</mat-card>
+
+			</div>
+		</mat-drawer>
+	</mat-drawer-container>
+</div>

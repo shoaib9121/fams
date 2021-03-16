@@ -1,0 +1,27 @@
+<div [formGroup]="attachmentsGroup">
+	<div class="file-upload-component">
+		<div class="action-buttons">
+			<button mat-stroked-button class="btn-remove" color="warn" *ngIf="fileUploadQueue.files.length > 0"
+			        (click)="fileUploadQueue.removeAll()">
+				<mat-icon svgIcon="delete-forever"></mat-icon>
+				{{ globalVariables.translation['remove'][globalVariables.LNG] }}
+			</button>
+			<label class="btn-add mat-button-base mat-primary">
+				<mat-icon svgIcon="plus"></mat-icon>
+				<span>{{ globalVariables.translation['Add'][globalVariables.LNG] }}</span>
+				<input id="file-upload" type="file" formControlName="attachments" [fileUploadInput]="fileUploadQueue"
+				       multiple>
+			</label>
+		</div>
+		<br>
+		<!-- <div [fileUploadInput]="fileUploadQueue" class="upload-drop-zone">
+		Just drag and drop files here
+	</div> -->
+		<app-file-upload-queue #fileUploadQueue>
+			<div class="attachment-container">
+				<app-file-upload [file]="file" [id]="i" *ngFor="let file of fileUploadQueue?.files; let i = index">
+				</app-file-upload>
+			</div>
+		</app-file-upload-queue>
+	</div>
+</div>

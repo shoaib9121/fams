@@ -1,0 +1,131 @@
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" style="height: 100%;">
+	<div class="w-100 h-50 overflow-hidden">
+		<div class="position-sticky t-0">
+			<h3 class="text-center">{{ globalVars.translation["Log"][globalVars.LNG] }}</h3>
+		</div>
+		<div class="h-100 overflow-auto" #scrollMe>
+			<div style="margin-bottom:12px; padding-bottom: 40px; margin-left: 10px;" fxLayout="column"
+			     fxLayoutAlign="space-around stretch">
+				<ng-container *ngFor="let logs of itemLog">
+					<ng-container *ngIf="getKeys(logs.updatedValue)?.length > 0">
+						<ng-container
+								*ngIf="getKeys(logs.updatedValue)?.length > 0 && checkKeyStatus(logs.updatedValue)">
+							<div class="dateCreated">
+								<small class="dateStyle">{{ logs?.createdAt | timeAgo }} </small>
+								<span>
+                                    {{ getUpdatedBy(logs.updatedBy) }}
+                                </span>
+								<small class="updatedClaim">
+									{{ globalVars.translation["update_log_" + currentApplicationName][globalVars.LNG] }}
+								</small>
+							</div>
+							<div *ngFor="let field_id of getKeys(logs.updatedValue)">
+								<div *ngIf="field_id === 'status';">
+									<div class="single-log" fxLayout="row" fxLayoutAlign="flex-start center"
+									     fxLayoutGap="10px">
+										<div fxLayout="column" fxLayoutAlign="flex-start ">
+                                            <span class="status-label"
+                                                  [style.backgroundColor]="moduleStatuses[+logs.updatedValue[field_id]]?.color">
+                                                {{ moduleStatuses[+logs.updatedValue[field_id]]?.name[globalVars.LNG] }}
+                                            </span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ng-container>
+						<ng-container *ngIf="getValidFields(logs.updatedValue, logs.originalValue)">
+							<div class="dateCreated">
+								<small class="dateStyle">{{ logs.createdAt | timeAgo }} </small>
+								<span>
+                                    {{ getUpdatedBy(logs.updatedBy) }}
+                                </span>
+								<small class="updatedClaim">
+									{{ globalVars.translation["update_log_" + currentApplicationName][globalVars.LNG] }}
+								</small>
+							</div>
+							<div class="single-log" fxLayoutAlign="flex-start center" fxLayoutGap="10px" fxLayout="row">
+								<mat-accordion class="panWidth" displayMode="flat">
+									<mat-expansion-panel class="mat-elevation-z0">
+										<mat-expansion-panel-header>
+											<mat-panel-title>
+												<small>{{ getValidFields(logs.updatedValue, logs.originalValue) }}
+													{{ globalVars.translation['Fields Updated'][globalVars.LNG] }}
+												</small>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div *ngFor="let key of getKeys(logs.updatedValue)"
+										     style="margin-bottom: 16px;">
+											<div
+													*ngIf="logs.originalValue[key] != '' && logs.updatedValue[key] != '' && key != 'status';">
+												<fieldset
+														[ngClass]="getUpdatedBy(logs.updatedBy) ? 'log-box' : 'log-box1'">
+													<legend class="legendStyle">
+														{{ moduleDataService.getKeyName(key) ? moduleDataService.getKeyName(key)[globalVars.LNG] : '' || key }}
+													</legend>
+													<div fxLayout="column " fxLayoutAlign="start stretch"
+													     style="padding-left: 7px;">
+                                                        <span
+		                                                        class="log-subhead">{{ globalVars.translation['OLD'][globalVars.LNG] }}</span>
+														<div class="newStyle">
+															<span>{{ logs.originalValue[key] }}</span>
+														</div>
+														<span
+																class="log-subhead">{{ globalVars.translation['NEW'][globalVars.LNG] }}</span>
+														<div class="newStyle">
+															<span>{{ logs.updatedValue[key] }}</span>
+														</div>
+													</div>
+												</fieldset>
+											</div>
+										</div>
+									</mat-expansion-panel>
+								</mat-accordion>
+							</div>
+						</ng-container>
+					</ng-container>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+	<mat-divider style="width: 90%;"></mat-divider>
+	<div class="w-100 h-50 overflow-hidden" fxLayout="column" fxLayoutAlign="space-between stretch">
+		<div class="w-100 overflow-auto px-0" #scrollChat >
+			<div class="position-sticky t-0 chat-headline" color="white">
+				<h3 class="text-center"> {{ globalVars.translation['Chat'][globalVars.LNG] }} </h3>
+			</div>
+			<ng-container *ngIf="comments?.length <= 0">
+				<app-empty-state class="h-100 h-90" [state]="'no_comments'"></app-empty-state>
+			</ng-container>
+			<div class="overflow-auto" *ngIf="comments?.length > 0">
+				<div *ngFor="let message of comments" class="text-wrapper animated fadeIn">
+					<div class="chat-box" *ngIf="message.comment">
+						<div fxLayout="row" fxLayoutAlign="space-between center">
+							<strong *ngIf="!message.createdBy || message.createdBy == userName">You</strong>
+							<strong *ngIf="message.createdBy != userName">{{ message.createdBy }}</strong>
+							<small *ngIf="message.status == 'sending'; else sentBlock">
+								<mat-icon class="sendingIcon">access_time</mat-icon>
+							</small>
+							<ng-template #sentBlock>
+								<small>{{message.createdAt | timeAgo}}</small>
+							</ng-template>
+						</div>
+						{{ message.comment }}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="chat-form p-3 paddingForm">
+			<div [formGroup]="chatForm" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+				<mat-form-field class="w-100 fieldPadding" appearance="outline">
+					<mat-label>{{ globalVars.translation["Add a comment"][globalVars.LNG] }}
+					</mat-label>
+					<input type="text" matInput class="chat-input" formControlName="comment"
+					       (keyup.enter)="postComment()">
+				</mat-form-field>
+				<button mat-icon-button [disabled]="!chatForm.valid" (click)="postComment()">
+					<mat-icon svgIcon="send"></mat-icon>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

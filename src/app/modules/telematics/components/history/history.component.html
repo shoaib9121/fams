@@ -1,0 +1,171 @@
+<div class="history-component">
+  <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+  <mat-sidenav-container class="h-sidenav" [hasBackdrop]="false">
+    <mat-sidenav mode="side" opened class="pt-0 z-index-0" disableClose [style.width]="'300px'">
+      <div class="sidenav-component" fxLayout="column" fxLayoutAlign="space-between flex-start">
+        <mat-accordion class="w-100 pb-2 overflow-auto" multi displayMode="flat">
+          <mat-expansion-panel class="mat-elevation-z0" (click)="workspace.expanded = !workspace.expanded"
+            hideToggle="true" *ngFor="let workspace of historyFilters">
+            <mat-expansion-panel-header expandedHeight="50px" collapsedHeight="50px">
+              <mat-panel-title fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="5px">
+                <span fxLayout="row">
+                  <mat-icon color="secondary" [svgIcon]="workspace.expanded  ? 'menu-down':'menu-right'"
+                    *ngIf="globalVars.LNG === 'en'"></mat-icon>
+                  <mat-icon color="secondary" [svgIcon]="workspace.expanded  ? 'menu-down':'menu-left'"
+                    *ngIf="globalVars.LNG === 'ar'"></mat-icon>
+                  <mat-icon color="secondary">{{workspace.icon}}</mat-icon>
+                </span>
+                <span>
+                  {{ workspace.name[globalVars.LNG]}}
+                </span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ng-container *ngIf="workspace?.type === 'report'">
+              <mat-card>
+                <mat-selection-list dense>
+                  <mat-list-option checkboxPosition="before" *ngFor="let item of ReportTypes">
+                    {{item.name[globalVars.LNG]}}
+                  </mat-list-option>
+                </mat-selection-list>
+              </mat-card>
+
+            </ng-container>
+            <ng-container *ngIf="workspace?.type === 'time'">
+              <mat-card class="p-2 m-4">
+                <mat-card-content>
+                  <mat-chip-list aria-label="Filter Days">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-chip color="primary" *ngFor="let days of filterDAys"><small>{{days[globalVars.LNG]}}</small>
+                      </mat-chip>
+                    </div>
+                  </mat-chip-list>
+
+                  <div fxLayout="column" class="pt-2">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="px">
+                      <mat-form-field fxFlex="50" appearance="outline">
+                        <mat-label>From</mat-label>
+                        <input matInput [matDatepicker]="frompicker" placeholder="Choose From date">
+                        <mat-datepicker-toggle matSuffix [for]="frompicker"></mat-datepicker-toggle>
+                        <mat-datepicker #frompicker></mat-datepicker>
+                      </mat-form-field>
+
+                      <mat-form-field fxFlex="50" appearance="outline">
+                        <mat-label>Time</mat-label>
+                        <input matInput [ngxTimepicker]="picker">
+                        <ngx-material-timepicker #picker></ngx-material-timepicker>
+                      </mat-form-field>
+
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="px">
+                      <mat-form-field fxFlex="50" appearance="outline">
+                        <mat-label>To</mat-label>
+                        <input matInput [matDatepicker]="topicker" placeholder="Choose To date">
+                        <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+                        <mat-datepicker #topicker></mat-datepicker>
+                      </mat-form-field>
+                      <mat-form-field fxFlex="50" appearance="outline">
+                        <mat-label>Time</mat-label>
+                        <input matInput [ngxTimepicker]="pickerTo">
+                        <ngx-material-timepicker #pickerTo></ngx-material-timepicker>
+                      </mat-form-field>
+                    </div>
+
+                  </div>
+                </mat-card-content>
+
+                <button class="w-100" mat-raised-button color="primary">Generate Report</button>
+
+              </mat-card>
+            </ng-container>
+            <ng-container *ngIf="workspace?.type === 'filter'">
+              <mat-card class="p-2 m-4">
+                <mat-card-header>
+                  <mat-card-title>Filter</mat-card-title>
+                </mat-card-header>
+
+                <mat-selection-list dense>
+                  <mat-list-option checkboxPosition="before" *ngFor="let tag of filterTags">
+                    {{tag[globalVars.LNG]}}
+                  </mat-list-option>
+                </mat-selection-list>
+                <button class="w-100 " mat-raised-button color="primary">Generate Report</button>
+
+
+              </mat-card>
+            </ng-container>
+            <ng-container *ngIf="workspace?.type === 'search'">
+
+              <mat-card class="p-2 m-4">
+
+                <mat-button-toggle-group>
+                  <mat-button-toggle value="Vehicle">Vehicle</mat-button-toggle>
+                  <mat-button-toggle value="Group">Group</mat-button-toggle>
+                  <mat-button-toggle value="Filter">Filter</mat-button-toggle>
+                </mat-button-toggle-group>
+
+                <mat-card-content class="pt-2">
+                  <mat-form-field class="w-100">
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                  </mat-form-field>
+                  <table class="w-100" mat-table [dataSource]="dataSource" style="width: 100%;">
+
+                    <ng-container matColumnDef="select">
+                      <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                      </th>
+                      <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Vehicles">
+                      <th mat-header-cell *matHeaderCellDef> Vehicles </th>
+                      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  </table>
+                </mat-card-content>
+                <mat-card-actions fxLayout="row">
+                  <button fxFill mat-raised-button color="primary">Generate Report</button>
+                </mat-card-actions>
+
+              </mat-card>
+            </ng-container>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div fxLayout="row wrap" fxLayoutAlign="space-between center" style="float:right;margin:20px;">
+        <!-- <mat-icon (click)="drawer.toggle()">add</mat-icon> -->
+        <mat-icon color="secondary">settings</mat-icon>
+        <mat-icon color="secondary">cached</mat-icon>
+        <mat-icon color="secondary" svgIcon="file-word"></mat-icon>
+        <mat-icon color="secondary" svgIcon="file-pdf-box"></mat-icon>
+      </div>
+      <ng-container>
+        <app-table-widget *ngIf="tableWidgetData" #tableWidget [tableData]="tableWidgetData"
+          (rowClicked)="rowClicked($event)" >
+        </app-table-widget>
+
+        <div *ngIf="false" class="h-100 p-2" fxLayout="column" fxLayoutAlign="center center">
+          <img src="assets/empty_items_circle.png" alt="Empty Item" style="width: 300px;">
+          <div class="text-center">
+            <h1 class="empty-state-color">No History</h1>
+          </div>
+        </div>
+      </ng-container>
+    </mat-sidenav-content>
+    <mat-drawer #drawer mode="over" style="width: 40vw;" position="end">Drawer content</mat-drawer>
+  </mat-sidenav-container>
+
+</div>

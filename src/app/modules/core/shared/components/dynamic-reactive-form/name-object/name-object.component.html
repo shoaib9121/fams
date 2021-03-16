@@ -1,0 +1,19 @@
+<div class="w-100" [formGroup]="nameGroup" fxLayout="row wrap" fxLayoutAlign="space-between flex-start" *ngIf="nameGroup">
+	<mat-form-field fxFlex="0 0 49%" appearance="outline">
+		<mat-label>{{ field.label[globals.LNG] }} - {{ globals.translation["English"][globals.LNG] }}</mat-label>
+		<input matInput type="text" formControlName="en">
+		
+		<ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+			<mat-error *ngIf="group.get(field.col).hasError(validation.name)">{{validation.message}}</mat-error>
+		</ng-container>
+	</mat-form-field>
+	
+	<mat-form-field fxFlex="0 0 49%" appearance="outline">
+		<mat-label>{{ field.label[globals.LNG] }} - {{ globals.translation["Arabic"][globals.LNG] }}</mat-label>
+		<input matInput type="text" formControlName="ar">
+		
+		<ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+			<mat-error *ngIf="group.get(field.col).hasError(validation.name)">{{validation.message}}</mat-error>
+		</ng-container>
+	</mat-form-field>
+</div>

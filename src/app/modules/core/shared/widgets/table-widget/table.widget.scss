@@ -1,0 +1,479 @@
+
+.table-wrapper {
+    
+	&.default-padding {
+		padding: 20px 60px;
+	}
+    
+	&.child-padding {
+		&:lang(en) {
+			padding-left: 10px;
+		}
+
+		&:lang(ar) {
+			padding-right: 10px;
+		}
+	}
+    
+	mat-table {
+		background: transparent;
+		background: rgba(255, 255, 255, 0);
+	}
+    
+	mat-row.table-row {
+		-webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+		-o-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+		box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+
+		.row-thumb {
+			img {
+				object-fit: none;
+    			object-position: 0 center;
+			}
+		}
+	}
+    
+	.header-row {
+		border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+		height: 56px;
+		top: 0;
+		background-color: whitesmoke;
+		z-index: 100;
+		position: sticky;
+
+		.header-cell {
+			font-size: 14px;
+			text-transform: uppercase;
+			font-weight: 600;
+			color: rgba(0, 0, 0, 0.54);
+		}
+        &:lang(en){
+            .header-cell:first-of-type {
+                padding-left: 24px;
+            }
+            .header-cell:last-of-type {
+                padding-right: 24px;
+            }
+        }
+        &:lang(ar){
+            .header-cell:first-of-type {
+                padding-right: 24px;
+            }
+            .header-cell:last-of-type {
+                padding-left: 24px;
+            }
+        }
+	}
+    
+	.placeholder {
+		background-color: #ececec;
+		height: 120px;
+		min-width: 216px;
+		overflow: hidden;
+		position: relative;
+
+		&::after {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			width: 80%;
+			transform: translateX(-100%);
+			background-image: linear-gradient(
+			  90deg,
+			  rgba(#fff, 0) 0,
+			  rgba(#fff, 0.2) 20%,
+			  rgba(#fff, 0.5) 60%,
+			  rgba(#fff, 0)
+			);
+			animation: shimmer 1.3s infinite;
+			content: '';
+		  }
+
+		  @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+		}
+		.mat-icon{
+			color: #c7c7c7;
+			width: 40px;
+			height: 40px;
+
+			::ng-deep svg{
+				width: 40px;
+				height: 40px;
+			}
+		}
+	}
+    
+	.overview-type{
+		margin-right: 5px;
+		span {
+			display: inline-block;
+		}
+		.title{
+			text-transform: uppercase;
+			font-size: 12px;
+			letter-spacing: 0.5px;
+		}
+		.barval-group{
+			.bar{
+				width: 3px;
+				height: 15px;
+				align-self: baseline;
+				position: relative;
+				top: 1px;
+                &:lang(en){
+                    margin-right: 10px;
+                }
+                &:lang(ar){
+                    margin-left: 10px;
+                }
+			}
+			.value{
+				align-self: baseline;
+				font-weight: bold;
+			}
+		}
+	}
+    
+	.paginator-wrapper{
+		position: relative;
+
+		::ng-deep .mat-paginator-range-actions{
+			.mat-paginator-navigation-previous {
+				margin-right: 10px;
+			}
+			.mat-paginator-navigation-next {
+				margin-left: 10px;
+			}
+		}
+
+		.current-index {
+			width: 50px;
+			height: 22px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: absolute;
+			right: 33px;
+			bottom: 20px;
+			color:rgba(0, 0, 0, 0.54);
+
+			::ng-deep .mat-select-trigger {
+				width: 90%;
+			}
+
+			::ng-deep .mat-select-value{
+				text-align: center;
+			}
+		}
+	}
+	.min-h-norecords{
+		min-height: calc(100vh - 400px);
+	}
+	.search-wrapper{
+		.statuses-filter{
+			padding-bottom: 1.34375em;
+		}
+	}
+    .status-button{
+        padding-left: 10px;
+    }
+    button.status-button{
+        white-space: pre-wrap;
+        text-align: left;
+    }
+}
+
+.table-header-row th {
+	border-bottom: none;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+.table-row:hover {
+	cursor: pointer;
+}
+
+.table-row:active {
+	cursor: pointer;
+}
+
+mat-row {
+	// height: 44px;
+	min-height: 75px;
+}
+
+// region group header
+.group-header {
+	// height: 70px !important;
+}
+
+.group-header:first-child {
+	height: 44px !important;
+}
+
+.group-header mat-cell {
+	padding-left: 0;
+	padding-bottom: 0;
+	position: relative;
+	border-bottom: none;
+
+	.group {
+		padding: 7px 16px;
+		-webkit-border-top-right-radius: 8px;
+		-webkit-border-top-left-radius: 8px;
+		text-transform: uppercase;
+		font-weight: 600;
+		font-size: .8rem;
+		position: absolute;
+		bottom: 0;
+
+		min-width: 150px;
+	}
+}
+
+// endregion
+
+// region sub table
+.subitems-table-row {
+	// height: 0;
+	min-height: 0 !important;
+
+	&:hover {
+		background: #FFF !important;
+	}
+
+	.subitems-highlighter {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 10px;
+		background-color: gainsboro;
+        
+        &:lang(en){
+            left: 0;
+        }
+        &:lang(ar){
+            right: 0;
+        }
+	}
+}
+
+.subitems-table-wrapper {
+	overflow: hidden;
+	display: flex;
+
+	.dp-light-theme {
+		mat-row:hover {
+			background: #efefef;
+		}
+	}
+}
+
+// endregion
+
+.table-cell-padding {
+	/*padding-top: 15px;
+	padding-bottom: 15px;*/
+	padding-top: 10px;
+	padding-bottom: 10px;
+	flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	-webkit-flex-wrap: wrap;
+}
+
+.square-box {
+	min-width: 20px;
+	width: 20px;
+	min-height: 20px;
+	height: 20px;
+	border-radius: 3px;
+
+	// region Language specific
+	&:lang(en) {
+		margin-right: 15px;
+	}
+    
+	&:lang(ar) {
+		margin-left: 15px;
+	}
+    
+	// endregion
+}
+
+.toggle-sub-item-btn {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	height: 100%;
+	z-index: 2;
+}
+
+.mat-elevation-row-highlight {
+	-webkit-transition: all .8s linear;
+	-moz-transition: all .8s linear;
+	-o-transition: all .8s linear;
+	transition: all .8s linear;
+	box-shadow: 0px 8px 11px -5px rgba(0, 0, 0, 0.2), 0px 17px 26px 2px rgba(0, 0, 0, 0.14), 0px 6px 32px 5px rgba(0, 0, 0, 0.12) !important;
+	z-index: 1;
+}
+
+::ng-deep {
+	mat-cell {
+		.inner-content {
+			div {
+				width: 100%;
+			}
+
+			span {
+				// width: 100%;
+			}
+		}
+	}
+    
+	.w-s-100 {
+		width: 100%;
+	}
+    
+	// region Language specific
+	.group:lang(ar) {
+		right: 0;
+	}
+    
+	.group:lang(en) {
+		left: 0;
+	}
+    
+	// endregion
+
+	// region Theme specific
+	.dp-light-theme {
+		.table-row {
+			background: #FFFFFF;
+
+			&:hover {
+				background: #efefef;
+			}
+
+			&:active {
+				background: #e0e0e0;
+			}
+		}
+
+		mat-header-cell {
+			font-weight: 600 !important;
+			text-transform: uppercase;
+		}
+
+		.table-sticky-header-row {
+			background-color: whitesmoke !important;
+		}
+	}
+    
+	.dp-dark-theme {
+		.table-sticky-header-row {
+			background-color: #303030 !important;
+		}
+
+		.table-row {
+			background: #424242;
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.04);
+			}
+
+			&:active {
+				background: rgba(0, 0, 0, 0.06);
+			}
+		}
+	}
+    
+	// endregion
+    
+    .statuses-matmenu{
+        .mat-menu-item{
+            height: auto;
+            white-space: normal;
+            overflow: initial;
+        }
+        .mat-menu-item.mat-checkbox,
+        .statuses-label {
+            line-height: 36px;
+        }
+    }
+}
+
+::ng-deep [dir=rtl] {
+	.paginator-wrapper{
+		.mat-select-trigger {
+			direction: rtl;
+		}
+		.mat-select-value {
+			text-align: center;
+		}
+		.mat-paginator-range-label {
+			direction: ltr;
+		}
+		.current-index{
+			left: 44px;
+			right: auto !important;
+		}
+		.mat-paginator-navigation-next {
+			margin-right: 10px;
+		}
+		.mat-paginator-navigation-previous {
+			margin-left: 10px;
+		}
+	}
+	.mat-option,
+	.mat-form-field {
+		text-align: left !important;
+	}
+	.mat-select-panel-wrap {
+		flex-basis: auto;
+	}
+}
+
+@media only screen and (max-width: 1024px){
+    .table-wrapper{
+        &.default-padding {
+            padding: 20px;
+        }
+        &.child-padding {
+            &:lang(en) {
+                padding-left: 10px;
+                padding-right: 0;
+            }
+        
+            &:lang(ar) {
+                padding-right: 10px;
+                padding-left: 0;
+            }
+        }
+        .paginator-wrapper{
+            &:lang(en){
+                right: 35px;
+            }
+            &:lang(ar){
+                left: 35px;
+            }
+        }
+        mat-cell:first-of-type, mat-footer-cell:first-of-type, mat-header-cell:first-of-type {
+            &:lang(en){
+                padding-left: 10px;
+            }
+            &:lang(ar){
+                padding-right: 10px;
+            }
+        }
+        .status-button > span {
+            padding: 0 !important;
+        }
+    }
+}

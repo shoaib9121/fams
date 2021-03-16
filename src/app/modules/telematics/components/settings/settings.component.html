@@ -1,0 +1,24 @@
+<div class="settings-component">
+    <ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple"
+                [fullScreen]="false">
+            </ngx-spinner>
+    <mat-sidenav-container class="h-sidenav" [hasBackdrop]="false">  
+        <mat-sidenav mode="side" opened class="pt-0 z-index-0" disableClose [style.width]="'300px'">
+            <ng-container >
+                <mat-nav-list  dense>
+                    <mat-list-item routerLinkActive="active-route" *ngFor="let item of settingsTypes" [routerLink]="item.link">      
+                     <mat-icon mat-list-icon class="sidebar-navigation mx-1">settings</mat-icon>           
+                     <span> {{item.name[globalVars.LNG]}}</span>         
+                    </mat-list-item>
+                  </mat-nav-list>
+             </ng-container>
+            </mat-sidenav>
+            <mat-sidenav-content>
+                <router-outlet></router-outlet>
+              
+
+            </mat-sidenav-content>
+           
+    </mat-sidenav-container>
+
+</div>

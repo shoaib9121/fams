@@ -1,0 +1,57 @@
+.dashboard-component {
+  padding: 20px 90px;
+}
+
+table {
+  width: 100%;
+}
+.dashboard-card span.md-headline {
+  font-size: small;
+}
+.dashboard-card span.card-value {
+  font-size: medium;
+  font-weight: bold;
+}
+.dashboard-card span.card-icon {
+  font-size: medium;
+}
+
+::ng-deep{
+	@media screen and (max-width: 1024px) {
+        ::ng-deep{
+            .table-card{
+                .table-card-content{
+                    td.mat-cell:not(:first-of-type), td.mat-footer-cell:not(:first-of-type), th.mat-header-cell:not(:first-of-type),
+                    td.mat-cell:not(:last-of-type), td.mat-footer-cell:not(:last-of-type), th.mat-header-cell:not(:last-of-type)
+                    {
+                        &:lang(en){
+                            padding: 1px;
+                        }
+                    }
+                    td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type, th.mat-header-cell:first-of-type {
+                        &:lang(en){
+                            padding-left: 16px;
+                        }
+                        &:lang(ar){
+                            padding-right: 16px;
+                        }
+                    }
+                    td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type, th.mat-header-cell:last-of-type {
+                        &:lang(en){
+                            padding-right: 5px;
+                        }
+                        &:lang(ar){
+                            padding-left: 5px;
+                        }
+                    }
+                    .mat-card-title,.mat-card-content,.mat-header-cell,.mat-cell, .mat-footer-cell {
+                        font-size: 13px;
+                    }
+                    .mat-chip{
+                        line-height: 14px !important;
+                    }
+                }
+            }
+        }
+	}
+}

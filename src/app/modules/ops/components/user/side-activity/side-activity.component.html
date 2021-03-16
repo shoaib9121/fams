@@ -1,0 +1,190 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 0.7)" size="medium" color="#008755" type="ball-scale-multiple" name="activity" [fullScreen]="false"></ngx-spinner>
+<div class="activity-wrapper activity-height">
+    <div class="p-0 overflow-auto h-100" #scrollActivity>
+        <div class="activity-actions p-3" fxLayout fxLayoutAlign="flex-end center" fxLayoutGap="15px">
+            <div class="clickable-chips">
+                <mat-chip-list>
+                    <mat-chip class="text-uppercase" [ngClass]="{ 'active': activeChipIndex == i }" *ngFor="let chipType of activityTypes; let i = index;" 
+                        fxLayoutGap="5px" (click)="initActivityData(i, chipType.en)" disableRipple>
+                        <span> {{ chipType[globalVars.LNG] }} </span>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+        <ng-container *ngIf="activityFiltered?.length > 0">
+            <ng-container *ngIf="activeChipType">
+                <div *ngFor="let activity of activityFiltered" class="text-wrapper">
+                    <!-- COMMENTS -->
+                    <ng-container *ngIf="activity.type === 'comment'">
+                        <ng-container *ngTemplateOutlet="templateComment; context: {$implicit: activity}"></ng-container>
+                    </ng-container>
+
+                    <!-- FILES -->
+                    <ng-container *ngIf="activity.type === 'attachment'">
+                        <ng-container *ngTemplateOutlet="templateAttachment; context: {$implicit: activity}"></ng-container>
+                    </ng-container>
+                    
+                    <!-- lOGS -->
+                    <ng-container *ngIf="activity.type === 'log'">
+                        <ng-container *ngTemplateOutlet="templateLog; context: {$implicit: activity}"></ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-template #templateComment let-activity>
+                <div class="comment-template" fxLayout="column" fxLayoutAlign="space-between stretch">
+                    <div *ngIf="activity.comment" class="text-wrapper px-3">
+                        <div class="dateCreated">
+                            <small class="dateStyle" [matTooltip]="activity?.createdAtShow ? activity.createdAtShow : ''"> {{ activity?.createdAt | timeAgo }} </small>
+                            <span *ngIf="!activity.createdBy || activity.createdBy == userName"> {{ globalVars.translation["You"][globalVars.LNG] }} </span>
+                            <small class="updatedClaim text-lowercase"> {{ globalVars.translation["commented_by"][globalVars.LNG] }} </small>
+                            <span *ngIf="activity.createdBy != userName"> {{ activity.createdBy }} </span>
+                        </div>
+                        <div class="single-log">
+                            <mat-icon class="activity-icon" svgIcon="comment-outline"></mat-icon>
+                            <div class="chat-box">
+                                {{ activity.comment }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #templateAttachment let-activity>
+                <div class="attachment-template px-3">
+                    <mat-nav-list class="w-100 h-cal">
+                        <div class="dateCreated">
+                            <small class="dateStyle" [matTooltip]="activity?.createdAtShow ? activity.createdAtShow : ''"> {{ activity?.createdAt | timeAgo }} </small>
+                            <!-- <span *ngIf="!activity.createdBy || activity.createdBy == userName"> {{ globalVars.translation["You"][globalVars.LNG] }} </span>
+                            <span *ngIf="activity.createdBy != userName"> {{ activity.createdBy }} </span>
+                            <small class="updatedClaim"> {{ globalVars.translation["added_a_comment"][globalVars.LNG] }} </small> -->
+                        </div>
+                        <div class="single-log">
+                            <mat-icon class="activity-icon" svgIcon="paperclip"></mat-icon>
+                            <span class="file-title"> {{ activity.fileValue?.title }} </span>
+                            <!-- {{ activityForm.get("fileTitle") }} -->
+                            <fieldset class="log-box1">
+                                <div fxLayout="row" fxLayoutAlign="space-between center">
+                                    <span class="stacked-icon"> <mat-icon matPrefix color="secondary" svgIcon="paperclip"></mat-icon> </span>
+                                    <span class="attachment-name newStyle" [matTooltip]="activity.name"> {{ activity.name }} </span>
+                                    <button mat-icon-button color="primary" (click)="downloadAttachment(activity)" [matTooltip]="globalVars.translation['download'][globalVars.LNG]">
+                                        <mat-icon class="ml-auto iconPadding" svgIcon="download" color="secondary"></mat-icon>
+                                    </button>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </mat-nav-list>
+                </div>
+            </ng-template>
+            <ng-template #templateLog let-activity>
+                <div class="px-3">
+                    <ng-container *ngIf="activity?.fieldKeys.length > 0">
+                        <ng-container *ngIf="activity?.hasKeyStatus && !activity.log?.isStatusValueEmpty">
+                            <div class="dateCreated">
+                                <small class="dateStyle" [matTooltip]="activity?.createdAtShow ? activity.createdAtShow : ''"> {{ activity?.createdAt | timeAgo }} </small>
+                                <small class="updatedClaim text-lowercase"> {{ globalVars.translation["updated_by"][globalVars.LNG] }} </small>
+                                <span> {{ activity?.updatedBy }} </span>
+                                <!-- <small class="updatedClaim"> {{ globalVars.translation["update_log_" + currentApplicationName][globalVars.LNG] }} </small> -->
+                            </div>
+                            <div *ngFor="let field_id of activity.fieldKeys">
+                                <div *ngIf="field_id === 'status'">
+                                    <div class="single-log" fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="10px">
+                                        <div fxLayout="column" fxLayoutAlign="flex-start">
+                                            <!-- <span *ngIf="activity.log[field_id].originalValue != ''">
+                                                <span class="log-subhead"> {{ globalVars.translation['OLD'][globalVars.LNG] }} </span>
+                                                <div class="newStyle">
+                                                    <span class="status-label" [style.backgroundColor]="activity.log[field_id]?.originalValue?.color"> 
+                                                        {{ activity.log[field_id]?.originalValue !== '' ? activity.log[field_id]?.originalValue?.name[globalVars.LNG] : '' }} 
+                                                    </span>
+                                                </div>
+                                            </span> -->
+                                            <span *ngIf="activity.log[field_id].updatedValue != ''">
+                                                <!-- <span class="log-subhead"> {{ globalVars.translation['NEW'][globalVars.LNG] }} </span> -->
+                                                <div class="newStyle">
+                                                    <span class="status-label" [style.backgroundColor]="activity.log[field_id]?.updatedValue?.color">
+                                                        {{ activity.log[field_id]?.updatedValue !== '' ? activity.log[field_id]?.updatedValue?.name[globalVars.LNG] : '' }} 
+                                                    </span>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="activity.fieldCount">
+                            <div class="dateCreated">
+                                <small class="dateStyle" [matTooltip]="activity?.createdAtShow ? activity.createdAtShow : ''"> {{ activity.createdAt | timeAgo }} </small>
+                                <small class="updatedClaim text-lowercase"> {{ globalVars.translation["updated_by"][globalVars.LNG] }} </small>
+                                <span> {{ activity?.updatedBy }} </span>
+                                <!-- <small class="updatedClaim"> {{ globalVars.translation["update_log_" + currentApplicationName][globalVars.LNG] }} </small> -->
+                            </div>
+                            <div class="single-log" fxLayoutAlign="flex-start center" fxLayoutGap="10px" fxLayout="row">
+                                <mat-icon class="activity-icon" svgIcon="history"></mat-icon>
+                                <mat-accordion class="panWidth" displayMode="flat">
+                                    <mat-expansion-panel class="mat-elevation-z0">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                <small> {{ activity.fieldCount }} {{ globalVars.translation['Fields Updated'][globalVars.LNG] }} </small>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="mb-4" *ngFor="let field_id of activity.fieldKeys">
+                                            <div *ngIf="field_id != 'status';">
+                                                <fieldset [ngClass]="activity.updatedBy ? 'log-box' : 'log-box1'">
+                                                    <legend class="legendStyle">
+                                                        {{ activity.log[field_id].name }}
+                                                    </legend>
+                                                    <div fxLayout="column" fxLayoutAlign="start stretch" style="padding-left: 7px;">
+                                                        <div *ngIf="activity.log[field_id].originalValue != ''">
+                                                            <span class="log-subhead"> {{ globalVars.translation['OLD'][globalVars.LNG] }} </span>
+                                                            <div class="newStyle">
+                                                                <span> {{ activity.log[field_id].originalValue }} </span>
+                                                            </div>
+                                                        </div>
+                                                        <div *ngIf="activity.log[field_id].updatedValue != ''">
+                                                            <span class="log-subhead"> {{ globalVars.translation['NEW'][globalVars.LNG] }} </span>
+                                                            <div class="newStyle">
+                                                                <span> {{ activity.log[field_id].updatedValue }} </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </ng-template>
+        </ng-container>
+        <ng-container *ngIf="activityFiltered?.length <= 0">
+            <app-empty-state class="h-100" [state]="emptyState"></app-empty-state>
+        </ng-container>
+
+    </div>
+    <div *ngIf="activityForm" [formGroup]="activityForm" class="activity-form p-3" fxLayout="row" fxLayoutAlign="space-between flex-start">
+        <div fxLayout="column" class="w-100">
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label> {{ (fileData || activeChipType === 'attachment') ? globalVars.translation["File Title"][globalVars.LNG] : globalVars.translation["comment"][globalVars.LNG] }} </mat-label>
+                <input matInput type="text" class="input-field" (keyup.enter)="submitActivityForm()" [formControlName]="activityFormControlName">
+                <button *ngIf="!fileData" mat-icon-button type="button" matSuffix (click)="toggleInput()" [disabled]="activeChipType !== 'attachment' && activeChipType !== 'all'">
+                    <mat-icon class="suffix-icon" matSuffix svgIcon="paperclip" color="secondary"></mat-icon>
+                </button>
+            </mat-form-field>
+            <div *ngIf="fileData" class="file-upload-div">
+                <span class="file-upload-input" fxLayout="row" fxLayoutAlign="space-between center">
+                    <span class="stacked-icon">
+                        <mat-icon matPrefix color="secondary" svgIcon="paperclip"></mat-icon>
+                    </span>
+                    <span id="chooseFile" class="choose-txt" [ngClass]="{'choosen-file': ifFile}"></span>
+                    <mat-icon class="suffix-icon" matSuffix (click)="removeFile()" color="secondary" svgIcon="close-circle"></mat-icon>
+                </span>
+            </div>
+        </div>
+        <button mat-icon-button class="mt-2" type="button" color="primary" (click)="submitActivityForm()" [disabled]="!activityForm?.valid">
+            <mat-icon class="ml-auto iconPadding" svgIcon="send"></mat-icon>
+        </button>
+        <input [hidden]="!ifFile" type="file" class="selected-file" (change)="onSelectedFilesChanged($event.target.files)" (click)="$event.target.value = ''">
+    </div>
+</div>
+
+<a id="downloadPdfA" [downloadFile]="downloadFileUrl" [filename]="downloadFilename"></a>

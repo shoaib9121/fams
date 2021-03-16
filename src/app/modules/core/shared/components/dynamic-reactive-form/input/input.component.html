@@ -1,0 +1,13 @@
+<mat-form-field class="w-100 " [formGroup]="group" appearance="outline">
+	
+	<mat-label>{{ field.label[globalVariables.LNG] }}</mat-label>
+	<input #inpval (change)="getValue(inpval.value);" [formControlName]="field.col" [disabled]="!field.update"
+	       [style]="globalVariables.LNG == 'ar' ? 'text-align: end;' : ''"
+	       [type]="field.inputType" matInput
+	       registerChildComponentToForm>
+	<ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+		<mat-error *ngIf="group.get(field.col).hasError(validation.name)">{{validation.message}}</mat-error>
+	</ng-container>
+
+</mat-form-field>
+

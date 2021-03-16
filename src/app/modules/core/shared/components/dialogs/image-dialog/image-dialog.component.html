@@ -1,0 +1,22 @@
+<h2 mat-dialog-title *ngIf="data.title && data.title != ''">
+	{{ data.title }}
+</h2>
+
+<mat-dialog-content class="pt-2 pb-3">
+    <div class="h-100" *ngIf="!data.image_path || data.image_path == ''" fxLayout="column" fxLayoutAlign="center center">
+        <img src="assets/empty_states/empty_attachments_circle.png" alt="Empty Image" style="width: 40%;" />
+        <div class="text-center">
+            <h1 class="empty-state-light-color">No Image Found</h1>
+        </div>
+    </div>
+    <div *ngIf="data.image_path && data.image_path != ''">
+        <!-- <img src="{{data.image_path}}" class="w-100" /> -->
+        <img [attr.src]="data.image_path | secure | async" class="w-100" />
+    </div>
+	
+</mat-dialog-content>
+
+<!-- <mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onNoClick('no')" tabindex="-1">NO</button>
+	<button mat-raised-button color="primary" (click)="onYesClick('yes')" tabindex="1">YES</button>
+</mat-dialog-actions> -->

@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>
+	{{ globalVars.translation["clone_view_permission_matrix"][globalVars.LNG] }}
+</h2>
+
+<mat-dialog-content class="pt-2 pb-3">
+    <h5>View Permission Details:</h5>
+	<div>
+        <mat-chip-list [fxFlex]="'0 0 auto'" style="line-height: initial;">
+            <mat-chip matTooltipPosition="above" [matTooltip]="'View'" disableRipple fxLayoutGap="5px">
+                <mat-icon class="h-100" size="14px" inline [svgIcon]="'view-grid'" color="secondary"></mat-icon>
+                <span>{{ data.selectedView[globalVars.LNG] }}</span>
+            </mat-chip>
+            <mat-chip matTooltipPosition="above" [matTooltip]="'Clone From Role'" disableRipple fxLayoutGap="5px">
+                <mat-icon class="h-100" size="14px" inline [svgIcon]="'account'" color="secondary"></mat-icon>
+                <span>{{data.cloneFromUser?.name[globalVars.LNG]}}</span>
+            </mat-chip>
+            <mat-chip disableRipple matTooltipPosition="above" [matTooltip]="'Module'" fxLayoutGap="5px">
+                <mat-icon class="h-100" size="14px" inline [svgIcon]="'file'" color="secondary"></mat-icon>
+                <span>{{data.module?.name[globalVars.LNG]}}</span>
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+
+    <mat-divider horizontal class="mb-4 mt-2"></mat-divider>
+
+    <div>{{ globalVars.translation["confirm_message_are_you_sure_to_clone_user_view_permission_matrix"][globalVars.LNG] }}</div>
+    <div [formGroup]="cloneUserRoleForm">
+        <mat-form-field class="w-100" floatLabel="never" appearance="outline" >
+            <mat-label>New Role</mat-label>
+            <mat-select matInput formControlName="role">
+                <mat-option *ngFor="let role of data.availUserRoles" [value]="role" >
+                {{role.name[globalVars.LNG]}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end center">
+	<button mat-button mat-dialog-close (click)="onNoClick('no')" tabindex="-1">{{ globalVars.translation["No"][globalVars.LNG] }}</button>
+	<button mat-raised-button color="primary" (click)="onYesClick('yes')" tabindex="1" [disabled]="!cloneUserRoleForm.valid">{{ globalVars.translation["Yes"][globalVars.LNG] }}</button>
+</mat-dialog-actions>

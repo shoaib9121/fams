@@ -1,0 +1,58 @@
+.user-account-drawer-component {
+	height: calc(100%);
+}
+
+mat-sidenav{
+    position: fixed;
+}
+mat-sidenav-content {
+	height: calc(100vh - 50px);
+}
+.card-view{
+    min-height: 50px;
+    margin: 5px;
+}
+
+mat-drawer-container {
+	// height: calc(100vh - 50px);
+	height: 100vh !important;
+	margin-top: 0;
+}
+
+
+
+::ng-deep {
+    .user-account-drawer-component {
+
+		.mat-tab-body-wrapper {
+			height: calc(100vh - 50px) !important;
+        }
+        
+        #error_display_panel .entry{
+			color: #ed4e42;
+			font-size: 12px;
+		}
+
+		.error_description .entry{
+			color: #ed4e42;
+			font-size: 11px;
+        }
+        .h-50 {
+			height: 50%;
+			overflow: hidden;
+		}
+		
+		.overflow-auto {
+			overflow: auto;
+		}
+		
+		.position-sticky {
+			top: 0;
+        }
+        .content-container {
+			height: calc(100vh - 120px - 24px) !important;
+			padding-left: 40px !important;
+			padding-right: 40px !important;
+		}
+    }
+}
